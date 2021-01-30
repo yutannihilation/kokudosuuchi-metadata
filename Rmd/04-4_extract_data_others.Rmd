@@ -1,0 +1,52 @@
+---
+title: "Extract data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+```{r}
+datalist_files <- list.files(here::here("data-raw", "datalist"), full.names = TRUE)
+id <- stringr::str_replace(basename(datalist_files), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+
+idx_exclude <- id %in% c("C23", "A09", "A20", "A31", "S10a")
+datalist_files <- datalist_files[!idx_exclude]
+id <- id[!idx_exclude]
+
+names(datalist_files) <- id
+
+tables <- purrr::map(datalist_files, ~ {
+  read_html(.x) %>% 
+    html_table() %>% 
+    purrr::keep(~ "地物情報" == colnames(.x)[1])
+})
+
+# テーブル一つだけなことを確認
+stopifnot(all(lengths(tables) == 1L))
+
+# 確認したら、アクセスしやすくするために一段階減らす
+tables <- purrr::map(tables, 1L)
+```
+
+カラム数は4のはずだが、ちがうやつがあるので調べる。
+
+```{r tables, results='asis'}
+names(tables)[lengths(tables) != 4L]
+
+unexpected_tables <- tables[lengths(tables) != 4L]
+
+purrr::map(unexpected_tables, head) %>% 
+  purrr::walk(~ print(knitr::kable(.x)))
+```
+
+
+
