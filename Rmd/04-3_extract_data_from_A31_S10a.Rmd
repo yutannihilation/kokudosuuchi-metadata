@@ -1,0 +1,101 @@
+---
+title: "Extract data from A31-v2_1 and S10a-v1_2"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `A31-v2_1`
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-A31-v2_1.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+res <- attr_table %>% 
+  purrr::map(~ dplyr::filter(.x, 地物情報 == "属性情報")) %>% 
+  # 1行目はヘッダ
+  purrr::map(~ {
+    res <- slice(.x, -1)
+    colnames(res) <- slice(.x, 1)
+    res
+  }) %>% 
+  bind_rows() %>% 
+  tidyr::extract(属性名, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description = 説明,
+    type = 属性の型
+  )
+
+knitr::kable(res)
+
+readr::write_csv(res, output)
+```
+
+### `S10a-v1_2`
+
+```{r get_tables2}
+input <- here::here("data-raw", "datalist", "KsjTmplt-S10a-v1_2.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table()
+```
+
+これの場合は、属性情報のカラムが2つ分あるらしく、dplyr でうまく操作できない。
+
+```{r dup}
+colnames(attr_table[[4]])
+colnames(attr_table[[5]])
+```
+今回は、テーブルは無視して、こっちの`/codelist/`の先のリストを見るほうがよさそう。
+
+```{r href}
+links_in_table <- read_html(input) %>% 
+  html_elements("table.tablelist a")
+```
+
+```{r scrape}
+library(polite)
+page <- bow("https://nlftp.mlit.go.jp/ksj/gml/codelist/PortRouteCd.html") %>% 
+  scrape()
+
+tables <- page %>% 
+  html_table(header = TRUE)
+
+stopifnot(length(tables) == 1)
+
+knitr::kable(tables[[1]])
+```
+
+他のとフォーマットを合わせて書き込む
+
+```{r write}
+colnames(tables[[1]]) <- c("_", "name1", "name2", "code")
+
+tables[[1]] %>% 
+  transmute(
+    name = if_else(name2 != "", paste0(name1, "_", name2), name1),
+    code,
+    description = NA,
+    type = NA
+  ) %>% 
+  readr::write_csv(output)
+```
+

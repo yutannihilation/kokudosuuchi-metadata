@@ -34,5 +34,12 @@ knitr::kable(attr_table[[1]])
 | 河口                       | 河口部かどうかの区別。                                                                                                                                                                                                                                                                                               | 真偽値型（true：河口部、false：その他）        |
 
 ``` r
-readr::write_csv(attr_table[[1]], output)
+attr_table[[1]] %>% 
+  dplyr::transmute(
+    name = 属性名,
+    code = NA,
+    description = 説明,
+    type = 属性の型
+  ) %>% 
+  readr::write_csv(output)
 ```
