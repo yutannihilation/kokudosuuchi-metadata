@@ -37,13 +37,51 @@ stopifnot(all(lengths(tables) == 1L))
 tables <- purrr::map(tables, 1L)
 ```
 
+属性情報をもたないテーブルは取り除く
+
+```{r}
+no_attr_info <- names(tables)[purrr::map_lgl(tables, ~ !"属性情報" %in% .x[[1]])]
+no_attr_info
+
+id <- id[!id %in% no_attr_info]
+tables <- tables[!names(tables) %in% no_attr_info]
+```
+
+```{r}
+tables <- tables %>% 
+  purrr::imap(~ {
+    # 属性情報の行だけにする
+    .x <- .x[startsWith(.x[[1]], "属性情報"), , drop = FALSE]
+    # 1行目はヘッダ
+    nm <- .x[1, ]
+    .x <- .x[-1, ]
+    colnames(.x) <- nm
+    # すべてNAの列は取り除く
+    idx <- purrr::map_lgl(.x, ~ any(!is.na(.)))
+    .x[, idx]
+  })
+```
+
+属性情報の行が1行だけのテーブルも取り除く
+
+```{r}
+no_rows <- names(tables)[purrr::map_lgl(tables, ~ nrow(.x) == 0)]
+no_rows
+
+id <- id[!id %in% no_rows]
+tables <- tables[!names(tables) %in% no_rows]
+```
+
+
 カラム数は4のはずだが、ちがうやつがあるので調べる。
 
-```{r tables, results='asis'}
+```{r more_columns}
 names(tables)[lengths(tables) != 4L]
 
 unexpected_tables <- tables[lengths(tables) != 4L]
+```
 
+```{r tables, results='asis'}
 purrr::map(unexpected_tables, head) %>% 
   purrr::walk(~ print(knitr::kable(.x)))
 ```
