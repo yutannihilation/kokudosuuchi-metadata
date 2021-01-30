@@ -1,0 +1,71 @@
+---
+title: "Exploring the structure of 国土数値情報 website"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Top page
+
+```{r top}
+library(polite)
+library(rvest)
+
+session <- bow("https://nlftp.mlit.go.jp/ksj/")
+
+result <- scrape(session)
+links <- result %>% 
+  html_elements("main ul.collapsible a") %>% 
+  html_attr("href")
+
+print(links)
+```
+
+# Metadata page
+
+`nod()`にパスを渡したら相対パスもいい感じに処理してくれるのかと思いきやそんなことはなかったので自分でなんとかする。
+
+```{r add}
+library(stringr)
+links <- str_replace(links, fixed("./"), "/ksj/")
+```
+
+
+```{r metadata}
+page <- nod(session, links[1]) %>% 
+  scrape(verbose = TRUE)
+```
+
+地物名と属性名は`<table class="tablelist">`の中にある`<table>`。
+まずは行ごと取ってくる。
+
+```{r}
+info <- page %>% 
+  html_elements("table.tablelist tr") %>%
+  purrr::keep(~ {
+    length(html_element(.x, "table")) > 0
+  })
+
+info
+```
+
+`<th>`の部分がテーブル名。`<td>`に入っているテーブルは`html_table()`で読み出す。
+
+```{r info, results='asis'}
+tables <- info %>% 
+  purrr::map(~ {
+    list(
+      name = html_text2(html_element(.x, "th")),
+      table = html_table(.x)
+    )
+  })
+
+tables %>% 
+  purrr::walk(~ {
+    cat(glue::glue("### {.x$name}\n"))
+    print(knitr::kable(.x$table))
+  })
+```
+
