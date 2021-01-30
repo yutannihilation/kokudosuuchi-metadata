@@ -1,0 +1,69 @@
+---
+title: "Extract data from A09 and A20"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+
+### `A09`
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-A09.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ .x[1, 1] == "地物情報")
+
+stopifnot(length(attr_table) == 1)
+```
+
+属性情報が2種類ある
+
+```{r attr_x1}
+attr_table[[1]]$X1
+```
+一般的な情報しかなさそうなので省略
+
+```{r}
+attr_table[[1]][startsWith(attr_table[[1]]$X1, "属性情報"), ] %>% 
+  knitr::kable()
+```
+
+
+### `A20`
+
+```{r get_tables2}
+input <- here::here("data-raw", "datalist", "KsjTmplt-A20.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ !is.na(.x[1, 1]) && .x[1, 1] == "地物情報")
+
+stopifnot(length(attr_table) == 1)
+```
+
+```{r attr_x2}
+attr_table[[1]]$X1
+```
+
+一般的な情報しかなさそうなので省略
+
+```{r}
+attr_table[[1]][startsWith(attr_table[[1]]$X1, "属性情報"), ] %>% 
+  knitr::kable()
+```
+
+

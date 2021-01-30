@@ -1,0 +1,33 @@
+---
+title: "Extract data from C23"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r get_tables}
+library(rvest)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+
+input <- here::here("data-raw", "datalist", "KsjTmplt-C23.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_elements("table.tablelist tr") %>%
+  purrr::keep(~ {
+    html_text2(html_element(.x, "th")) == "属性情報" &&
+      length(html_element(.x, "table")) > 0
+  }) %>% 
+  html_table()
+
+stopifnot(length(attr_table) == 1)
+
+knitr::kable(attr_table[[1]])
+
+readr::write_csv(attr_table[[1]], output)
+```
+

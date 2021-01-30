@@ -1,0 +1,71 @@
+---
+title: "Format of datalist pages"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ページのフォーマットには4種類ある
+
+1. 「地物情報」「属性情報」の2つのテーブルが入れ子になって入っている（C23のみ）
+2. 「地物情報」「属性情報」が1つのテーブルに入っていて、カラム名がある（大部分はこれ、カラム名で判別できる）
+3. 「地物情報」「属性情報」が1つのテーブルに入っていて、カラム名がない（A09、A20）
+4. 「地物情報」「属性情報」が1つのテーブルに入っていて、カラム名があるが、繰り返し登場する（A31-v2_1, S10a-v1_2）
+
+```{r type2}
+library(rvest)
+
+detect_format_type <- function(f) {
+  page <- read_html(f)
+  
+  type1_tables <- page %>% 
+    html_elements("table.tablelist tr") %>%
+    purrr::keep(~ length(html_element(.x, "table")) > 0)
+  
+  if (length(type1_tables) >= 2) {
+    th <- type1_tables %>% 
+      html_elements("th") %>% 
+      html_text2()
+    
+    if ("地物情報" %in% th && "属性情報" %in% th) {
+      return("type1")
+    }
+  }
+  
+  type2_tables <- page %>% 
+    html_table() %>% 
+    purrr::keep(~ "地物情報" == colnames(.x)[1])
+
+  if (length(type2_tables) == 1) {
+    return("type2")
+  } else if(length(type2_tables) > 1) {
+    return("type4")
+  }
+
+  type3_tables <- page %>% 
+    # header を指定しないと <th> がカラム名に使われる、TRUE だと最初の行が使われる
+    html_table(header = TRUE) %>% 
+    purrr::keep(~ "地物情報" == colnames(.x)[1])
+  
+  if (length(type3_tables) == 1) {
+    return("type3")
+  }
+  
+  "unknown"
+}
+
+# 動作確認
+detect_format_type(here::here("data-raw", "datalist", "KsjTmplt-C23.html"))
+detect_format_type(here::here("data-raw", "datalist", "KsjTmplt-W07.html"))
+detect_format_type(here::here("data-raw", "datalist", "KsjTmplt-A09.html"))
+detect_format_type(here::here("data-raw", "datalist", "KsjTmplt-A31-v2_1.html"))
+```
+
+```{r categorize}
+datalist_files <- list.files(here::here("data-raw", "datalist"), full.names = TRUE)
+names(datalist_files) <- basename(datalist_files)
+
+split(datalist_files, purrr::map_chr(datalist_files, detect_format_type))
+```
