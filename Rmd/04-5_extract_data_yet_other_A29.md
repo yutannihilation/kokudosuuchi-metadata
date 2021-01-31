@@ -66,8 +66,7 @@ knitr::kable(attr_table)
 ``` r
 attr_table <- attr_table %>% 
   # 重複を取り除くため
-  tibble::as_tibble(.name_repair = "unique") %>% 
-  filter(地物情報 == "属性情報")
+  tibble::as_tibble(.name_repair = "unique")
 ```
 
     ## New names:
@@ -75,34 +74,41 @@ attr_table <- attr_table %>%
     ## * 説明 -> 説明...4
 
 ``` r
-col_names <- slice(attr_table, 1)
-attr_table <- attr_table %>% 
-  slice(-1) %>% 
-  setNames(col_names)
+colnames(attr_table) <- c("_", "name", "description", "type")
 
-res <- attr_table %>% 
-  tidyr::extract(2, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+attr_table <- attr_table %>% 
+  filter(
+    `_` == "属性情報",
+    # テーブルのヘッダは取り除く
+    !startsWith(name, "属性名"),
+    !startsWith(name, "地物名"),
+    type != "説明",
+    # 地物は属性情報ではない
+    !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(曲面型|曲線型|点型|GM_Surface|GM_Curve|GM_Point)")
+  )
+
+res <- attr_table %>%
+  tidyr::extract(name, into = c("name", "code"), regex = "(.*?)([（〈][A-Za-z0-9]+_[A-Za-z0-9]+）)?$") %>% 
   transmute(
     name,
-    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
-    description = 説明,
-    type = 属性の型
+    code = if_else(code != '', stringr::str_remove_all(code, "[（〈）]"), NA_character_),
+    description,
+    type
   )
 
 knitr::kable(res)
 ```
 
-| name           | code     | description                                                      | type                               |
-|:---------------|:---------|:-----------------------------------------------------------------|:-----------------------------------|
-| 範囲           | NA       | 用途地域として参照図（都市計画総括図など）に記載された地域の範囲 | 曲面型（GM\_Surface）              |
-| 行政区域コード | A29\_001 | 用途地域がある市区町村の行政コード                               | コードリスト「行政コード」         |
-| 都道府県名     | A29\_002 | 用途地域がある都道府県の名称                                     | 文字列型（CharacterString）        |
-| 市区町村名     | A29\_003 | 用途地域がある市区町村の名称                                     | 文字列型（CharacterString）        |
-| 用途地域コード | A29\_004 | 用途地域分類コード                                               | コードリスト「用途地域分類コード」 |
-| 用途地域名     | A29\_005 | 用途地域の種類の名称                                             | 文字列型（CharacterString）        |
-| 建蔽率         | A29\_006 | 用途地域及び指定地域別の建蔽率（%）。不明の時は’9999’とする      | 整数型（Decimal）                  |
-| 容積率         | A29\_007 | 用途地域及び指定地域別の容積率（%）。不明の時は’9999’とする      | 整数型（Decimal）                  |
-| 備考           | A29\_008 | 用途地域に関する備考                                             | 文字列型（CharacterString）        |
+| name           | code     | description                                                 | type                               |
+|:---------------|:---------|:------------------------------------------------------------|:-----------------------------------|
+| 行政区域コード | A29\_001 | 用途地域がある市区町村の行政コード                          | コードリスト「行政コード」         |
+| 都道府県名     | A29\_002 | 用途地域がある都道府県の名称                                | 文字列型（CharacterString）        |
+| 市区町村名     | A29\_003 | 用途地域がある市区町村の名称                                | 文字列型（CharacterString）        |
+| 用途地域コード | A29\_004 | 用途地域分類コード                                          | コードリスト「用途地域分類コード」 |
+| 用途地域名     | A29\_005 | 用途地域の種類の名称                                        | 文字列型（CharacterString）        |
+| 建蔽率         | A29\_006 | 用途地域及び指定地域別の建蔽率（%）。不明の時は’9999’とする | 整数型（Decimal）                  |
+| 容積率         | A29\_007 | 用途地域及び指定地域別の容積率（%）。不明の時は’9999’とする | 整数型（Decimal）                  |
+| 備考           | A29\_008 | 用途地域に関する備考                                        | 文字列型（CharacterString）        |
 
 ``` r
 readr::write_csv(res, output)

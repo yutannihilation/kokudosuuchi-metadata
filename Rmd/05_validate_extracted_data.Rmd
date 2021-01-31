@@ -25,13 +25,76 @@ col_types <- cols(
 d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```
 
+変なコードが紛れ込んでいないのを目視確認。
+
+```{r uniq_code}
+unique(d$code)
+```
+
+コード欠損率を表示。
+
 ```{r}
 d %>% 
   group_by(id) %>% 
   summarise(
     n = n(),
-    has_code = scales::percent(sum(!is.na(code)) / n(), accuracy = 0.1)
+    missing_rate = scales::percent(sum(is.na(code)) / n(), accuracy = 0.1)
   ) %>% 
   knitr::kable()
 ```
+
+### `A22-m`, `A34`, `A35a`, `A35b`, `A37`, `P15`, `P16`, `P17`, `P18`, 
+
+ルールに従って展開する必要がある。あとで個別対応。
+
+```{r A22-m}
+d %>% 
+  filter(id == "A22-m", is.na(code)) %>% 
+  head() %>% 
+  knitr::kable()
+```
+
+### `L03-a`
+
+複雑そう。あとで個別対応。
+
+```{r L03-a}
+d %>% 
+  filter(id == "L03-a") %>% 
+  pull(name)
+```
+
+### `mesh1000`, `mesh500`
+
+年代層によって後ろに`A`〜`D`がつく（説明と違って実際には `_` はないみたい）。これもあとで個別対応。
+あと、ここはファイル名が`mesh1000`ではなく`m1000`になってるっぽいのでそこも対応が必要かも。
+
+```{r mesh1000}
+d %>% 
+  filter(id == "mesh1000") %>% 
+  slice(3:4) %>% 
+  glimpse()
+```
+
+### `P21`
+
+`-`と`_`の打ち間違いっぽい。そして実際のカラム名は`P21A_001`のようになっていて、`P21`のあとに付くアルファベットが大文字な点にも注意。
+
+```{r P21}
+d %>% 
+  filter(id == "P21") %>% 
+  knitr::kable()
+```
+
+### `N05`
+
+なにやら特殊ルールがあるっぽい。
+
+```{r N05}
+d %>%
+  filter(id == "N05") %>%
+  slice(5) %>% 
+  glimpse()
+```
+
 

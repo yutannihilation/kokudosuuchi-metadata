@@ -20,20 +20,26 @@ attr_table <- read_html(input) %>%
   purrr::keep(~ "地物情報" %in% colnames(.x))
 
 res <- attr_table %>% 
-  purrr::map(~ dplyr::filter(.x, 地物情報 == "属性情報")) %>% 
-  # 1行目はヘッダ
   purrr::map(~ {
-    res <- slice(.x, -1)
-    colnames(res) <- slice(.x, 1)
-    res
+    .x %>% 
+      `colnames<-`(c("_", "name", "description", "type")) %>% 
+      filter(
+        `_` == "属性情報",
+        # テーブルのヘッダは取り除く
+        !startsWith(name, "属性名"),
+        !startsWith(name, "地物名"),
+        type != "説明",
+        # 地物は属性情報ではない
+        !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(曲?面型|曲線型|点型|GM_Surface|GM_Curve|GM_Point)")
+      )
   }) %>% 
   bind_rows() %>% 
-  tidyr::extract(属性名, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+  tidyr::extract(name, into = c("name", "code"), regex = "(.*?)([（〈\\()][A-Za-z0-9]+_[A-Za-z0-9_]+[）\\)])?(?:$|※シェープファイルのみ)") %>% 
   transmute(
     name,
-    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
-    description = 説明,
-    type = 属性の型
+    code = if_else(code != '', stringr::str_remove_all(code, "[（〈\\(）\\)]"), NA_character_),
+    description,
+    type
   )
 
 knitr::kable(res)
@@ -41,7 +47,6 @@ knitr::kable(res)
 
 | name                 | code     | description                                                                            | type                                       |
 |:---------------------|:---------|:---------------------------------------------------------------------------------------|:-------------------------------------------|
-| 範囲                 | NA       | 浸水想定区域の範囲                                                                     | 面型（GM\_ Surface）                       |
 | 浸水深ランク         | A31\_101 | 当該洪水浸水想定区域図に示されている浸水深から得られた浸水深のランクコード             | コードリスト型（浸水深ランクコード）       |
 | 指定年月日           | A31\_102 | 当該洪水浸水想定区域を指定した年月日                                                   | 文字列型（CharacterString）                |
 | 告示番号             | A31\_103 | 当該洪水浸水想定区域を告示した際の公告番号                                             | 文字列型（CharacterString）                |

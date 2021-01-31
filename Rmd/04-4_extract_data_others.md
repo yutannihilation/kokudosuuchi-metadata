@@ -94,13 +94,24 @@ stopifnot(all(startsWith(purrr::map_chr(tables, ~ colnames(.)[2]), "属性名"))
 tables %>% 
   purrr::iwalk(~ {
     .x %>% 
-      tidyr::extract(2, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+      `colnames<-`(c("_", "name", "description", "type")) %>% 
+      filter(
+        `_` == "属性情報",
+        # テーブルのヘッダは取り除く
+        !startsWith(name, "属性名"),
+        !startsWith(name, "地物名"),
+        type != "説明",
+        # 地物は属性情報ではない
+        !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(曲?面型|曲?線型|点型|GM_Surface|GM_Curve|GM_Point)")
+      ) %>%
+      # 「※シェープファイルのみ」はP32のみのため
+      tidyr::extract(name, into = c("name", "code"), regex = "(.*?)([（〈\\()][A-Za-z0-9]+_[A-Za-z0-9_]+[）\\)])?(?:$|※シェープファイルのみ)") %>% 
       transmute(
         name,
-        code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
-        description = 説明,
-        type = 属性の型
-      ) %>%
+        code = if_else(code != '', stringr::str_remove_all(code, "[（〈\\(）\\)]"), NA_character_),
+        description,
+        type
+      ) %>% 
       readr::write_csv(here::here("data", "attrs", glue::glue("{.y}.csv")))
   })
 ```
