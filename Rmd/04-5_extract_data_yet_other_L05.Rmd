@@ -1,0 +1,73 @@
+---
+title: "Extract data from L05"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `L05`
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-L05.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+どうやら3〜5は完全に同じっぽいので、どれか1列だけでいい。
+
+```{r squash_same_col}
+all.equal(attr_table[[3]], attr_table[[4]])
+all.equal(attr_table[[3]], attr_table[[5]])
+
+attr_table <- attr_table[, -(4:5)]
+```
+
+
+
+```{r get_tables2}
+attr_table <- attr_table %>% 
+  # テーブルが複数回出てくるのでそれは除外する
+  filter(地物情報 == "属性情報", !地物名 %in% c("属性名", "地物名"))
+
+colnames(attr_table) <- c("_", "name", "description", "type")
+
+res <- attr_table %>%
+  tidyr::extract(name, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description,
+    type
+  )
+```
+
+どうやら`code`を間違えているらしいので修正する...
+
+```{r check}
+knitr::kable(res)
+```
+
+```{r write}
+res %>% 
+  mutate(code = stringr::str_replace(code, "L01", "L05")) %>% 
+  readr::write_csv(output)
+```
+
