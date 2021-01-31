@@ -55,7 +55,7 @@ knitr::kable(attr_table)
 attr_table <- attr_table %>% 
   # 重複を取り除くため
   tibble::as_tibble(.name_repair = "unique") %>% 
-  select(-5:-6)
+  select(1:4)
 ```
 
     ## New names:
