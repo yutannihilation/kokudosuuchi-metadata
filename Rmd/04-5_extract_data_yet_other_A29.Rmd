@@ -1,0 +1,71 @@
+---
+title: "Extract data from A29"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `A29`
+
+これはテーブルをコメントアウトしたあとに `rowspan` を直すの忘れてるっぽい。ここが`10`のはず
+
+```html
+<tr>
+	<th rowspan="12">属性情報</th>
+	<th>属性名（かっこ内はshp属性名）</th>
+	<th>説明</th>
+	<th>属性の型</th>
+</tr>
+```
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-A29-v2_1.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+input_text <- brio::read_file(input) %>% 
+  stringr::str_replace('rowspan="12"', 'rowspan="10"')
+
+attr_table <- read_html(input_text) %>% 
+  html_table() %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+```{r get_tables2}
+attr_table <- attr_table %>% 
+  # 重複を取り除くため
+  tibble::as_tibble(.name_repair = "unique") %>% 
+  filter(地物情報 == "属性情報")
+
+col_names <- slice(attr_table, 1)
+attr_table <- attr_table %>% 
+  slice(-1) %>% 
+  setNames(col_names)
+
+res <- attr_table %>% 
+  tidyr::extract(2, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description = 説明,
+    type = 属性の型
+  )
+
+knitr::kable(res)
+
+readr::write_csv(res, output)
+```
