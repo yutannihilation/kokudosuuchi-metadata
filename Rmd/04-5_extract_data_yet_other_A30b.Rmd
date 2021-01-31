@@ -1,0 +1,67 @@
+---
+title: "Extract data from A30b"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `A30b`
+
+ここは属性情報テーブルが階層になっているため。ちょっとややこしい。
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-A30b.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+```{r get_tables2}
+attr_table <- attr_table %>% 
+  # 重複を取り除くため
+  tibble::as_tibble(.name_repair = "unique") %>% 
+  filter(地物情報 == "属性情報")
+
+attr_table <- attr_table %>% 
+  slice(-1)
+
+colnames(attr_table) <- c("_", "name1", "name2", "description", "type")
+
+stopifnot(all(!is.na(attr_table$name1)))
+stopifnot(all(!is.na(attr_table$name2)))
+
+res <- attr_table %>%
+  # name2には、name になるべきものとコードが混在している。まずpasteでくっつけてから extract で抜き出す
+  mutate(
+    name = if_else(name1 == name2, name1, paste(name1, name2, sep = "_")),
+    .keep = "unused"
+  ) %>% 
+  tidyr::extract(name, into = c("name", "code"), regex = "(.*?)(（[A-Za-z0-9]+_[A-Za-z0-9]+）)?$") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description,
+    type
+  )
+
+knitr::kable(res)
+
+readr::write_csv(res, output)
+```
