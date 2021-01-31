@@ -25,6 +25,8 @@ col_types <- cols(
 d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```
 
+## `code`
+
 変なコードが紛れ込んでいないのを目視確認。
 
 ```{r uniq_code}
@@ -97,4 +99,36 @@ d %>%
   glimpse()
 ```
 
+
+## `type`
+
+```{r type}
+d %>% 
+  count(
+    type = case_when(
+      stringr::str_detect(type, "^文字列?型")    ~ "character",
+      stringr::str_detect(type, "^整数値?型")    ~ "integer",
+      type == "数値型（Integer）"                ~ "integer",
+      stringr::str_detect(type, "^実数型")       ~ "double",
+      type == "数値型（Decimal）"                ~ "double",
+      type == "十進数型（Decimal）"              ~ "double",
+      # 時間型は、実際の数字が何桁かで場合分けする必要がありそう（4桁なら年なのでそのまま？、8桁ならDateに変換？）
+      stringr::str_detect(type, "^(時間|日付)型") ~ "date_or_year",
+      # 順序型は、本来は時刻の日時部分だけだが、これだけ対応するにはちょっと特殊すぎる気がするので character で残す
+      stringr::str_detect(type, "^順序型")       ~ "character",
+      type == "西暦年4桁、月2桁、日2桁で表す数字8文字" ~ "time",
+      # 「コードリスト」は数値型だったりもする（e.g. P16）ので、どの位置でも「コードリスト」が出てくればコードリストとみなす
+      stringr::str_detect(type, "コードリスト")  ~ "codelist",
+      stringr::str_detect(type, "(行政|参照資料|産廃施設|都道府県|特別管理|不燃領域率定義|防災再開発促進地区指定)コード") ~ "codelist",
+      # L03-b-c
+      type == "都市地域=1都市地域外=0" ~ "codelist",
+      stringr::str_detect(type, "^列挙型")       ~ "factor",
+      stringr::str_detect(type, "^真偽値型")     ~ "logical",
+      stringr::str_detect(type, "^論理型")       ~ "logical",
+      type %in% c("タイプ型「調査内容」") ~ "character",
+      TRUE ~ type
+    ),
+    sort = TRUE
+  )
+```
 

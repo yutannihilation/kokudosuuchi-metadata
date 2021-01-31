@@ -100,9 +100,12 @@ tables %>%
         # テーブルのヘッダは取り除く
         !startsWith(name, "属性名"),
         !startsWith(name, "地物名"),
+        !startsWith(name, "関連役割名"),
         type != "説明",
+        # A42 には変な行がある
+        name != "歴史的風土保存区域",
         # 地物は属性情報ではない
-        !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(曲?面型|曲?線型|点型|GM_Surface|GM_Curve|GM_Point)")
+        !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(地物|曲?面型|曲?線型|点型|GM_Surface|GM_Curve|GM_Point)"),
       ) %>%
       # 「※シェープファイルのみ」はP32のみのため
       tidyr::extract(name, into = c("name", "code"), regex = "(.*?)([（〈\\()][A-Za-z0-9]+_[A-Za-z0-9_]+[）\\)])?(?:$|※シェープファイルのみ)") %>% 

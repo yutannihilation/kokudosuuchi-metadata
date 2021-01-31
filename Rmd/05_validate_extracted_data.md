@@ -19,6 +19,8 @@ col_types <- cols(
 d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```
 
+## `code`
+
 変なコードが紛れ込んでいないのを目視確認。
 
 ``` r
@@ -268,14 +270,14 @@ d %>%
 | A38      |  21 | 14.3%         |
 | A39      |  25 | 0.0%          |
 | A40      |   3 | 0.0%          |
-| A42      |  20 | 5.0%          |
+| A42      |  19 | 0.0%          |
 | A43      |  12 | 0.0%          |
 | A44      |  10 | 0.0%          |
 | A45      |  33 | 0.0%          |
 | C02      |  17 | 100.0%        |
 | C09      |  12 | 100.0%        |
-| C23      |   7 | 100.0%        |
-| C28      |  20 | 25.0%         |
+| C23      |   6 | 100.0%        |
+| C28      |  16 | 6.2%          |
 | G02      |  58 | 100.0%        |
 | G04-a    |  10 | 0.0%          |
 | G04-c    |  10 | 0.0%          |
@@ -290,10 +292,10 @@ d %>%
 | L05      |  15 | 0.0%          |
 | mesh1000 |  17 | 100.0%        |
 | mesh500  |  17 | 100.0%        |
-| N02      |   9 | 44.4%         |
+| N02      |   5 | 0.0%          |
 | N03      |   5 | 0.0%          |
 | N04      |  17 | 100.0%        |
-| N05      |  12 | 8.3%          |
+| N05      |  11 | 0.0%          |
 | N06      |  19 | 0.0%          |
 | N07      |   7 | 0.0%          |
 | N08      |  25 | 0.0%          |
@@ -333,7 +335,7 @@ d %>%
 | S10b     |   9 | 0.0%          |
 | S12      |  37 | 0.0%          |
 | W01      |  14 | 0.0%          |
-| W05      |  12 | 100.0%        |
+| W05      |   7 | 100.0%        |
 | W07      |   5 | 100.0%        |
 | W09      |   5 | 20.0%         |
 
@@ -430,3 +432,48 @@ d %>%
     ## $ code        <chr> "N05_005e"
     ## $ description <chr> "鉄道路線、駅が設置された年（西暦年）。なお、昭和25年以前に設置された場合は1950とする。鉄道路線、駅が変更…
     ## $ type        <chr> "時間型（TM_Instant）"
+
+## `type`
+
+``` r
+d %>% 
+  count(
+    type = case_when(
+      stringr::str_detect(type, "^文字列?型")    ~ "character",
+      stringr::str_detect(type, "^整数値?型")    ~ "integer",
+      type == "数値型（Integer）"                ~ "integer",
+      stringr::str_detect(type, "^実数型")       ~ "double",
+      type == "数値型（Decimal）"                ~ "double",
+      type == "十進数型（Decimal）"              ~ "double",
+      # 時間型は、実際の数字が何桁かで場合分けする必要がありそう（4桁なら年なのでそのまま？、8桁ならDateに変換？）
+      stringr::str_detect(type, "^(時間|日付)型") ~ "date_or_year",
+      # 順序型は、本来は時刻の日時部分だけだが、これだけ対応するにはちょっと特殊すぎる気がするので character で残す
+      stringr::str_detect(type, "^順序型")       ~ "character",
+      type == "西暦年4桁、月2桁、日2桁で表す数字8文字" ~ "time",
+      # 「コードリスト」は数値型だったりもする（e.g. P16）ので、どの位置でも「コードリスト」が出てくればコードリストとみなす
+      stringr::str_detect(type, "コードリスト")  ~ "codelist",
+      stringr::str_detect(type, "(行政|参照資料|産廃施設|都道府県|特別管理|不燃領域率定義|防災再開発促進地区指定)コード") ~ "codelist",
+      # L03-b-c
+      type == "都市地域=1都市地域外=0" ~ "codelist",
+      stringr::str_detect(type, "^列挙型")       ~ "factor",
+      stringr::str_detect(type, "^真偽値型")     ~ "logical",
+      stringr::str_detect(type, "^論理型")       ~ "logical",
+      type %in% c("タイプ型「調査内容」") ~ "character",
+      TRUE ~ type
+    ),
+    sort = TRUE
+  )
+```
+
+    ## # A tibble: 9 x 2
+    ##   type             n
+    ##   <chr>        <int>
+    ## 1 integer        488
+    ## 2 character      443
+    ## 3 codelist       269
+    ## 4 double         165
+    ## 5 <NA>           150
+    ## 6 logical         47
+    ## 7 date_or_year    32
+    ## 8 factor          27
+    ## 9 time             3

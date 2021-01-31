@@ -3,6 +3,7 @@ Extract data from C23
 
 ``` r
 library(rvest)
+library(dplyr, warn.conflicts = FALSE)
 
 dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
 
@@ -35,6 +36,9 @@ knitr::kable(attr_table[[1]])
 
 ``` r
 attr_table[[1]] %>% 
+  filter(
+    !stringr::str_detect(stringr::str_remove_all(属性の型, "\\s+"), "^(地物|曲?面型|曲?線型|点型|GM_Surface|GM_Curve|GM_Point)")
+  ) %>%
   dplyr::transmute(
     name = 属性名,
     code = NA,
