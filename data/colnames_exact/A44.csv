@@ -1,0 +1,11 @@
+id,name,code,description,type,codelist
+A44,都道府県名,A44_001,都道府県名,文字列型（CharacterString）,FALSE
+A44,市町村名,A44_002,市町村名,文字列型（CharacterString）,FALSE
+A44,行政コード,A44_003,行政コード,コードリスト「行政コード」,TRUE
+A44,計画名称,A44_004,計画名称,文字列型（CharacterString）,FALSE
+A44,認定日,A44_005,認定日，「YYYYMMDD」形式,数値型（Integer）,FALSE
+A44,計画期間開始日,A44_006,計画期間開始日，「YYYYMMDD」形式,数値型（Integer）,FALSE
+A44,計画期間終了日,A44_007,計画期間終了日，「YYYYMMDD」形式,数値型（Integer）,FALSE
+A44,重点区域面積,A44_008,重点区域面積，単位「ha」，小数点2桁,実数型（Real）,FALSE
+A44,中心地緯度,A44_009,歴史的風致維持向上計画の重点区域の重心の緯度,実数型（Real）,FALSE
+A44,中心地経度,A44_010,歴史的風致維持向上計画の重点区域の重心の経度,実数型（Real）,FALSE

@@ -1,0 +1,2 @@
+id,name,code,description,type,codelist
+A28,世界自然遺産名称コード,NA,世界自然遺産を一意に識別するために付された番号,コードリスト「世界自然遺産コード」,TRUE

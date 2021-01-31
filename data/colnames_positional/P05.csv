@@ -1,0 +1,5 @@
+id,name,code,description,type,codelist
+P05,行政区域コード,NA,都道府県コードと市区町村コードからなる、行政区を特定するためのコード,コードリスト「行政コード」,TRUE
+P05,施設分類,NA,市町村役場等及び公的集会施設の分類を表すコード,コードリスト「施設分類コード」,TRUE
+P05,名称,NA,市町村役場等及び公的集会施設の名称,文字列型（CharacterString）,FALSE
+P05,所在地,NA,市町村役場等及び公的集会施設の所在地。,文字列型（CharacterString）,FALSE

@@ -1,0 +1,8 @@
+id,name,code,description,type,codelist
+N11,名称,N11_001,ヘリポートの名称,文字列型（CharacterString）,FALSE
+N11,航空法分類,N11_002,航空法における分類,コードリスト「航空法分類コード」,TRUE
+N11,地域防災計画分類,N11_003,地域防災計画等における分類,文字列型（CharacterString）,FALSE
+N11,都道府県コード,N11_004,所在地の都道府県コード,コードリスト「都道府県コード」,TRUE
+N11,所在地,N11_005,ヘリポートの住所,文字列型（CharacterString）,FALSE
+N11,管理者名,N11_006,ヘリポートの管理者名（占有者等も含む）,文字列型（CharacterString）,FALSE
+N11,滑走路面積,N11_007,滑走路の面積（長さ×幅（m）や面積（㎡））,文字列型（CharacterString）,FALSE

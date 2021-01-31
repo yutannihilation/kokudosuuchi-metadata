@@ -1,0 +1,9 @@
+id,name,code,description,type,codelist
+A27,市区町村コード,A27_005,小学校が属する行政コード,コードリスト「行政コード」,TRUE
+A27,設置主体,A27_006,小学校の設置主体,文字列型（CharacterString）,FALSE
+A27,名称,A27_007,小学校の名称,文字列型（CharacterString）,FALSE
+A27,所在地,A27_008,小学校の設置所在地,文字列型（CharacterString）,FALSE
+A27,市区町村コード,A27_001,小学校が属する行政コード,コードリスト「行政コード」,TRUE
+A27,設置主体,A27_002,小学校の設置主体,文字列型（CharacterString）,FALSE
+A27,名称,A27_003,小学校の名称,文字列型（CharacterString）,FALSE
+A27,所在地,A27_004,小学校の設置所在地,文字列型（CharacterString）,FALSE

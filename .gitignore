@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 
-/data
 /data-raw
+
+/data/attrs

@@ -1,0 +1,19 @@
+id,name,code,description,type,codelist
+A35c,景観重要建造物ID,A35g_001,景観重要建造物ごとの整理番号※シェープファイルのみ,実数型（Real）,FALSE
+A35c,都道府県コード,A35g_002,"都道府県を特定するためのコードJSI規格（JIS X 0401,　JIS X 0402）準拠",コードリスト「都道府県コード」,TRUE
+A35c,団体名,A35g_003,景観重要建造物を指定する地方公共団体名,文字列型（CharacterString）,FALSE
+A35c,行政コード,A35g_004,"都道府県コードと市区町村コードからなる、行政区を特定するためのコードJSI規格（JIS X 0401,　JIS X 0402）準拠",コードリスト「行政コード」,TRUE
+A35c,指定番号,A35g_005,各地方公共団体が定める景観重要建造物の指定番号,文字列型（CharacterString）,FALSE
+A35c,指定年月日,A35g_006,各地方公共団体が景観重要建造物として指定した年月日（YYYYMMDd〉,整数型（Integer）,FALSE
+A35c,名称,A35g_007,景観重要建造物の名称,文字列型（CharacterString）,FALSE
+A35c,所在地,A35g_008,景観重要建造物の所在住所,文字列型（CharacterString）,FALSE
+A35c,外観の特徴,A35g_009,景観重要建造物として指定の理由となった外観の特徴,文字列型（CharacterString）,FALSE
+A35c,景観重要樹木ID,A35h_001,景観重要樹木ごとの整理番号※シェープファイルのみ,実数型（Real）,FALSE
+A35c,都道府県コード,A35h_002,"都道府県を特定するためのコードJSI規格（JIS X 0401,　JIS X 0402）準拠",コードリスト「都道府県コード」,TRUE
+A35c,団体名,A35h_003,景観重要樹木を指定する地方公共団体名の名称,文字列型（CharacterString）,FALSE
+A35c,行政コード,A35h_004,"都道府県コードと市区町村コードからなる、行政区を特定するためのコードJSI規格（JIS X 0401,　JIS X 0402）準拠",コードリスト「行政コード」,TRUE
+A35c,指定番号,A35h_005,各地方公共団体が定める景観重要樹木の指定番号,文字列型（CharacterString）,FALSE
+A35c,指定年月日,A35h_006,各地方公共団体が景観重要樹木に指定した年月日（YYYYMMDd〉,整数型（Integer）,FALSE
+A35c,樹種,A35h_007,景観重要樹木の樹種,文字列型（CharacterString）,FALSE
+A35c,所在地,A35h_008,景観重要樹木の所在住所,文字列型（CharacterString）,FALSE
+A35c,外観の特徴,A35h_009,景観重要樹木の指定の理由となった外観の特徴,文字列型（CharacterString）,FALSE

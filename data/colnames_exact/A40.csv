@@ -1,0 +1,4 @@
+id,name,code,description,type,codelist
+A40,都道府県名,A40_001,都道府県の名称,文字列型（CharacterString）,FALSE
+A40,都道府県コード,A40_002,都道府県を示す2桁のコード,整数型（Integer）,FALSE
+A40,津波浸水深の区分,A40_003,各都道府県の報告書等に記載あるランク区分,文字列型（CharacterString）,FALSE

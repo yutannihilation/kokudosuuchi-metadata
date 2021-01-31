@@ -1,0 +1,10 @@
+id,name,code,description,type,codelist
+A22,豪雪地帯ID,A22_001,豪雪地帯を一意に識別するためのコード,文字列型（CharacterString）,FALSE
+A22,行政区域コード,A22_002,都道府県コードと市区町村コードからなる，行政区を特定するためのコード,コードリスト「行政コード」,TRUE
+A22,都道府県名,A22_003,データ整備時点の当該区域を含む都道府県名称,文字列型（CharacterString）,FALSE
+A22,支庁・振興局名,A22_004,データ整備時点の当該区域を含む北海道の振興局の名称,文字列型（CharacterString）,FALSE
+A22,郡・政令都市名,A22_005,データ整備時点の当該区域を含む都道府県名称,文字列型（CharacterString）,FALSE
+A22,市区町村名,A22_006,データ整備時点の市区町村名称,文字列型（CharacterString）,FALSE
+A22,原典市区町村名,A22_007,原典資料が作成された時点の当該区域を含む市区町村名称,文字列型（CharacterString）,FALSE
+A22,旧市町村名,A22_008,地域が指定された時点の市町村名,文字列型（CharacterString）,FALSE
+A22,豪雪区分コード,A22_009,豪雪地帯の分類区分,コードリスト「豪雪区分コード」,TRUE

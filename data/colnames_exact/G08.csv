@@ -1,0 +1,4 @@
+id,name,code,description,type,codelist
+G08,面積,G08_001,低位地帯の範囲の面積。単位は「ha」で小数点以下２桁。,実数型（Real）,FALSE
+G08,最大浸水深,G08_002,想定される低位地帯での最大浸水深。単位は「ｍ」で小数点以下１位。,実数型（Real）,FALSE
+G08,参照資料コード,G08_003,NA,参照資料コード,TRUE

@@ -1,0 +1,10 @@
+id,name,code,description,type,codelist
+N03,都道府県名,N03_001,当該区域を含む都道府県名称,文字列型（CharacterString）,FALSE
+N03,NA,N03_002,当該都道府県が「北海道」の場合、該当する支庁・振興局の名称,文字列型（CharacterString）,FALSE
+N03,NA,N03_003,当該行政区の郡又は政令市の名称,文字列型（CharacterString）,FALSE
+N03,市区町村名,N03_004,当該行政区の市区町村の名称,文字列型（CharacterString）,FALSE
+N03,NA,N03_007,都道府県コードと市区町村コードからなる、行政区を特定するためのコード,"コードリスト「
+                                        
+                                            行政コード
+                                        
+                                        」",TRUE

@@ -1,0 +1,11 @@
+id,name,code,description,type,codelist
+A32,市区町村コード,A32_001,中学校が属する行政コード,コードリスト「行政コード」,TRUE
+A32,設置主体,A32_002,中学校の設置主体,文字列型(CharacterString),FALSE
+A32,名称,A32_003,中学校の名称,文字列型(CharacterString),FALSE
+A32,所在地,A32_004,中学校の設置所在地,文字列型(CharacterString),FALSE
+A32,通学区域ファイル名,A32_005,中学校の通学区域(csv)ファイルの名称,文字列型(CharacterString),FALSE
+A32,市区町村コード,A32_006,中学校が属する行政コード,コードリスト「行政コード」,TRUE
+A32,設置主体,A32_007,中学校の設置主体,文字列型(CharacterString),FALSE
+A32,名称,A32_008,中学校の名称,文字列型(CharacterString),FALSE
+A32,所在地,A32_009,中学校の設置所在地,文字列型(CharacterString),FALSE
+A32,通学区域ファイル名,A32_010,中学校の通学区域(csv)ファイルの名称,文字列型(CharacterString),FALSE

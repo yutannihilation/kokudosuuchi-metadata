@@ -1,0 +1,9 @@
+id,name,code,description,type,codelist
+A29,行政区域コード,A29_001,用途地域がある市区町村の行政コード,コードリスト「行政コード」,TRUE
+A29,都道府県名,A29_002,用途地域がある都道府県の名称,文字列型（CharacterString）,FALSE
+A29,市区町村名,A29_003,用途地域がある市区町村の名称,文字列型（CharacterString）,FALSE
+A29,用途地域コード,A29_004,用途地域分類コード,コードリスト「用途地域分類コード」,TRUE
+A29,用途地域名,A29_005,用途地域の種類の名称,文字列型（CharacterString）,FALSE
+A29,建蔽率,A29_006,用途地域及び指定地域別の建蔽率（%）。不明の時は'9999'とする,整数型（Decimal）,FALSE
+A29,容積率,A29_007,用途地域及び指定地域別の容積率（%）。不明の時は'9999'とする,整数型（Decimal）,FALSE
+A29,備考,A29_008,用途地域に関する備考,文字列型（CharacterString）,FALSE

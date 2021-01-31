@@ -1,0 +1,96 @@
+---
+title: "Generate metadata"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 方針
+
+* `exact`: 列名のコードが与えられている場合はコードと直接マッチさせられる
+* `positional`: 列名のコードが全くない場合は、列名を順番にあてはめていく
+* `pattern`: 以下の2パターンがある。全体から見ればそれほど多くはないので、それぞれ専用の関数をつくることにする。
+  * 列名をパターンでマッチさせる
+  * 列の中身を見ていい感じに判断（例：L01はどこまでが調査価格でどこからが属性移動なのか判別できない）
+
+## 実際それでいけそうか確認
+
+```{r check}
+library(readr)
+library(stringr)
+library(dplyr, warn.conflicts = FALSE)
+
+csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
+names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
+
+id_exception <- c("A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+
+col_types <- cols(
+  name = col_character(),
+  code = col_character(),
+  description = col_character(),
+  type = col_character()
+)
+
+d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
+
+id_types <- d %>% 
+  group_by(id) %>% 
+  summarise(
+    type = case_when(
+      # 目視でがんばって見つけた特殊そうなやつ
+      unique(id) %in% id_exception ~ "other",
+      # すべてコードがわかっている場合は名前でマッチさせる
+      sum(is.na(code)) == 0   ~ "exact",
+      # すべてコードがわからない場合は順序でマッチさせる
+      sum(is.na(code)) == n() ~ "positional",
+      # その他はひとつひとつ対処（つらい）
+      TRUE ~ "other"
+    )
+  ) %>% 
+  { split(.$id, .$type) }
+
+id_types
+```
+
+```{r out_dir}
+out_exact <- here::here("data", "colnames_exact")
+out_positional <- here::here("data", "colnames_positional")
+
+dir.create(out_exact, showWarnings = FALSE)
+dir.create(out_positional, showWarnings = FALSE)
+
+detect_codelist <- function(type) {
+  str_detect(type, "コードリスト|(行政|参照資料|産廃施設|都道府県|特別管理|不燃領域率定義|防災再開発促進地区指定)コード")
+}
+```
+
+## `exact`
+
+```{r write_exact}
+purrr::walk(id_types$exact, ~ {
+  d %>% 
+    filter(id == {{ .x }}) %>% 
+    mutate(
+      codelist = detect_codelist(type)
+    ) %>% 
+    readr::write_csv(file.path(out_exact, glue::glue("{.x}.csv")))
+})
+```
+
+## `positional`
+
+positional match がどれくらいうまくいくかは謎。あとで検証する必要がある。
+
+```{r write_positional}
+purrr::walk(id_types$positional, ~ {
+  d %>% 
+    filter(id == {{ .x }}) %>% 
+    mutate(
+      codelist = detect_codelist(type)
+    ) %>% 
+    readr::write_csv(file.path(out_positional, glue::glue("{.x}.csv")))
+})
+```
