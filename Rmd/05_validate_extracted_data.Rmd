@@ -1,0 +1,37 @@
+---
+title: "Validate extracted data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(readr)
+library(dplyr, warn.conflicts = FALSE)
+```
+
+```{r read}
+csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
+names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
+
+col_types <- cols(
+  name = col_character(),
+  code = col_character(),
+  description = col_character(),
+  type = col_character()
+)
+d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
+```
+
+```{r}
+d %>% 
+  group_by(id) %>% 
+  summarise(
+    n = n(),
+    has_code = scales::percent(sum(!is.na(code)) / n(), accuracy = 0.1)
+  ) %>% 
+  knitr::kable()
+```
+
