@@ -1,0 +1,70 @@
+---
+title: "Extract data from L02"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `L02`
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-L02-v2_7.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table() %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+```{r get_tables2}
+attr_table <- attr_table %>% 
+  # 重複を取り除くため
+  tibble::as_tibble(.name_repair = "unique") %>% 
+  filter(地物情報 == "属性情報")
+
+attr_table <- attr_table %>% 
+  slice(-1)
+
+colnames(attr_table) <- c("_", "name1", "name2", "description", "type")
+
+stopifnot(all(!is.na(attr_table$name1)))
+stopifnot(all(!is.na(attr_table$name2)))
+
+res <- attr_table %>%
+  mutate(name1 = if_else(name1 == "", NA_character_, name1)) %>% 
+  tidyr::fill(name1) %>% 
+  # 地点は属性情報ではない
+  filter(type != "", name1 != "地点") %>% 
+  transmute(
+    name = if_else(name1 == name2, name1, paste(name1, name2, sep = "_")),
+    code = NA_character_,
+    description,
+    type
+  )
+```
+
+最後の「S58調査価格」のところは年度によって長さが変わってしまうので省略する。
+
+```{r check}
+knitr::kable(res)
+```
+
+```{r write}
+readr::write_csv(slice(res, 1:53), output)
+```
+
