@@ -1,5 +1,5 @@
-id,name,code,description,type,codelist
-P34,行政区域コード,P34_001,都道府県コードと市区町村コードからなる、行政区を特定するためのコード,コードリスト「行政コード」,TRUE
-P34,施設分類,P34_002,市区町村役場等の分類を表すコード,コードリスト「施設分類コード」,TRUE
-P34,名称,P34_003,市区町村役場等の施設名称,文字列型（CharacterString）,FALSE
-P34,所在地,P34_004,市区町村役場等の所在地住所,文字列型（CharacterString）,FALSE
+name,code,description,type,codelist
+行政区域コード,P34_001,都道府県コードと市区町村コードからなる、行政区を特定するためのコード,コードリスト「行政コード」,TRUE
+施設分類,P34_002,市区町村役場等の分類を表すコード,コードリスト「施設分類コード」,TRUE
+名称,P34_003,市区町村役場等の施設名称,文字列型（CharacterString）,FALSE
+所在地,P34_004,市区町村役場等の所在地住所,文字列型（CharacterString）,FALSE

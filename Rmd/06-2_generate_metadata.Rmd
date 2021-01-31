@@ -76,6 +76,7 @@ purrr::walk(id_types$exact, ~ {
     mutate(
       codelist = detect_codelist(type)
     ) %>% 
+    select(!id) %>% 
     readr::write_csv(file.path(out_exact, glue::glue("{.x}.csv")))
 })
 ```
@@ -91,6 +92,262 @@ purrr::walk(id_types$positional, ~ {
     mutate(
       codelist = detect_codelist(type)
     ) %>% 
+    select(!id) %>% 
     readr::write_csv(file.path(out_positional, glue::glue("{.x}.csv")))
 })
+```
+
+## `other`
+
+```{r out_other}
+out_other <- here::here("data", "colnames_other")
+
+dir.create(out_other, showWarnings = FALSE)
+```
+
+### `A22-m`
+
+`A22-m`は正規表現を使う必要があるが、それ以外の列は exact match すればいい。
+
+```{r A22-m}
+d %>%
+  filter(id == "A22-m", is.na(code)) %>% 
+  knitr::kable()
+
+d %>%
+  filter(id == "A22-m", !is.na(code)) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "A22-m.csv"))
+```
+
+### `A34`
+
+`A34`は、<https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A34-v1_2.html>によれば`※`はa~d、`*`はf,gなので展開してしまって`exact`に置く。
+
+```{r A34}
+d %>%
+  filter(id == "A34") %>% 
+  mutate(
+    variants = case_when(
+      !is.na(code) ~ "e",
+      str_detect(name, "※")   ~ "a,b,c,d",
+      str_detect(name, "\\*") ~ "f,g"
+    ),
+    code = coalesce(code, str_extract(name, "A34[※\\*]_\\d+")),
+    name = str_remove(name, "（A34[※\\*]_\\d+）")
+  ) %>% 
+  tidyr::separate_rows(variants, sep = ",") %>% 
+  mutate(code = str_replace(code, "[※\\*]", variants)) %>% 
+  arrange(code) %>% 
+  transmute(
+    name,
+    code,
+    description,
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A34.csv"))
+```
+
+### `A35a`
+
+これも同様(c.f. <https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A35a.html>)
+
+```{r A35a}
+d %>%
+  filter(id == "A35a") %>% 
+  mutate(
+    variants = case_when(
+      !is.na(code) ~ "c",
+      str_detect(name, "※")   ~ "a,b"
+    ),
+    code = coalesce(code, str_extract(name, "A35[※\\*]_\\d+")),
+    name = str_remove(name, "（A35[※\\*]_\\d+）")
+  ) %>% 
+  tidyr::separate_rows(variants, sep = ",") %>% 
+  mutate(code = str_replace(code, "[※\\*]", variants)) %>% 
+  arrange(code) %>% 
+  transmute(
+    name,
+    code,
+    description,
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A35a.csv"))
+```
+
+### `A35b`
+
+同様（c.f. <https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A35b.html>）
+
+```{r A35b}
+d %>%
+  filter(id == "A35b") %>% 
+  mutate(
+    variants = case_when(
+      !is.na(code) ~ "f",
+      str_detect(name, "※")   ~ "d,e"
+    ),
+    code = coalesce(code, str_extract(name, "A35[※\\*]_\\d+")),
+    name = str_remove(name, "（A35[※\\*]_\\d+）")
+  ) %>% 
+  tidyr::separate_rows(variants, sep = ",") %>% 
+  mutate(code = str_replace(code, "[※\\*]", variants)) %>% 
+  arrange(code) %>% 
+  transmute(
+    name,
+    code,
+    description,
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A35b.csv"))
+```
+
+### `A37`
+
+正規表現とexact match
+
+```{r A37}
+d %>%
+  filter(id == "A37", is.na(code)) %>% 
+  knitr::kable()
+
+d %>%
+  filter(id == "A37", !is.na(code)) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "A37.csv"))
+```
+
+### `A38`
+
+一次医療圏、二次医療圏、三次医療圏、を名前の前につける必要がある。
+
+```{r A38}
+d %>%
+  filter(id == "A38") %>% 
+  # code がないところが暗黙のサブテーブルのヘッダになっている
+  group_by(subgroup = cumsum(is.na(code))) %>% 
+  # そのサブテーブルのヘッダを prefix として各名前にくっつける
+  mutate(name = paste(first(name), name, sep = "_")) %>% 
+  # くっつけたらもう不要なので削除
+  slice(-1) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    description,
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A38.csv"))
+```
+
+### `C28`
+
+どうやら `C28_000` がIDで、`C28_101`〜`C28_104` それぞれが各データのIDを指しているらしい。
+ここは手動で加えることにする。
+
+```{r C28}
+d %>%
+  filter(id == "C28", !is.na(code)) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  rows_insert(
+    tribble(
+      ~name, ~code, ~description, ~type, ~codelist,
+      "ID",                "C28_000", NA, "文字列型", FALSE,
+      "標点ID",            "C28_101", NA, "文字列型", FALSE,
+      "ターミナルビルID",  "C28_102", NA, "文字列型", FALSE,
+      "調査内容ID",        "C28_103", NA, "文字列型", FALSE,
+      "滑走路ID",          "C28_104", NA, "文字列型", FALSE
+    )
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "C28.csv"))
+```
+
+### `L03-a`
+
+`L03-a`はコードではなく普通の名前で入ってるので使わなくて問題なさそう
+
+### `mesh1000`, `mesh500`
+
+ここは列名そのままのほうが処理しやすそうなのでこのままにする
+
+### `N05`
+
+1つのセルの中に2つの値が入っている。手動で展開する。
+
+```{r N05}
+d_list <- d %>%
+  filter(id == "N05") %>%
+  split(.$code == "N05_005e")
+
+bind_rows(
+  select(d_list$`FALSE`, !id),
+  tibble(
+    name = c("設置期間（設置開始）", "設置期間（設置終了）"),
+    code = c("N05_005b", "N05_005e"),
+    description = d_list$`TRUE`$description,
+    type = d_list$`TRUE`$type
+  )
+) %>% 
+  arrange(code) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "N05.csv"))
+```
+
+### `P15`
+
+```{r P15}
+d %>%
+  filter(id == "P15") %>%
+
+```
+
+### `P16`
+
+```{r P16}
+d %>%
+  filter(id == "P16") %>%
+
+```
+
+### `P17`
+
+```{r P17}
+d %>%
+  filter(id == "P17") %>%
+
+```
+
+### `P18`
+
+```{r P18}
+d %>%
+  filter(id == "P18") %>%
+
+```
+
+### `P21`
+
+```{r P21}
+d %>%
+  filter(id == "P21") %>%
+
+```
+
+### `W09`
+
+```{r W09}
+d %>%
+  filter(id == "W09") %>%
+
 ```

@@ -1,4 +1,4 @@
-id,name,code,description,type,codelist
-A18s-a,半島振興対策実施地域,NA,属性情報については、属性情報一覧を参照,NA,NA
-A18s-a,人口・世帯数,NA,属性情報については、属性情報一覧を参照,NA,NA
-A18s-a,産業,NA,属性情報については、属性情報一覧を参照,NA,NA
+name,code,description,type,codelist
+半島振興対策実施地域,NA,属性情報については、属性情報一覧を参照,NA,NA
+人口・世帯数,NA,属性情報については、属性情報一覧を参照,NA,NA
+産業,NA,属性情報については、属性情報一覧を参照,NA,NA

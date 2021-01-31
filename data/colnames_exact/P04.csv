@@ -1,8 +1,8 @@
-id,name,code,description,type,codelist
-P04,医療機関分類,P04_001,病院、診療所、歯科診療所の区分,コードリスト「医療機関分類コード」,TRUE
-P04,施設名称,P04_002,医療施設の名称,文字列型（CharacterString）,FALSE
-P04,所在地,P04_003,医療機関の所在地の住所,文字列型（CharacterString）,FALSE
-P04,診療科目１,P04_004,当該施設が有する診療科目,文字列型（CharacterString）,FALSE
-P04,診療科目２,P04_005,当該施設が有する診療科目（「診療科目１」が254バイトを超える場合使用）,文字列型（CharacterString）,FALSE
-P04,診療科目３,P04_006,当該施設が有する診療科目（「診療科目２」が254バイトを超える場合使用）,文字列型（CharacterString）,FALSE
-P04,開設者分類,P04_007,当該施設（病院のみ）を開設した組織または個人の分類,コードリスト「開設者分類コード」,TRUE
+name,code,description,type,codelist
+医療機関分類,P04_001,病院、診療所、歯科診療所の区分,コードリスト「医療機関分類コード」,TRUE
+施設名称,P04_002,医療施設の名称,文字列型（CharacterString）,FALSE
+所在地,P04_003,医療機関の所在地の住所,文字列型（CharacterString）,FALSE
+診療科目１,P04_004,当該施設が有する診療科目,文字列型（CharacterString）,FALSE
+診療科目２,P04_005,当該施設が有する診療科目（「診療科目１」が254バイトを超える場合使用）,文字列型（CharacterString）,FALSE
+診療科目３,P04_006,当該施設が有する診療科目（「診療科目２」が254バイトを超える場合使用）,文字列型（CharacterString）,FALSE
+開設者分類,P04_007,当該施設（病院のみ）を開設した組織または個人の分類,コードリスト「開設者分類コード」,TRUE

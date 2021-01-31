@@ -1,6 +1,6 @@
-id,name,code,description,type,codelist
-A21s,小笠原諸島,NA,属性情報は、属性情報一覧を参照,NA,NA
-A21s,人口・世帯数,NA,属性情報は、属性情報一覧を参照,NA,NA
-A21s,都市基盤1,NA,属性情報は、属性情報一覧を参照,NA,NA
-A21s,都市基盤2,NA,属性情報は、属性情報一覧を参照,NA,NA
-A21s,産業,NA,属性情報は、属性情報一覧を参照,NA,NA
+name,code,description,type,codelist
+小笠原諸島,NA,属性情報は、属性情報一覧を参照,NA,NA
+人口・世帯数,NA,属性情報は、属性情報一覧を参照,NA,NA
+都市基盤1,NA,属性情報は、属性情報一覧を参照,NA,NA
+都市基盤2,NA,属性情報は、属性情報一覧を参照,NA,NA
+産業,NA,属性情報は、属性情報一覧を参照,NA,NA

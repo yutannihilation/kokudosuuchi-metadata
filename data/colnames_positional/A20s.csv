@@ -1,6 +1,6 @@
-id,name,code,description,type,codelist
-A20s,奄美群島,NA,属性情報は、属性情報一覧を参照。,NA,NA
-A20s,人口・世帯数,NA,属性情報は、属性情報一覧を参照。,NA,NA
-A20s,都市基盤1,NA,属性情報は、属性情報一覧を参照。,NA,NA
-A20s,都市基盤2,NA,属性情報は、属性情報一覧を参照。,NA,NA
-A20s,産業,NA,属性情報は、属性情報一覧を参照。,NA,NA
+name,code,description,type,codelist
+奄美群島,NA,属性情報は、属性情報一覧を参照。,NA,NA
+人口・世帯数,NA,属性情報は、属性情報一覧を参照。,NA,NA
+都市基盤1,NA,属性情報は、属性情報一覧を参照。,NA,NA
+都市基盤2,NA,属性情報は、属性情報一覧を参照。,NA,NA
+産業,NA,属性情報は、属性情報一覧を参照。,NA,NA
