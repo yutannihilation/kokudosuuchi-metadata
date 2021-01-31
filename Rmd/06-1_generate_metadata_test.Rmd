@@ -1,0 +1,78 @@
+---
+title: "Generate metadata"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 方針
+
+### 列をどうマッチさせるか
+
+主に以下の4種類があると推測
+
+* `exact`: 列名のコードが与えられている場合はコードと直接マッチさせられる
+* `positional`: 列名のコードが全くない場合は、列名を順番にあてはめていく
+* `pattern`: 以下の2パターンがある。全体から見ればそれほど多くはないので、それぞれ専用の関数をつくることにする。
+  * 列名をパターンでマッチさせる
+  * 列の中身を見ていい感じに判断（例：L01はどこまでが調査価格でどこからが属性移動なのか判別できない）
+
+## 実際それでいけそうか確認
+
+```{r check}
+library(readr)
+library(stringr)
+library(dplyr, warn.conflicts = FALSE)
+
+csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
+names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
+
+col_types <- cols(
+  name = col_character(),
+  code = col_character(),
+  description = col_character(),
+  type = col_character()
+)
+
+detect_codelist <- function(type) {
+  str_detect(type, "コードリスト|(行政|参照資料|産廃施設|都道府県|特別管理|不燃領域率定義|防災再開発促進地区指定)コード")
+}
+```
+
+### `exact`の例: A22
+
+```{r exact}
+d <- read_csv(csv_files["A22"], col_types = col_types)
+
+d %>% 
+  mutate(
+    name,
+    code,
+    match_type = "exact",
+    description,
+    codelist = detect_codelist(type),
+  ) %>% 
+  knitr::kable()
+```
+
+### `pattern`の例1: A34
+
+IDにはいくつかバリエーションがあるけど列名は固定の場合
+
+```{r pattern}
+d <- read_csv(csv_files["A34"], col_types = col_types)
+
+d %>% 
+  mutate(name = str_replace(name, "（A34._([0-9]*)）", "/A34.*_\\1")) %>%
+  tidyr::separate(name, into = c("name", "code_pattern"), sep = "/") %>% 
+  transmute(
+    name,
+    code = coalesce(code_pattern, code),
+    match_type = if_else(is.na(code_pattern), "exact", "pattern"),
+    description,
+    codelist = detect_codelist(type),
+  ) %>% 
+  knitr::kable()
+```

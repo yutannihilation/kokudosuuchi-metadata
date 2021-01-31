@@ -102,6 +102,8 @@ d %>%
 
 ## `type`
 
+ざっくり分けるとこんな感じ？ コードリストだけ対応すればいいはず。
+
 ```{r type}
 d %>% 
   count(
@@ -130,5 +132,28 @@ d %>%
     ),
     sort = TRUE
   )
+```
+
+```{r codelist}
+library(stringr)
+
+pattern <- ".*コードリスト型?「(.*?)」.*"
+
+d_tmp <- d %>% 
+  filter(
+    str_detect(type, "コードリスト|(行政|参照資料|産廃施設|都道府県|特別管理|不燃領域率定義|防災再開発促進地区指定)コード")
+  ) %>% 
+  transmute(
+    id,
+    type = str_remove_all(type, "\\s+"),
+    codelist = if_else(str_detect(type, pattern), str_replace(type, pattern, "\\1"), NA_character_)
+  )
+
+d_tmp %>% 
+  count(codelist, sort = TRUE) %>% 
+  knitr::kable()
+
+d_tmp %>% 
+  knitr::kable()
 ```
 
