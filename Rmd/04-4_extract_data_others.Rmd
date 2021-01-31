@@ -73,17 +73,30 @@ tables <- tables[!names(tables) %in% no_rows]
 ```
 
 
-カラム数は4のはずだが、ちがうやつがあるので調べる。
+カラム数は4のはずだが、ちがうやつがある。この辺はあとで個別に処理することにする。
 
 ```{r more_columns}
 names(tables)[lengths(tables) != 4L]
 
-unexpected_tables <- tables[lengths(tables) != 4L]
+tables <- tables[lengths(tables) == 4L]
 ```
 
-```{r tables, results='asis'}
-purrr::map(unexpected_tables, head) %>% 
-  purrr::walk(~ print(knitr::kable(.x)))
+```{r}
+# 2番めの列が「属性名」または「属性名（...）」のようなフォーマットであることを確認
+stopifnot(all(startsWith(purrr::map_chr(tables, ~ colnames(.)[2]), "属性名")))
+
+tables %>% 
+  purrr::iwalk(~ {
+    .x %>% 
+      tidyr::extract(2, into = c("name", "code"), regex = "([^（]*)(（.*）)?") %>% 
+      transmute(
+        name,
+        code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+        description = 説明,
+        type = 属性の型
+      ) %>%
+      readr::write_csv(here::here("data", "attrs", glue::glue("{.y}.csv")))
+  })
 ```
 
 
