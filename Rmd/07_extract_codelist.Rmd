@@ -1,0 +1,42 @@
+---
+title: "Extract codelist"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r check}
+library(readr)
+library(stringr)
+library(dplyr, warn.conflicts = FALSE)
+
+csv_files <- c(
+  list.files(here::here("data", "colnames_exact"), full.names = TRUE),
+  list.files(here::here("data", "colnames_positional"), full.names = TRUE),
+  list.files(here::here("data", "colnames_other"), full.names = TRUE)
+)
+names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
+
+col_types <- cols(
+  name = col_character(),
+  code = col_character(),
+  description = col_character(),
+  type = col_character()
+)
+
+d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
+```
+
+コードリストは、2つタイプがある。
+そのページに直接列挙されているタイプと、リンク先に詳細があるタイプ。
+リンク先に詳細があるタイプは、`html_table()`を使った時点で失われてしまうので、別途収集する。
+
+```{r kable}
+d %>%
+  filter(codelist) %>%
+  transmute(id, str_squish(type)) %>%
+  knitr::kable()
+```
+
