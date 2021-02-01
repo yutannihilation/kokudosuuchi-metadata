@@ -36,7 +36,123 @@ d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```{r kable}
 d %>%
   filter(codelist) %>%
-  transmute(id, str_squish(type)) %>%
+  transmute(id, code, str_squish(type)) %>%
   knitr::kable()
 ```
 
+## 直接列挙してるやつ
+
+```{r out_dir}
+out_dir <- here::here("data", "codelist")
+dir.create(out_dir, showWarnings = FALSE)
+```
+
+
+### `G04a_005`, `G04a_005`, `G04d_005`
+
+
+```{r G04a_005}
+d %>% 
+  filter(str_detect(type, "海面下"))
+
+tibble(
+  code  = c("0", "5", "unknown"),
+  label = c("その他", "海面下", NA)
+) %>% 
+  readr::write_csv(file.path(out_dir, "undersea.csv"))
+```
+
+### `G04a_007`, `G04a_009`,`G04c_007`,`G04c_009`,`G04d_007`,`G04d_009`
+
+```{r G04a_007}
+d %>% 
+  filter(str_detect(type, "方向なし"))
+
+tibble(
+  code  = c(as.character(0:8), "unknown"),
+  label = c("方向なし", "北", "北東", "東", "東南", "南", "南西", "西", "北西", NA)
+) %>% 
+  readr::write_csv(file.path(out_dir, "direction.csv"))
+```
+
+
+### `P13_009`
+
+```{r P13_009}
+d %>% 
+  filter(str_detect(type, "都市計画決定"))
+
+tibble(
+  code  = c("0", "1", "2"),
+  label = c("未確認", "決定", "未決定")
+) %>% 
+  readr::write_csv(file.path(out_dir, "urban_planning_decided.csv"))
+```
+
+
+### `P15_017`
+
+```{r P15_017}
+d %>% 
+  filter(str_detect(type, "産廃施設コード"))
+
+tibble(
+  code  = c("1", "2"),
+  label = c("中間処理施設", "最終処理施設")
+) %>% 
+  readr::write_csv(file.path(out_dir, "industrial_waste_disposal.csv"))
+```
+
+
+### `P15_018`
+
+```{r P15_018}
+d %>% 
+  filter(str_detect(type, "特別管理コード"))
+
+tibble(
+  code  = c("0", "1"),
+  label = c("特別管理産業廃棄物処理以外", "特別管理産業廃棄物処理")
+) %>% 
+  readr::write_csv(file.path(out_dir, "industrial_waste_special_treatment.csv"))
+```
+
+
+### `P21A_003`
+
+```{r P21A_003}
+d %>% 
+  filter(str_detect(type, "簡易水道"))
+
+tibble(
+  code  = c("1", "2", "3"),
+  label = c("上水道", "簡易水道（公営）", "簡易水道（非公営）")
+) %>% 
+  readr::write_csv(file.path(out_dir, "water_supply_type.csv"))
+```
+
+### `P24_011`
+
+```{r P24_011}
+d %>% 
+  filter(str_detect(type, "グリーン・ツーリズムデータベース"))
+
+tibble(
+  code  = c("1", "2", "3"),
+  label = c("グリーン・ツーリズムデータベース", "農業協同組合名鑑", "全国市民農園リスト")
+) %>% 
+  readr::write_csv(file.path(out_dir, "refereced_from_agri.csv"))
+```
+
+### `P17_003`
+
+```{r P17_003}
+d %>% 
+  filter(str_detect(type, "消防本部"))
+
+tibble(
+  code  = c("1", "2", "3"),
+  label = c("消防本部", "消防署", "分署・出張所")
+) %>% 
+  readr::write_csv(file.path(out_dir, "firehouse_type.csv"))
+```
