@@ -306,48 +306,188 @@ bind_rows(
 
 ### `P15`
 
+〜で示されている範囲を展開する必要がある。
+
 ```{r P15}
 d %>%
-  filter(id == "P15") %>%
+  filter(id == "P15", is.na(code)) %>% 
+  knitr::kable()
 
+d_tmp <- d %>%
+  filter(id == "P15") %>% 
+  split(is.na(.$code))
+
+name <- d_tmp$`TRUE`$name
+code <- str_extract(name, "(?<=（)[A-Z0-9_\\-～〜~]+(?=）$)")
+name <- str_remove(name, "（[A-Z0-9_\\-～〜~]+）$")
+
+expand_range <- function(x) {
+  x_range <- str_extract_all(x, "\\d+[\\-～〜~]\\d+")[[1]]
+  
+  x_range <- str_split(x_range, "[\\-～〜~]")[[1]]
+  x_begin <- x_range[1]
+  x_end   <- x_range[2]
+  
+  # フォーマットを推測
+  if (nchar(x_begin) > 1  && startsWith(x_begin, "0")) {
+    format <- sprintf("%%0%dd", nchar(x_begin))
+  } else {
+    format <- "%d"
+  }
+  
+  x_range_expanded <- sprintf(format, seq(as.integer(x_begin), as.integer(x_end)))
+  str_replace(x, "\\d+[\\-～〜~]\\d+", x_range_expanded)
+}
+
+name_expanded <- expand_range(name)
+code_expanded <- expand_range(code)
+
+# 末尾の数字を置き換える
+description_expanded <- d_tmp$`TRUE`$description %>% 
+  str_replace("[0-9０-９]$", as.character(seq_along(name_expanded)))
+
+d_expanded <- tibble(
+  name = name_expanded,
+  code = code_expanded,
+  description = description_expanded,
+  type = d_tmp$`TRUE`$type
+)
+
+d_tmp2 <- bind_rows(
+  select(d_tmp$`FALSE`, !id),
+  d_expanded
+)
+
+knitr::kable(d_tmp2)
+
+d_tmp2 %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "P15.csv"))
 ```
 
 ### `P16`
 
+〜で示されている範囲を展開する必要がある。
+
 ```{r P16}
 d %>%
-  filter(id == "P16") %>%
+  filter(id == "P16", is.na(code)) %>% 
+  knitr::kable()
 
+d_tmp <- d %>%
+  filter(id == "P16") %>% 
+  split(is.na(.$code))
+
+name <- d_tmp$`TRUE`$name
+code <- str_extract(name, "(?<=（)[A-Z0-9_\\-～〜~]+(?=）$)")
+name <- str_remove(name, "（[A-Z0-9_\\-～〜~]+）$")
+
+name_expanded <- expand_range(name)
+code_expanded <- expand_range(code)
+
+# 末尾の数字を置き換える
+description_expanded <- d_tmp$`TRUE`$description %>% 
+  str_replace("[0-9０-９]$", as.character(seq_along(name_expanded)))
+
+d_expanded <- tibble(
+  name = name_expanded,
+  code = code_expanded,
+  description = description_expanded,
+  type = d_tmp$`TRUE`$type
+)
+
+d_tmp2 <- bind_rows(
+  select(d_tmp$`FALSE`, !id),
+  d_expanded
+)
+
+knitr::kable(d_tmp2)
+
+d_tmp2 %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "P16.csv"))
 ```
 
 ### `P17`
 
+〜の範囲が定まっていないのでexact matchできない。それ以外の列についてはexact matchで大丈夫。
+
 ```{r P17}
 d %>%
-  filter(id == "P17") %>%
+  filter(id == "P17", is.na(code)) %>% 
+  knitr::kable()
 
+d %>%
+  filter(id == "P17", !is.na(code)) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "P17.csv"))
 ```
 
 ### `P18`
 
+〜の範囲が定まっていないのでexact matchできない。それ以外の列についてはexact matchで大丈夫。
+
 ```{r P18}
 d %>%
-  filter(id == "P18") %>%
+  filter(id == "P18", is.na(code)) %>% 
+  knitr::kable()
 
+d %>%
+  filter(id == "P18", !is.na(code)) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "P18.csv"))
 ```
 
 ### `P21`
 
+タイポなので手動で修正
+
 ```{r P21}
 d %>%
-  filter(id == "P21") %>%
+  filter(id == "P21", is.na(code)) %>%
+  knitr::kable()
 
+d %>% 
+  filter(id == "P21", is.na(code)) %>%
+  mutate(
+    code = str_extract(name, "(?<=（)[A-Za-z0-9_\\-]+(?=）$)"),
+    # a, bを大文字に
+    code = str_to_upper(code),
+    # - を _ に
+    code = str_replace(code, "-", "_"),
+    name = str_remove(name, "（.*）$")
+  ) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_exact, "P21.csv"))
 ```
 
 ### `W09`
 
+`ID`列は変換する必要がなさそうなので除外する。
+
 ```{r W09}
 d %>%
-  filter(id == "W09") %>%
+  filter(id == "W09", is.na(code)) %>%
+  knitr::kable()
 
+d %>%
+  filter(id == "W09", is.na(code)) %>%
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_exact, "W09.csv"))
 ```
