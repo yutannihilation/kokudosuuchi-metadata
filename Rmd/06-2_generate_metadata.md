@@ -1,19 +1,6 @@
 Generate metadata
 ================
 
-## 方針
-
--   `exact`:
-    列名のコードが与えられている場合はコードと直接マッチさせられる
--   `positional`:
-    列名のコードが全くない場合は、列名を順番にあてはめていく
--   `pattern`:
-    以下の2パターンがある。全体から見ればそれほど多くはないので、それぞれ専用の関数をつくることにする。
-    -   列名をパターンでマッチさせる
-    -   列の中身を見ていい感じに判断（例：L01はどこまでが調査価格でどこからが属性移動なのか判別できない）
-
-## 実際それでいけそうか確認
-
 ``` r
 library(readr)
 library(stringr)
@@ -188,6 +175,7 @@ d %>%
     name,
     code,
     description,
+    type,
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A34.csv"))
@@ -216,6 +204,7 @@ d %>%
     name,
     code,
     description,
+    type,
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A35a.csv"))
@@ -237,13 +226,14 @@ d %>%
     code = coalesce(code, str_extract(name, "A35[※\\*]_\\d+")),
     name = str_remove(name, "（A35[※\\*]_\\d+）")
   ) %>% 
-  tidyr::separate_rows(variants, sep = ",") %>% 
-  mutate(code = str_replace(code, "[※\\*]", variants)) %>% 
+  tidyr::separate_rows(variants, sep = ",") %>%
+  mutate(code = str_replace(code, "[※\\*]", variants)) %>%
   arrange(code) %>% 
   transmute(
     name,
     code,
     description,
+    type,
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A35b.csv"))
@@ -294,6 +284,7 @@ d %>%
     name,
     code,
     description,
+    type,
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A38.csv"))
