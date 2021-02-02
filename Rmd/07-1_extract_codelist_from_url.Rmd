@@ -1,5 +1,5 @@
 ---
-title: "Extract codelist"
+title: "Extract codelist: リンク先に詳細があるタイプ"
 output: github_document
 ---
 
@@ -13,11 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 そのページに直接列挙されているタイプと、リンク先に詳細があるタイプ。
 リンク先に詳細があるタイプは、`html_table()`を使った時点で失われてしまうので、別途収集する。
 
-## 展開
+## データのダウンロード
 
-### リンク先に詳細があるタイプ
-
-```{r}
+```{r get_links}
 library(readr)
 library(rvest)
 library(stringr)
@@ -34,9 +32,78 @@ extract_links <- function(f) {
   tibble(
     name = html_text2(links),
     url  = html_attr(links, "href")
-  )
+  ) %>% 
+    distinct()
 }
 
-links <- purrr::map_dfr(datalist_files, extract_links, .id = "id")
+links_df <- purrr::map_dfr(datalist_files, extract_links, .id = "id")
+```
+
+とりあえずこのコードリストとテキストの対応表は別ファイルに書き出しておく。
+あとで紐付けるときに使う。
+
+```{r write}
+links_df %>% 
+  mutate(
+    codelist_id = tools::file_path_sans_ext(basename(url)),
+    .keep = "unused"
+  ) %>% 
+  readr::write_csv(here::here("data", "codelist_list.csv"))
+```
+
+ダウンロードする。
+
+```{r scrape, message=FALSE}
+library(polite)
+
+out_dir <- here::here("data-raw", "codelist")
+dir.create(out_dir, showWarnings = FALSE)
+
+links <- unique(links_df$url)
+session <- bow("https://nlftp.mlit.go.jp/ksj/", delay = 10)
+
+# URL間違い
+
+#（パスに /jpgis/ が入る）
+links[which(str_detect(links, "SectionCd_syuto"))] <- "/ksj/jpgis/codelist/SectionCd_syuto.html"
+
+# 相対パス（../） は動かないので /ksj/gml/ に置き換え
+dotdot_idx <- which(str_detect(links, "^../"))
+links[dotdot_idx] <- str_replace(links[dotdot_idx], fixed("../"), "/ksj/gml/")
+
+links <- unique(links)
+
+for (l in links) {
+  out_file <- file.path(out_dir, basename(l))
+  
+  # すでにダウンロードしてたら
+  if (file.exists(out_file)) {
+    message(glue::glue("{l} is already downloaded. Skipped."))
+    next
+  }
+
+  message(glue::glue("Getting {l}..."))
+  
+  if (str_ends(l, "\\.html")) {
+    nod(session, l) %>% 
+      # 念のため、HTMLへの変換をはさまずテキストで受け取ることにする
+      scrape(content = "text/plain;charset=UTF-8", verbose = TRUE) %>% 
+      brio::write_file(out_file)
+  } else {
+    # バイナリのものは R のセッションに読み込まずそのままダウンロード
+    curl::curl_download(glue::glue("https://nlftp.mlit.go.jp{l}"), destfile = out_file)
+  }
+}
+
+# 数バイトのファイルはおかしい
+codelist_files <- fs::dir_ls(out_dir)
+stopifnot(all(fs::file_size(codelist_files) > 10))
+```
+
+
+## 確認
+
+```{r check}
+codelist_files
 ```
 
