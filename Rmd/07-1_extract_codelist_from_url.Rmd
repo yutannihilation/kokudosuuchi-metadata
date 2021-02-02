@@ -1,0 +1,42 @@
+---
+title: "Extract codelist"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 方針
+
+コードリストは、2つタイプがある。
+そのページに直接列挙されているタイプと、リンク先に詳細があるタイプ。
+リンク先に詳細があるタイプは、`html_table()`を使った時点で失われてしまうので、別途収集する。
+
+## 展開
+
+### リンク先に詳細があるタイプ
+
+```{r}
+library(readr)
+library(rvest)
+library(stringr)
+library(dplyr, warn.conflicts = FALSE)
+
+datalist_files <- list.files(here::here("data-raw", "datalist"), full.names = TRUE)
+names(datalist_files) <- stringr::str_replace(basename(datalist_files), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+
+extract_links <- function(f) {
+  links <- read_html(f) %>% 
+    # href に codelist を含む a タグを取得
+    html_elements(xpath = "//td/a[contains(@href, 'codelist')]")
+  
+  tibble(
+    name = html_text2(links),
+    url  = html_attr(links, "href")
+  )
+}
+
+links <- purrr::map_dfr(datalist_files, extract_links, .id = "id")
+```
+

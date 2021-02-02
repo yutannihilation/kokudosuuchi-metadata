@@ -7,6 +7,16 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## 方針
+
+コードリストは、2つタイプがある。
+そのページに直接列挙されているタイプと、リンク先に詳細があるタイプ。
+リンク先に詳細があるタイプは、`html_table()`を使った時点で失われてしまうので、別途収集する。
+
+## 展開
+
+### 直接列挙タイプ
+
 ```{r check}
 library(readr)
 library(stringr)
@@ -28,56 +38,6 @@ col_types <- cols(
 
 d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```
-
-コードリストは、2つタイプがある。
-そのページに直接列挙されているタイプと、リンク先に詳細があるタイプ。
-リンク先に詳細があるタイプは、`html_table()`を使った時点で失われてしまうので、別途収集する。
-
-```{r kable}
-d %>%
-  filter(codelist) %>%
-  arrange(code) %>% 
-  transmute(
-    id, 
-    code, 
-    type = str_squish(type),
-    codelist_type = case_when(
-      str_detect(type, "都道府県コード") ~ "PrefCd",
-      str_detect(type, "行政コード") ~ "AdminAreaCd",
-      # A22
-      str_detect(type, "豪雪区分コード") ~ "GosetsuCd",
-      # A22-mA
-      str_detect(type, "集計単位フラグ") ~ "AggregateUnitFlag",
-      str_detect(type, "位置特定レベル") ~ "PosSpecificLevel",
-      # A29
-      str_detect(type, "用途地域分類コード") ~ "UseDistrictCd",
-      # A31
-      str_detect(type, "浸水深ランクコード") ~ "water_depth_code",
-      str_detect(type, "浸水継続時間ランクコード") ~ "flood_duration_code",
-      str_detect(type, "危険区域区分コード") ~ "hazardous_area_classification_code",
-      # A33
-      str_detect(type, "現象種別コード") ~ "CodeOfPhenomenon",
-      str_detect(type, "区域コード") ~ "CodeOfZone_h27",       # v1.1 では CodeOfZone が使われている
-      str_detect(type, "特別警戒区域未指定コード") ~ "CodeOfUnSpecification",
-      
-      # TODO
-      
-      code %in% c("G04a_005", "G04a_005", "G04d_005") ~ "undersea",
-      code %in% c("G04a_007", "G04a_009","G04c_007","G04c_009","G04d_007","G04d_009") ~ "direction",
-      code == "A15_003" ~ "authority_type",
-      code == "A15_004" ~ "protection_area_type",
-      code == "P13_009" ~ "urban_planning_decided",
-      code == "P15_017" ~ "industrial_waste_disposal",
-      code == "P15_018" ~ "industrial_waste_special_treatment",
-      code == "P17_003" ~ "firehouse_type",
-      code == "P21A_003" ~ "water_supply_type",
-      code == "P24_011" ~ "refereced_from_agri",
-    )
-  ) %>%
-  knitr::kable()
-```
-
-## 直接列挙してるやつ
 
 ```{r out_dir}
 out_dir <- here::here("data", "codelist")
