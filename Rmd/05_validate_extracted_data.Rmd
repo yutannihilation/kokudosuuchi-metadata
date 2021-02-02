@@ -157,3 +157,11 @@ d_tmp %>%
   knitr::kable()
 ```
 
+## `name`
+
+`name`が空のものがないことを確認
+
+```{r}
+stopifnot(all(!is.na(d$name)))
+```
+
