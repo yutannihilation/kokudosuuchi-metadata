@@ -71,6 +71,9 @@ links[which(str_detect(links, "SectionCd_syuto"))] <- "/ksj/jpgis/codelist/Secti
 dotdot_idx <- which(str_detect(links, "^../"))
 links[dotdot_idx] <- str_replace(links[dotdot_idx], fixed("../"), "/ksj/gml/")
 
+# transition_use.pdf はデータの使い方の説明？であってコードリストではないっぽい
+links <- links[!which(str_detect(links, "transition_use.pdf"))]
+
 links <- unique(links)
 
 for (l in links) {
@@ -104,6 +107,51 @@ stopifnot(all(fs::file_size(codelist_files) > 10))
 ## 確認
 
 ```{r check}
-codelist_files
+names(codelist_files) <- tools::file_path_sans_ext(basename(codelist_files))
+
+d <- codelist_files %>% 
+  purrr::map(~ {
+    if (str_ends(.x, "\\.xlsx")) {
+      list(readxl::read_xlsx(.x))
+    } else {
+      # encoding を明示的に指定しないとエラーになる
+      read_html(.x, encoding = "UTF-8") %>% 
+        # <th> がないものがほとんどっぽい
+        html_table(header = TRUE)
+    }
+  })
+
+# テーブルが2つ以上あるものはあとで個別対応
+d_many_tables <- d %>% 
+  purrr::keep(~ length(.) != 1)
+
+names(d_many_tables)
+
+d <- d %>% 
+  purrr::map(1L)
 ```
+
+カラムが2つの場合は「コード」とかの名前のほうがコードで別の方がラベルとわかる。
+とりあえず今はこの正規表現で網羅できてそう
+
+
+```{r twocol_tables}
+d %>% 
+  purrr::keep(~ ncol(.) == 2 && !any(str_detect(colnames(.), "コード$|対応番号|No.")))
+```
+
+その他のテーブルはとりあえずカラム数で分けてみる。
+
+```{r other_tables}
+l <- d %>% 
+  purrr::keep(~ ncol(.) != 2) %>%
+  split(., lengths(.))
+
+l %>% 
+  purrr::map(names)
+```
+
+
+
+
 
