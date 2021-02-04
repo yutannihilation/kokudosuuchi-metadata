@@ -145,19 +145,31 @@ d <- d %>%
 -   `PortRouteCd`
     は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
 -   `jushuCd` は、変換必要なさそう
--   `shinrinkanriCd`
+-   `shinrinkanriCd`, `midorinokairoCd`, `rinshunosaibunCd`,
+    `kinouruikeiCd`, `hoanrinCd`
     は、データ中にコードもラベルも含まれているので特になにか対応する必要はなさそう
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
 
 ``` r
-excl <- str_detect(names(d), "^LandUseProperty|(AreaZoneCd|^PortRouteCd|^jushuCd|^shinrinkanriCd)$")
+excl <- str_detect(names(d), "^LandUseProperty.*$|^.*AreaZoneCd$") |
+  names(d) %in% c(
+    "PortRouteCd",
+    "jushuCd",
+    "shinrinkanriCd",
+    "midorinokairoCd",
+    "rinshunosaibunCd",
+    "kinouruikeiCd",
+    "hoanrinCd"
+  )
 names(d)[excl]
 ```
 
     ##  [1] "ChukyoAreaZoneCd"      "KeihanshinAreaZoneCd"  "KinkiAreaZoneCd"      
     ##  [4] "LandUseProperty-07"    "LandUseProperty-09"    "LandUseProperty-77"   
     ##  [7] "LandUseProperty-88"    "LandUseProperty-92_98" "PortRouteCd"          
-    ## [10] "TokyoAreaZoneCd"       "jushuCd"               "shinrinkanriCd"
+    ## [10] "TokyoAreaZoneCd"       "hoanrinCd"             "jushuCd"              
+    ## [13] "kinouruikeiCd"         "midorinokairoCd"       "rinshunosaibunCd"     
+    ## [16] "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -213,12 +225,10 @@ l %>%
     ## [15] "LandUseCd-88"            "LandUseCd-YY"           
     ## [17] "PosSpecificLevel"        "PubOfficeCd"            
     ## [19] "RailwayClassCd"          "ReferenceDataCd"        
-    ## [21] "UrgentRoadCd"            "kinouruikeiCd"          
-    ## [23] "rinshunosaibunCd"       
+    ## [21] "UrgentRoadCd"           
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
-    ## [5] "hoanrinCd"       "midorinokairoCd"
     ## 
     ## $`5`
     ## [1] "AdminAreaCd_R105"
@@ -297,13 +307,7 @@ l$`3` %>%
     ## [1] "内容"   "コード" "内容"  
     ## 
     ## $UrgentRoadCd
-    ## [1] "コード" "区分"   "説明"  
-    ## 
-    ## $kinouruikeiCd
-    ## [1] "コード" "内容"   "備考"  
-    ## 
-    ## $rinshunosaibunCd
-    ## [1] "コード" "内容"   "備考"
+    ## [1] "コード" "区分"   "説明"
 
 ``` r
 l$`3` %>% 
@@ -359,12 +363,6 @@ l$`4` %>%
     ## 
     ## $PubFacMiclassCd
     ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
-    ## 
-    ## $hoanrinCd
-    ## [1] "コード" "内容"   "コード" "内容"  
-    ## 
-    ## $midorinokairoCd
-    ## [1] "コード" "内容"   "コード" "内容"
 
 ``` r
 l$`4`$DistributionCd %>% 
