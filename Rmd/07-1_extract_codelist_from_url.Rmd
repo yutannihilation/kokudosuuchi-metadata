@@ -128,8 +128,23 @@ d_many_tables <- d %>%
 names(d_many_tables)
 
 d <- d %>% 
+  purrr::discard(~ length(.) != 1) %>% 
   purrr::map(1L)
 ```
+
+* `*AreaZoneCd`のものは、コードとラベルが1対1に対応していない。どのみち何らかの処理が必要そうなのでラベル翻訳は諦める。
+* `PortRouteCd` は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応
+* `jushuCd` は、変換必要なさそう
+* `shinrinkanriCd` は、データ中にコードもラベルも含まれているので特になにか対応する必要はなさそう
+<!-- * `ClimateCd`は、列の説明なので特に対応する必要なし -->
+
+```{r}
+excl <- str_detect(names(d), "(AreaZoneCd|^PortRouteCd|^jushuCd|^shinrinkanriCd)$")
+names(d)[excl]
+
+d <- d[!excl]
+```
+
 
 カラムが2つの場合は「コード」とかの名前のほうがコードで別の方がラベルとわかる。
 とりあえず今はこの正規表現で網羅できてそう
@@ -137,7 +152,23 @@ d <- d %>%
 
 ```{r twocol_tables}
 d %>% 
-  purrr::keep(~ ncol(.) == 2 && !any(str_detect(colnames(.), "コード$|対応番号|No.")))
+  purrr::keep(~ ncol(.) == 2 && sum(str_detect(colnames(.), "コード$|対応番号|No.")) != 1)
+
+d %>% 
+  purrr::keep(~ ncol(.) == 2) %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+    
+    idx <- str_detect(colnames(d), "コード$|対応番号|No.")
+    tibble::tibble(
+      code  = d[[which(idx)]],
+      label = d[[which(!idx)]]
+    ) %>% 
+      mutate(
+        code = if(is.character(code)) code else sprintf("%.0f", code)
+      ) %>% 
+      readr::write_csv(f)
+  }) 
 ```
 
 その他のテーブルはとりあえずカラム数で分けてみる。
@@ -151,7 +182,106 @@ l %>%
   purrr::map(names)
 ```
 
+カラム名3つのやつは、説明が追加されているだけっぽい。
 
 
+```{r tables_3}
+l$`3` %>% 
+  purrr::map(colnames)
 
+l$`3` %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    nm <- colnames(d)
+    
+    idx_code <- which(str_detect(nm, "コード"))
+    idx_label <- which(str_detect(nm, "区分|種別|分類|駅名|駅の名称|対象施設"))
+    
+    idx_label <- switch (codelist_name,
+      "ReferenceDataCd"  = 1,
+      "PosSpecificLevel" = 2,
+      if(length(idx_label) == 1) {
+        idx_label
+      } else {
+        which(str_detect(nm, "内容"))
+      }
+    )
+    
+    if (length(idx_label) > 1) {
+      stop(codelist_name)
+    }
+    
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+    
+    d %>% 
+      select(
+        code  = {{ idx_code }},
+        label = {{ idx_label }}
+      ) %>% 
+      mutate(
+        code = if(is.character(code)) code else sprintf("%.0f", code)
+      ) %>% 
+      readr::write_csv(f)
+  }) 
+```
+
+列が4つのものは、`DistributionCd`以外は2列が横に並べられている。
+
+
+```{r table4}
+l$`4` %>% 
+  purrr::map(colnames)
+
+l$`4`$DistributionCd %>% 
+  mutate(
+    code = コード,
+    label = paste(種別, 分類, sep = "_")
+  ) %>% 
+  readr::write_csv(here::here("data", "codelist", "DistributionCd.csv"))
+
+idx <- names(l$`4`) == "DistributionCd"
+l$`4`[!idx] %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+
+    dplyr::bind_rows(
+      d[, 1:2],
+      d[, 3:4]
+    ) %>% 
+      select(code = 1, label = 2) %>% 
+      filter(!is.na(code)) %>% 
+      readr::write_csv(f)
+  })
+```
+
+列が5つのものは1個だけ。
+
+```{r table5}
+l$`5`$AdminAreaCd_R105 %>% 
+  select(code = 1, label1 = 2, label2 = 3) %>% 
+  mutate(
+    lable = paste0(label1, coalesce(label2, "")),
+    .keep = "unused"
+  ) %>% 
+    readr::write_csv(here::here("data", "codelist", "AdminAreaCd_R105.csv"))
+```
+
+
+列が8つのものは横に並んでいるタイプ
+
+
+```{r}
+t8 <- l$`8`$shouhanshubanCd
+
+bind_rows(
+  t8[, 1:2],
+  t8[, 3:4],
+  t8[, 5:6],
+  t8[, 7:8]
+) %>% 
+  select(
+    code = 1,
+    label = 2
+  ) %>% 
+  readr::write_csv(here::here("data", "codelist", "shouhanshubanCd.csv"))
+```
 

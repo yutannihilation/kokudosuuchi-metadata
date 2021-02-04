@@ -136,7 +136,29 @@ names(d_many_tables)
 
 ``` r
 d <- d %>% 
+  purrr::discard(~ length(.) != 1) %>% 
   purrr::map(1L)
+```
+
+-   `*AreaZoneCd`のものは、コードとラベルが1対1に対応していない。どのみち何らかの処理が必要そうなのでラベル翻訳は諦める。
+-   `PortRouteCd`
+    は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応
+-   `jushuCd` は、変換必要なさそう
+-   `shinrinkanriCd`
+    は、データ中にコードもラベルも含まれているので特になにか対応する必要はなさそう
+    <!-- * `ClimateCd`は、列の説明なので特に対応する必要なし -->
+
+``` r
+excl <- str_detect(names(d), "(AreaZoneCd|^PortRouteCd|^jushuCd|^shinrinkanriCd)$")
+names(d)[excl]
+```
+
+    ## [1] "ChukyoAreaZoneCd"     "KeihanshinAreaZoneCd" "KinkiAreaZoneCd"     
+    ## [4] "PortRouteCd"          "TokyoAreaZoneCd"      "jushuCd"             
+    ## [7] "shinrinkanriCd"
+
+``` r
+d <- d[!excl]
 ```
 
 カラムが2つの場合は「コード」とかの名前のほうがコードで別の方がラベルとわかる。
@@ -144,10 +166,28 @@ d <- d %>%
 
 ``` r
 d %>% 
-  purrr::keep(~ ncol(.) == 2 && !any(str_detect(colnames(.), "コード$|対応番号|No.")))
+  purrr::keep(~ ncol(.) == 2 && sum(str_detect(colnames(.), "コード$|対応番号|No.")) != 1)
 ```
 
     ## named list()
+
+``` r
+d %>% 
+  purrr::keep(~ ncol(.) == 2) %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+    
+    idx <- str_detect(colnames(d), "コード$|対応番号|No.")
+    tibble::tibble(
+      code  = d[[which(idx)]],
+      label = d[[which(!idx)]]
+    ) %>% 
+      mutate(
+        code = if(is.character(code)) code else sprintf("%.0f", code)
+      ) %>% 
+      readr::write_csv(f)
+  }) 
+```
 
 その他のテーブルはとりあえずカラム数で分けてみる。
 
@@ -160,37 +200,219 @@ l %>%
   purrr::map(names)
 ```
 
-    ## $`1`
-    ## [1] "MaritimeOrgCd" "PubFacAdminCd"
-    ## 
     ## $`3`
-    ##  [1] "BusClassCd"              "ChukyoAreaZoneCd"       
-    ##  [3] "ClassFishPortCd"         "ClassHarbor2Cd"         
-    ##  [5] "CodeDesignationCd"       "CodeNoncombustibleCd"   
-    ##  [7] "DistributionCenterCd"    "EntrepreneurCd"         
-    ##  [9] "EstClassCd"              "KasoCd"                 
-    ## [11] "KeihanshinAreaStationCd" "KinkiAreaStationCd"     
-    ## [13] "LandUseCd-09-u"          "LandUseCd-09"           
-    ## [15] "LandUseCd-77"            "LandUseCd-88"           
-    ## [17] "LandUseCd-YY"            "PosSpecificLevel"       
-    ## [19] "PubOfficeCd"             "RailwayClassCd"         
-    ## [21] "ReferenceDataCd"         "UrgentRoadCd"           
-    ## [23] "kinouruikeiCd"           "rinshunosaibunCd"       
+    ##  [1] "BusClassCd"              "ClassFishPortCd"        
+    ##  [3] "ClassHarbor2Cd"          "CodeDesignationCd"      
+    ##  [5] "CodeNoncombustibleCd"    "DistributionCenterCd"   
+    ##  [7] "EntrepreneurCd"          "EstClassCd"             
+    ##  [9] "KasoCd"                  "KeihanshinAreaStationCd"
+    ## [11] "KinkiAreaStationCd"      "LandUseCd-09-u"         
+    ## [13] "LandUseCd-09"            "LandUseCd-77"           
+    ## [15] "LandUseCd-88"            "LandUseCd-YY"           
+    ## [17] "PosSpecificLevel"        "PubOfficeCd"            
+    ## [19] "RailwayClassCd"          "ReferenceDataCd"        
+    ## [21] "UrgentRoadCd"            "kinouruikeiCd"          
+    ## [23] "rinshunosaibunCd"       
     ## 
     ## $`4`
-    ##  [1] "DistributionCd"       "KeihanshinAreaZoneCd" "KinkiAreaZoneCd"     
-    ##  [4] "PortRouteCd"          "PrefCd"               "PrefCdA33"           
-    ##  [7] "PubFacMiclassCd"      "PubFacMiclassCd_wf"   "TokyoAreaZoneCd"     
-    ## [10] "WelfareFacMiclassCd"  "hoanrinCd"            "midorinokairoCd"     
+    ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
+    ## [5] "hoanrinCd"       "midorinokairoCd"
     ## 
     ## $`5`
     ## [1] "AdminAreaCd_R105"
-    ## 
-    ## $`6`
-    ## [1] "jushuCd"        "shinrinkanriCd"
     ## 
     ## $`7`
     ## [1] "ClimateCd"
     ## 
     ## $`8`
     ## [1] "shouhanshubanCd"
+
+カラム名3つのやつは、説明が追加されているだけっぽい。
+
+``` r
+l$`3` %>% 
+  purrr::map(colnames)
+```
+
+    ## $BusClassCd
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $ClassFishPortCd
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $ClassHarbor2Cd
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $CodeDesignationCd
+    ## [1] "コード" "区分"   "内容"  
+    ## 
+    ## $CodeNoncombustibleCd
+    ## [1] "コード"         "区分"           "評価指標の算定"
+    ## 
+    ## $DistributionCenterCd
+    ## [1] "コード" "種別"   "説明"  
+    ## 
+    ## $EntrepreneurCd
+    ## [1] "コード"     "事業者分類" "説明"      
+    ## 
+    ## $EstClassCd
+    ## [1] "開設者分類" "コード"     "内容"      
+    ## 
+    ## $KasoCd
+    ## [1] "コード"       "対応する内容" "適用条文"    
+    ## 
+    ## $KeihanshinAreaStationCd
+    ## [1] "駅コード" "運営会社" "駅名"    
+    ## 
+    ## $KinkiAreaStationCd
+    ## [1] "駅のコード"             "鉄道路線を運営する会社" "駅の名称"              
+    ## 
+    ## $`LandUseCd-09-u`
+    ## [1] "コード" "種別"   "定義"  
+    ## 
+    ## $`LandUseCd-09`
+    ## [1] "コード" "種別"   "定義"  
+    ## 
+    ## $`LandUseCd-77`
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $`LandUseCd-88`
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $`LandUseCd-YY`
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $PosSpecificLevel
+    ## [1] "コード" "説明"   "説明"  
+    ## 
+    ## $PubOfficeCd
+    ## [1] "対象施設" "コード"   "備考"    
+    ## 
+    ## $RailwayClassCd
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $ReferenceDataCd
+    ## [1] "内容"   "コード" "内容"  
+    ## 
+    ## $UrgentRoadCd
+    ## [1] "コード" "区分"   "説明"  
+    ## 
+    ## $kinouruikeiCd
+    ## [1] "コード" "内容"   "備考"  
+    ## 
+    ## $rinshunosaibunCd
+    ## [1] "コード" "内容"   "備考"
+
+``` r
+l$`3` %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    nm <- colnames(d)
+    
+    idx_code <- which(str_detect(nm, "コード"))
+    idx_label <- which(str_detect(nm, "区分|種別|分類|駅名|駅の名称|対象施設"))
+    
+    idx_label <- switch (codelist_name,
+      "ReferenceDataCd"  = 1,
+      "PosSpecificLevel" = 2,
+      if(length(idx_label) == 1) {
+        idx_label
+      } else {
+        which(str_detect(nm, "内容"))
+      }
+    )
+    
+    if (length(idx_label) > 1) {
+      stop(codelist_name)
+    }
+    
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+    
+    d %>% 
+      select(
+        code  = {{ idx_code }},
+        label = {{ idx_label }}
+      ) %>% 
+      mutate(
+        code = if(is.character(code)) code else sprintf("%.0f", code)
+      ) %>% 
+      readr::write_csv(f)
+  }) 
+```
+
+列が4つのものは、`DistributionCd`以外は2列が横に並べられている。
+
+``` r
+l$`4` %>% 
+  purrr::map(colnames)
+```
+
+    ## $DistributionCd
+    ## [1] "種別"   "コード" "分類"   "説明"  
+    ## 
+    ## $PrefCd
+    ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
+    ## 
+    ## $PrefCdA33
+    ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
+    ## 
+    ## $PubFacMiclassCd
+    ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
+    ## 
+    ## $hoanrinCd
+    ## [1] "コード" "内容"   "コード" "内容"  
+    ## 
+    ## $midorinokairoCd
+    ## [1] "コード" "内容"   "コード" "内容"
+
+``` r
+l$`4`$DistributionCd %>% 
+  mutate(
+    code = コード,
+    label = paste(種別, 分類, sep = "_")
+  ) %>% 
+  readr::write_csv(here::here("data", "codelist", "DistributionCd.csv"))
+
+idx <- names(l$`4`) == "DistributionCd"
+l$`4`[!idx] %>% 
+  purrr::iwalk(function(d, codelist_name) {
+    f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
+
+    dplyr::bind_rows(
+      d[, 1:2],
+      d[, 3:4]
+    ) %>% 
+      select(code = 1, label = 2) %>% 
+      filter(!is.na(code)) %>% 
+      readr::write_csv(f)
+  })
+```
+
+列が5つのものは1個だけ。
+
+``` r
+l$`5`$AdminAreaCd_R105 %>% 
+  select(code = 1, label1 = 2, label2 = 3) %>% 
+  mutate(
+    lable = paste0(label1, coalesce(label2, "")),
+    .keep = "unused"
+  ) %>% 
+    readr::write_csv(here::here("data", "codelist", "AdminAreaCd_R105.csv"))
+```
+
+列が8つのものは横に並んでいるタイプ
+
+``` r
+t8 <- l$`8`$shouhanshubanCd
+
+bind_rows(
+  t8[, 1:2],
+  t8[, 3:4],
+  t8[, 5:6],
+  t8[, 7:8]
+) %>% 
+  select(
+    code = 1,
+    label = 2
+  ) %>% 
+  readr::write_csv(here::here("data", "codelist", "shouhanshubanCd.csv"))
+```
