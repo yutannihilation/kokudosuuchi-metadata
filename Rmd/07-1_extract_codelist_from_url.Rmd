@@ -232,7 +232,7 @@ l$`4` %>%
   purrr::map(colnames)
 
 l$`4`$DistributionCd %>% 
-  mutate(
+  transmute(
     code = コード,
     label = paste(種別, 分類, sep = "_")
   ) %>% 

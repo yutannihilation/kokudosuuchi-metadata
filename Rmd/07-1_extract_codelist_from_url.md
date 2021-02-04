@@ -366,7 +366,7 @@ l$`4` %>%
 
 ``` r
 l$`4`$DistributionCd %>% 
-  mutate(
+  transmute(
     code = コード,
     label = paste(種別, 分類, sep = "_")
   ) %>% 
