@@ -140,22 +140,24 @@ d <- d %>%
   purrr::map(1L)
 ```
 
+-   `LandUseProperty*`は、列名っぽい。が、そもそも元データの列名は日本語になってるっぽいので省略
 -   `*AreaZoneCd`のものは、コードとラベルが1対1に対応していない。どのみち何らかの処理が必要そうなのでラベル翻訳は諦める。
 -   `PortRouteCd`
     は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
 -   `jushuCd` は、変換必要なさそう
 -   `shinrinkanriCd`
     は、データ中にコードもラベルも含まれているので特になにか対応する必要はなさそう
-    <!-- * `ClimateCd`は、列の説明なので特に対応する必要なし -->
+-   `ClimateCd`は、列の説明なので特に対応する必要なし
 
 ``` r
-excl <- str_detect(names(d), "(AreaZoneCd|^PortRouteCd|^jushuCd|^shinrinkanriCd)$")
+excl <- str_detect(names(d), "^LandUseProperty|(AreaZoneCd|^PortRouteCd|^jushuCd|^shinrinkanriCd)$")
 names(d)[excl]
 ```
 
-    ## [1] "ChukyoAreaZoneCd"     "KeihanshinAreaZoneCd" "KinkiAreaZoneCd"     
-    ## [4] "PortRouteCd"          "TokyoAreaZoneCd"      "jushuCd"             
-    ## [7] "shinrinkanriCd"
+    ##  [1] "ChukyoAreaZoneCd"      "KeihanshinAreaZoneCd"  "KinkiAreaZoneCd"      
+    ##  [4] "LandUseProperty-07"    "LandUseProperty-09"    "LandUseProperty-77"   
+    ##  [7] "LandUseProperty-88"    "LandUseProperty-92_98" "PortRouteCd"          
+    ## [10] "TokyoAreaZoneCd"       "jushuCd"               "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
