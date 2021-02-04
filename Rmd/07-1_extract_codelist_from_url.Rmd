@@ -269,7 +269,7 @@ l$`4`[!idx] %>%
 l$`5`$AdminAreaCd_R105 %>% 
   select(code = 1, label1 = 2, label2 = 3) %>% 
   mutate(
-    lable = paste0(label1, coalesce(label2, "")),
+    label = paste0(label1, coalesce(label2, "")),
     .keep = "unused"
   ) %>% 
     readr::write_csv(here::here("data", "codelist", "AdminAreaCd_R105.csv"))
