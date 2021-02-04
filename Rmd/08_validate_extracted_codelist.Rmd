@@ -31,6 +31,23 @@ col_types <- cols(
 d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
 ```
 
+```{r codelist}
+d_codelist <- readr::read_csv(here::here("data", "codelist_list.csv"), col_types = "ccc")
+
+# いくつか除外したやつ
+codelist_existing <- fs::dir_ls(here::here("data", "codelist")) %>% 
+  basename() %>% 
+  tools::file_path_sans_ext()
+
+d_codelist <- d_codelist %>% 
+  filter(codelist_id %in% codelist_existing)
+```
+
+```{r codelist_join}
+d %>% 
+  left_join()
+```
+
 
 ```{r kable}
 d %>%

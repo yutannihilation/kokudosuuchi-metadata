@@ -67,6 +67,8 @@ purrr::walk(id_types$exact, ~ {
       codelist = detect_codelist(type)
     ) %>% 
     select(!id) %>% 
+    distinct() %>% 
+    arrange(code) %>% 
     readr::write_csv(file.path(out_exact, glue::glue("{.x}.csv")))
 })
 ```
