@@ -178,3 +178,19 @@ tibble(
 ) %>% 
   readr::write_csv(file.path(out_dir, "refereced_from_agri.csv"))
 ```
+
+### `A35b`
+
+これは description から取り出すタイプ。
+
+```{r A35b}
+d %>% 
+  filter(id == "A35b", name == "種別コード")
+
+tibble(
+  code = c("1", "2"),
+  label = c("景観地区", "準景観地区")
+) %>% 
+  readr::write_csv(file.path(out_dir, "landscape_district_type.csv"))
+```
+

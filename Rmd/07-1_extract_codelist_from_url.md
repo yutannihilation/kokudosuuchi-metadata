@@ -146,8 +146,7 @@ d <- d %>%
 -   `PortRouteCd`
     は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
 -   `jushuCd` は、変換必要なさそう
--   `shinrinkanriCd`, `midorinokairoCd`, `rinshunosaibunCd`,
-    `kinouruikeiCd`, `hoanrinCd`
+-   `shinrinkanriCd`, `midorinokairoCd`
     は、データ中にコードもラベルも含まれている
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
 -   `AreaStationCd`は、データ中にコードもラベルも含まれている
@@ -159,10 +158,7 @@ excl <-
     "PortRouteCd",
     "jushuCd",
     "shinrinkanriCd",
-    "midorinokairoCd",
-    "rinshunosaibunCd",
-    "kinouruikeiCd",
-    "hoanrinCd"
+    "midorinokairoCd"
   )
 names(d)[excl]
 ```
@@ -175,9 +171,8 @@ names(d)[excl]
     ## [11] "LandUseProperty-77"      "LandUseProperty-88"     
     ## [13] "LandUseProperty-92_98"   "PortRouteCd"            
     ## [15] "TokyoAreaStationCd"      "TokyoAreaZoneCd"        
-    ## [17] "hoanrinCd"               "jushuCd"                
-    ## [19] "kinouruikeiCd"           "midorinokairoCd"        
-    ## [21] "rinshunosaibunCd"        "shinrinkanriCd"
+    ## [17] "jushuCd"                 "midorinokairoCd"        
+    ## [19] "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -228,10 +223,11 @@ l %>%
     ##  [7] "EntrepreneurCd"       "EstClassCd"           "KasoCd"              
     ## [10] "LandUseCd-09-u"       "LandUseCd-09"         "PosSpecificLevel"    
     ## [13] "PubOfficeCd"          "RailwayClassCd"       "ReferenceDataCd"     
-    ## [16] "UrgentRoadCd"        
+    ## [16] "UrgentRoadCd"         "kinouruikeiCd"        "rinshunosaibunCd"    
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
+    ## [5] "hoanrinCd"      
     ## 
     ## $`5`
     ## [1] "AdminAreaCd_R105"
@@ -295,7 +291,13 @@ l$`3` %>%
     ## [1] "内容"   "コード" "内容"  
     ## 
     ## $UrgentRoadCd
-    ## [1] "コード" "区分"   "説明"
+    ## [1] "コード" "区分"   "説明"  
+    ## 
+    ## $kinouruikeiCd
+    ## [1] "コード" "内容"   "備考"  
+    ## 
+    ## $rinshunosaibunCd
+    ## [1] "コード" "内容"   "備考"
 
 ``` r
 l$`3` %>% 
@@ -327,7 +329,8 @@ l$`3` %>%
         label = {{ idx_label }}
       ) %>% 
       mutate(
-        code = if(is.character(code)) code else sprintf("%.0f", code)
+        code = if(is.character(code)) code else sprintf("%.0f", code),
+        across(everything(), ~ str_remove_all(.x, "\\s"))
       ) %>% 
       readr::write_csv(f)
   }) 
@@ -351,6 +354,9 @@ l$`4` %>%
     ## 
     ## $PubFacMiclassCd
     ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
+    ## 
+    ## $hoanrinCd
+    ## [1] "コード" "内容"   "コード" "内容"
 
 ``` r
 l$`4`$DistributionCd %>% 
