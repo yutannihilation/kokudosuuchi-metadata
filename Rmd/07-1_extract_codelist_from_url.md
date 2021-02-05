@@ -410,3 +410,97 @@ bind_rows(
   ) %>% 
   readr::write_csv(here::here("data", "codelist", "shouhanshubanCd.csv"))
 ```
+
+テーブルが2つあるもの
+
+``` r
+# これは2つ目を選んでそのまま使えばいい
+d_many_tables$MaritimeOrgCd[[2]] %>% 
+  rename(code = 1, label = 2) %>% 
+  readr::write_csv(here::here("data", "codelist", "MaritimeOrgCd.csv"))
+
+# 第1版と第2版で違うので別テーブルになっているが、
+# かぶらなそうなのでまとめてしまう
+d1 <- d_many_tables$PubFacAdminCd[[2]]
+d2 <- d_many_tables$PubFacAdminCd[[3]]
+
+# html_table() は 001 を 1 に変換してしまうので戻す
+d1 <- d1 %>% 
+  transmute(code = sprintf("%03d", コード), label = 対応する内容)
+
+d2 <- d2 %>% 
+  mutate(code = as.character(コード), label = 対応する内容)
+
+bind_rows(d1, d2) %>% 
+  readr::write_csv(here::here("data", "codelist", "PubFacAdminCd.csv"))
+
+# 年度によって違うので別テーブルになっているが、
+# （誤字のやつ以外）かぶらなそうなのでまとめてしまう
+d1 <- d_many_tables$PubFacMiclassCd_wf[[1]]
+d2 <- d_many_tables$PubFacMiclassCd_wf[[2]]
+
+d1 <- bind_rows(d1[, 1:2], d1[, 3:4])
+d2 <- bind_rows(d2[, 1:2], d2[, 3:4])
+
+d3 <- bind_rows(d1, d2)
+
+d3 %>% 
+  group_by(コード) %>% 
+  filter(n_distinct(対応する内容) > 1)
+```
+
+    ## # A tibble: 2 x 2
+    ## # Groups:   コード [1]
+    ##   コード 対応する内容                      
+    ##    <int> <chr>                             
+    ## 1  17001 一般病院、国立療養所、医療センター
+    ## 2  17001 般病院、国立療養所、医療センター
+
+``` r
+d3 %>% 
+  select(code = 1, label = 2) %>% 
+  filter(label != "般病院、国立療養所、医療センター") %>% 
+  distinct() %>% 
+  readr::write_csv(here::here("data", "codelist", "PubFacMiclassCd_wf.csv"))
+
+
+# 年度によって違うので別テーブルになっている
+# これはほんとにまとめれなさそうなので個別対応になる
+d1 <- d_many_tables$WelfareFacMiclassCd[[1]]
+d2 <- d_many_tables$WelfareFacMiclassCd[[2]]
+
+d1 <- bind_rows(d1[, 1:2], d1[, 3:4])
+d2 <- bind_rows(d2[, 1:2], d2[, 3:4])
+
+# まとめるのむり
+bind_rows(d1, d2) %>% 
+  group_by(コード) %>% 
+  arrange(コード) %>% 
+  filter(n_distinct(対応する内容) > 1)
+```
+
+    ## # A tibble: 36 x 2
+    ## # Groups:   コード [18]
+    ##    コード 対応する内容              
+    ##     <int> <chr>                     
+    ##  1    103 養護老人ホーム（一般      
+    ##  2    103 養護老人ホーム（一般）    
+    ##  3    106 軽費老人ホーム（A型）     
+    ##  4    106 軽費老人ホーム（ A型）    
+    ##  5    107 軽費老人ホーム（B型）     
+    ##  6    107 軽費老人ホーム（ B型）    
+    ##  7    109 老人福祉センター（特A型） 
+    ##  8    109 老人福祉センター（特 A型）
+    ##  9    110 老人福祉センター（A型）   
+    ## 10    110 老人福祉センター（ A型）  
+    ## # … with 26 more rows
+
+``` r
+d1 %>% 
+  select(code = 1, label = 2) %>% 
+  readr::write_csv(here::here("data", "codelist", "WelfareFacMiclassCd_h23.csv"))
+
+d2 %>% 
+  select(code = 1, label = 2) %>% 
+  readr::write_csv(here::here("data", "codelist", "WelfareFacMiclassCd_h27.csv"))
+```
