@@ -23,7 +23,7 @@ attr_table <- read_html(input) %>%
     html_text2(html_element(.x, "th")) == "属性情報" &&
       length(html_element(.x, "table")) > 0
   }) %>% 
-  html_table()
+  html_table(convert = FALSE)
 
 stopifnot(length(attr_table) == 1)
 

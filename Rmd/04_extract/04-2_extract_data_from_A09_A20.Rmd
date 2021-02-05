@@ -22,7 +22,7 @@ id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.ht
 output <- here::here("data", "attrs", glue::glue("{id}.csv"))
 
 attr_table <- read_html(input) %>% 
-  html_table() %>% 
+  html_table(convert = FALSE) %>% 
   purrr::keep(~ .x[1, 1] == "地物情報")
 
 stopifnot(length(attr_table) == 1)
@@ -49,7 +49,7 @@ id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.ht
 output <- here::here("data", "attrs", glue::glue("{id}.csv"))
 
 attr_table <- read_html(input) %>% 
-  html_table() %>% 
+  html_table(convert = FALSE) %>% 
   purrr::keep(~ !is.na(.x[1, 1]) && .x[1, 1] == "地物情報")
 
 stopifnot(length(attr_table) == 1)

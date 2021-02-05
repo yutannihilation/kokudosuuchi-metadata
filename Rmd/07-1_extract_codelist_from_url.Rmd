@@ -117,7 +117,7 @@ d <- codelist_files %>%
       # encoding を明示的に指定しないとエラーになる
       read_html(.x, encoding = "UTF-8") %>% 
         # <th> がないものがほとんどっぽい
-        html_table(header = TRUE)
+        html_table(convert = FALSE, header = TRUE)
     }
   })
 
@@ -308,12 +308,11 @@ d_many_tables$MaritimeOrgCd[[2]] %>%
 d1 <- d_many_tables$PubFacAdminCd[[2]]
 d2 <- d_many_tables$PubFacAdminCd[[3]]
 
-# html_table() は 001 を 1 に変換してしまうので戻す
 d1 <- d1 %>% 
-  transmute(code = sprintf("%03d", コード), label = 対応する内容)
+  select(code = コード, label = 対応する内容)
 
 d2 <- d2 %>% 
-  mutate(code = as.character(コード), label = 対応する内容)
+  select(code = コード, label = 対応する内容)
 
 bind_rows(d1, d2) %>% 
   readr::write_csv(here::here("data", "codelist", "PubFacAdminCd.csv"))

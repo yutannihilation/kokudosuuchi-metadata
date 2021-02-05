@@ -36,7 +36,7 @@ input_text <- brio::read_file(input) %>%
   stringr::str_replace('rowspan="12"', 'rowspan="10"')
 
 attr_table <- read_html(input_text) %>% 
-  html_table() %>% 
+  html_table(convert = FALSE) %>% 
   purrr::keep(~ "地物情報" %in% colnames(.x))
 
 stopifnot(length(attr_table) == 1)

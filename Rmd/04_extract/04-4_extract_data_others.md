@@ -20,7 +20,7 @@ names(datalist_files) <- id
 
 tables <- purrr::map(datalist_files, ~ {
   read_html(.x) %>% 
-    html_table() %>% 
+    html_table(convert = FALSE) %>% 
     purrr::keep(~ "地物情報" == colnames(.x)[1])
 })
 

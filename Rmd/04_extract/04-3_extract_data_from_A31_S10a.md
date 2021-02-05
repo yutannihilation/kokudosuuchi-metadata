@@ -16,7 +16,7 @@ id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.ht
 output <- here::here("data", "attrs", glue::glue("{id}.csv"))
 
 attr_table <- read_html(input) %>% 
-  html_table() %>% 
+  html_table(convert = FALSE) %>% 
   purrr::keep(~ "地物情報" %in% colnames(.x))
 
 res <- attr_table %>% 
@@ -76,7 +76,7 @@ id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.ht
 output <- here::here("data", "attrs", glue::glue("{id}.csv"))
 
 attr_table <- read_html(input) %>% 
-  html_table()
+  html_table(convert = FALSE)
 ```
 
 これの場合は、属性情報のカラムが2つ分あるらしく、dplyr
@@ -109,7 +109,7 @@ page <- bow("https://nlftp.mlit.go.jp/ksj/gml/codelist/PortRouteCd.html") %>%
   scrape()
 
 tables <- page %>% 
-  html_table(header = TRUE)
+  html_table(convert = FALSE, header = TRUE)
 
 stopifnot(length(tables) == 1)
 

@@ -120,7 +120,7 @@ d <- codelist_files %>%
       # encoding を明示的に指定しないとエラーになる
       read_html(.x, encoding = "UTF-8") %>% 
         # <th> がないものがほとんどっぽい
-        html_table(header = TRUE)
+        html_table(convert = FALSE, header = TRUE)
     }
   })
 
@@ -424,12 +424,11 @@ d_many_tables$MaritimeOrgCd[[2]] %>%
 d1 <- d_many_tables$PubFacAdminCd[[2]]
 d2 <- d_many_tables$PubFacAdminCd[[3]]
 
-# html_table() は 001 を 1 に変換してしまうので戻す
 d1 <- d1 %>% 
-  transmute(code = sprintf("%03d", コード), label = 対応する内容)
+  select(code = コード, label = 対応する内容)
 
 d2 <- d2 %>% 
-  mutate(code = as.character(コード), label = 対応する内容)
+  select(code = コード, label = 対応する内容)
 
 bind_rows(d1, d2) %>% 
   readr::write_csv(here::here("data", "codelist", "PubFacAdminCd.csv"))
@@ -452,9 +451,9 @@ d3 %>%
     ## # A tibble: 2 x 2
     ## # Groups:   コード [1]
     ##   コード 対応する内容                      
-    ##    <int> <chr>                             
-    ## 1  17001 一般病院、国立療養所、医療センター
-    ## 2  17001 般病院、国立療養所、医療センター
+    ##   <chr>  <chr>                             
+    ## 1 17001  一般病院、国立療養所、医療センター
+    ## 2 17001  般病院、国立療養所、医療センター
 
 ``` r
 d3 %>% 
@@ -482,17 +481,17 @@ bind_rows(d1, d2) %>%
     ## # A tibble: 36 x 2
     ## # Groups:   コード [18]
     ##    コード 対応する内容              
-    ##     <int> <chr>                     
-    ##  1    103 養護老人ホーム（一般      
-    ##  2    103 養護老人ホーム（一般）    
-    ##  3    106 軽費老人ホーム（A型）     
-    ##  4    106 軽費老人ホーム（ A型）    
-    ##  5    107 軽費老人ホーム（B型）     
-    ##  6    107 軽費老人ホーム（ B型）    
-    ##  7    109 老人福祉センター（特A型） 
-    ##  8    109 老人福祉センター（特 A型）
-    ##  9    110 老人福祉センター（A型）   
-    ## 10    110 老人福祉センター（ A型）  
+    ##    <chr>  <chr>                     
+    ##  1 103    養護老人ホーム（一般      
+    ##  2 103    養護老人ホーム（一般）    
+    ##  3 106    軽費老人ホーム（A型）     
+    ##  4 106    軽費老人ホーム（ A型）    
+    ##  5 107    軽費老人ホーム（B型）     
+    ##  6 107    軽費老人ホーム（ B型）    
+    ##  7 109    老人福祉センター（特A型） 
+    ##  8 109    老人福祉センター（特 A型）
+    ##  9 110    老人福祉センター（A型）   
+    ## 10 110    老人福祉センター（ A型）  
     ## # … with 26 more rows
 
 ``` r
