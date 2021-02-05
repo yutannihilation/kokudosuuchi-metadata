@@ -1,0 +1,58 @@
+---
+title: "Extract codelist: 微調整"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### `LandUseCd`
+
+`L03-b-c`の`L03b_c_002`はコードリストが2つあるが、重複はないのでまとめてしまえばいい
+
+```{r L03-b-c}
+library(dplyr)
+library(stringr)
+
+l <- fs::dir_ls(here::here("data", "codelist"), regexp = "LandUseCd")
+l <- str_subset(l, "tweak_", negate = TRUE)
+names(l) <- tools::file_path_sans_ext(basename(l))
+
+d <- l %>% 
+  purrr::map_dfr(readr::read_csv, col_types = "cc", .id = "file")
+
+d_distinct <- d %>% 
+  arrange(code) %>% 
+  filter(label != "-") %>% 
+  distinct(code, label) %>% 
+  arrange(as.integer(code))
+
+knitr::kable(d_distinct)
+
+readr::write_csv(
+  d_distinct,
+  here::here("data", "codelist", "tweak_LandUseCd.csv")
+)
+```
+
+### `*AreaStationCd`
+
+`S05-c`の`*AreaStationCd`は手動でまとめる
+
+```{r S05-c}
+l <- fs::dir_ls(here::here("data", "codelist"), regexp = "AreaStationCd")
+l <- str_subset(l, "tweak_", negate = TRUE)
+names(l) <- tools::file_path_sans_ext(basename(l))
+
+d <- l %>% 
+  purrr::map_dfr(readr::read_csv, col_types = "cc", .id = "file")
+
+stopifnot(!anyDuplicated(d$code))
+
+readr::write_csv(
+  d,
+  here::here("data", "codelist", "tweak_AreaStationCd.csv")
+)
+```
+
