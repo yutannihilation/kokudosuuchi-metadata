@@ -244,3 +244,47 @@ tibble(
 ) %>% 
   readr::write_csv(file.path(out_dir, "refereced_from_agri.csv"))
 ```
+
+### `A35b`
+
+これは description から取り出すタイプ。
+
+``` r
+d %>% 
+  filter(id == "A35b", name == "種別コード")
+```
+
+    ## # A tibble: 2 x 6
+    ##   id    name     code    description                    type            codelist
+    ##   <chr> <chr>    <chr>   <chr>                          <chr>           <lgl>   
+    ## 1 A35b  種別コード… A35d_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE    
+    ## 2 A35b  種別コード… A35e_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE
+
+``` r
+tibble(
+  code = c("1", "2"),
+  label = c("景観地区", "準景観地区")
+) %>% 
+  readr::write_csv(file.path(out_dir, "landscape_district_type.csv"))
+```
+
+### `L01_005`
+
+これも description から取り出すタイプ。
+
+``` r
+d %>% 
+  filter(id == "L01_005", name == "臨海・内陸区分コード")
+```
+
+    ## # A tibble: 0 x 6
+    ## # … with 6 variables: id <chr>, name <chr>, code <chr>, description <chr>,
+    ## #   type <chr>, codelist <lgl>
+
+``` r
+tibble(
+  code = c("1", "2"),
+  label = c("臨海", "内陸")
+) %>% 
+  readr::write_csv(file.path(out_dir, "seaside_type.csv"))
+```
