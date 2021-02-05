@@ -141,7 +141,6 @@ d <- d %>%
 ```
 
 -   `LandUseProperty*`は、列名っぽい。が、そもそも元データの列名は日本語になってるっぽいので省略
--   `LandUseCd*`は、`LandUseCd-09`と`LandUseCd-09-u`以外は列名っぽい。同上。
 -   `*AreaZoneCd`のものは、コードとラベルが1対1に対応していない。どのみち何らかの処理が必要そうなのでラベル翻訳は諦める。
 -   `PortRouteCd`
     は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
@@ -152,7 +151,7 @@ d <- d %>%
 
 ``` r
 excl <- 
-  str_detect(names(d), "^LandUseProperty.*$|^LandUseCd-(?!09)|^.*AreaZoneCd$|^.*AreaStationCd$") |
+  str_detect(names(d), "^LandUseProperty.*$|^.*AreaZoneCd$|^.*AreaStationCd$") |
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
@@ -163,13 +162,12 @@ names(d)[excl]
 
     ##  [1] "ChukyoAreaZoneCd"        "KeihanshinAreaStationCd"
     ##  [3] "KeihanshinAreaZoneCd"    "KinkiAreaStationCd"     
-    ##  [5] "KinkiAreaZoneCd"         "LandUseCd-77"           
-    ##  [7] "LandUseCd-88"            "LandUseCd-YY"           
-    ##  [9] "LandUseProperty-07"      "LandUseProperty-09"     
-    ## [11] "LandUseProperty-77"      "LandUseProperty-88"     
-    ## [13] "LandUseProperty-92_98"   "PortRouteCd"            
-    ## [15] "TokyoAreaStationCd"      "TokyoAreaZoneCd"        
-    ## [17] "jushuCd"                 "shinrinkanriCd"
+    ##  [5] "KinkiAreaZoneCd"         "LandUseProperty-07"     
+    ##  [7] "LandUseProperty-09"      "LandUseProperty-77"     
+    ##  [9] "LandUseProperty-88"      "LandUseProperty-92_98"  
+    ## [11] "PortRouteCd"             "TokyoAreaStationCd"     
+    ## [13] "TokyoAreaZoneCd"         "jushuCd"                
+    ## [15] "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -218,9 +216,10 @@ l %>%
     ##  [1] "BusClassCd"           "ClassFishPortCd"      "ClassHarbor2Cd"      
     ##  [4] "CodeDesignationCd"    "CodeNoncombustibleCd" "DistributionCenterCd"
     ##  [7] "EntrepreneurCd"       "EstClassCd"           "KasoCd"              
-    ## [10] "LandUseCd-09-u"       "LandUseCd-09"         "PosSpecificLevel"    
-    ## [13] "PubOfficeCd"          "RailwayClassCd"       "ReferenceDataCd"     
-    ## [16] "UrgentRoadCd"         "kinouruikeiCd"        "rinshunosaibunCd"    
+    ## [10] "LandUseCd-09-u"       "LandUseCd-09"         "LandUseCd-77"        
+    ## [13] "LandUseCd-88"         "LandUseCd-YY"         "PosSpecificLevel"    
+    ## [16] "PubOfficeCd"          "RailwayClassCd"       "ReferenceDataCd"     
+    ## [19] "UrgentRoadCd"         "kinouruikeiCd"        "rinshunosaibunCd"    
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
@@ -274,6 +273,15 @@ l$`3` %>%
     ## 
     ## $`LandUseCd-09`
     ## [1] "コード" "種別"   "定義"  
+    ## 
+    ## $`LandUseCd-77`
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $`LandUseCd-88`
+    ## [1] "コード"       "対応する内容" "定義"        
+    ## 
+    ## $`LandUseCd-YY`
+    ## [1] "コード"       "対応する内容" "定義"        
     ## 
     ## $PosSpecificLevel
     ## [1] "コード" "説明"   "説明"  
