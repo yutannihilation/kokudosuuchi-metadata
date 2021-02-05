@@ -148,12 +148,13 @@ d <- d %>%
 -   `jushuCd` は、変換必要なさそう
 -   `shinrinkanriCd`, `midorinokairoCd`, `rinshunosaibunCd`,
     `kinouruikeiCd`, `hoanrinCd`
-    は、データ中にコードもラベルも含まれているので特になにか対応する必要はなさそう
+    は、データ中にコードもラベルも含まれている
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
+-   `AreaStationCd`は、データ中にコードもラベルも含まれている
 
 ``` r
 excl <- 
-  str_detect(names(d), "^LandUseProperty.*$|^LandUseCd-(?!09)|^.*AreaZoneCd$") |
+  str_detect(names(d), "^LandUseProperty.*$|^LandUseCd-(?!09)|^.*AreaZoneCd$|^.*AreaStationCd$") |
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
@@ -166,13 +167,17 @@ excl <-
 names(d)[excl]
 ```
 
-    ##  [1] "ChukyoAreaZoneCd"      "KeihanshinAreaZoneCd"  "KinkiAreaZoneCd"      
-    ##  [4] "LandUseCd-77"          "LandUseCd-88"          "LandUseCd-YY"         
-    ##  [7] "LandUseProperty-07"    "LandUseProperty-09"    "LandUseProperty-77"   
-    ## [10] "LandUseProperty-88"    "LandUseProperty-92_98" "PortRouteCd"          
-    ## [13] "TokyoAreaZoneCd"       "hoanrinCd"             "jushuCd"              
-    ## [16] "kinouruikeiCd"         "midorinokairoCd"       "rinshunosaibunCd"     
-    ## [19] "shinrinkanriCd"
+    ##  [1] "ChukyoAreaZoneCd"        "KeihanshinAreaStationCd"
+    ##  [3] "KeihanshinAreaZoneCd"    "KinkiAreaStationCd"     
+    ##  [5] "KinkiAreaZoneCd"         "LandUseCd-77"           
+    ##  [7] "LandUseCd-88"            "LandUseCd-YY"           
+    ##  [9] "LandUseProperty-07"      "LandUseProperty-09"     
+    ## [11] "LandUseProperty-77"      "LandUseProperty-88"     
+    ## [13] "LandUseProperty-92_98"   "PortRouteCd"            
+    ## [15] "TokyoAreaStationCd"      "TokyoAreaZoneCd"        
+    ## [17] "hoanrinCd"               "jushuCd"                
+    ## [19] "kinouruikeiCd"           "midorinokairoCd"        
+    ## [21] "rinshunosaibunCd"        "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -218,15 +223,12 @@ l %>%
 ```
 
     ## $`3`
-    ##  [1] "BusClassCd"              "ClassFishPortCd"        
-    ##  [3] "ClassHarbor2Cd"          "CodeDesignationCd"      
-    ##  [5] "CodeNoncombustibleCd"    "DistributionCenterCd"   
-    ##  [7] "EntrepreneurCd"          "EstClassCd"             
-    ##  [9] "KasoCd"                  "KeihanshinAreaStationCd"
-    ## [11] "KinkiAreaStationCd"      "LandUseCd-09-u"         
-    ## [13] "LandUseCd-09"            "PosSpecificLevel"       
-    ## [15] "PubOfficeCd"             "RailwayClassCd"         
-    ## [17] "ReferenceDataCd"         "UrgentRoadCd"           
+    ##  [1] "BusClassCd"           "ClassFishPortCd"      "ClassHarbor2Cd"      
+    ##  [4] "CodeDesignationCd"    "CodeNoncombustibleCd" "DistributionCenterCd"
+    ##  [7] "EntrepreneurCd"       "EstClassCd"           "KasoCd"              
+    ## [10] "LandUseCd-09-u"       "LandUseCd-09"         "PosSpecificLevel"    
+    ## [13] "PubOfficeCd"          "RailwayClassCd"       "ReferenceDataCd"     
+    ## [16] "UrgentRoadCd"        
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
@@ -273,12 +275,6 @@ l$`3` %>%
     ## 
     ## $KasoCd
     ## [1] "コード"       "対応する内容" "適用条文"    
-    ## 
-    ## $KeihanshinAreaStationCd
-    ## [1] "駅コード" "運営会社" "駅名"    
-    ## 
-    ## $KinkiAreaStationCd
-    ## [1] "駅のコード"             "鉄道路線を運営する会社" "駅の名称"              
     ## 
     ## $`LandUseCd-09-u`
     ## [1] "コード" "種別"   "定義"  

@@ -67,23 +67,3 @@ readr::write_csv(
   here::here("data", "codelist", "tweak_LandUseCd.csv")
 )
 ```
-
-### `*AreaStationCd`
-
-`S05-c`の`*AreaStationCd`は手動でまとめる
-
-``` r
-l <- fs::dir_ls(here::here("data", "codelist"), regexp = "AreaStationCd")
-l <- str_subset(l, "tweak_", negate = TRUE)
-names(l) <- tools::file_path_sans_ext(basename(l))
-
-d <- l %>% 
-  purrr::map_dfr(readr::read_csv, col_types = "cc", .id = "file")
-
-stopifnot(!anyDuplicated(d$code))
-
-readr::write_csv(
-  d,
-  here::here("data", "codelist", "tweak_AreaStationCd.csv")
-)
-```
