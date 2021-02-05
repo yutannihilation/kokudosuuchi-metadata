@@ -137,7 +137,7 @@ d <- d %>%
 * `*AreaZoneCd`のものは、コードとラベルが1対1に対応していない。どのみち何らかの処理が必要そうなのでラベル翻訳は諦める。
 * `PortRouteCd` は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
 * `jushuCd` は、変換必要なさそう
-* `shinrinkanriCd`, `midorinokairoCd` は、データ中にコードもラベルも含まれている
+* `shinrinkanriCd` は、データ中にコードもラベルも含まれている
 * `ClimateCd`は、列の説明なので特に対応する必要なし
 * `AreaStationCd`は、データ中にコードもラベルも含まれている
 
@@ -147,8 +147,7 @@ excl <-
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
-    "shinrinkanriCd",
-    "midorinokairoCd"
+    "shinrinkanriCd"
   )
 names(d)[excl]
 
@@ -259,7 +258,7 @@ l$`4`[!idx] %>%
       d[, 3:4]
     ) %>% 
       select(code = 1, label = 2) %>% 
-      filter(!is.na(code)) %>% 
+      filter(!is.na(code), code != "") %>% 
       readr::write_csv(f)
   })
 ```

@@ -146,8 +146,7 @@ d <- d %>%
 -   `PortRouteCd`
     は、列の値のコードに対応するラベルではなくて、列のコードと属性名の対応で、これはすでにHTMLから抜き出しているので不要
 -   `jushuCd` は、変換必要なさそう
--   `shinrinkanriCd`, `midorinokairoCd`
-    は、データ中にコードもラベルも含まれている
+-   `shinrinkanriCd` は、データ中にコードもラベルも含まれている
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
 -   `AreaStationCd`は、データ中にコードもラベルも含まれている
 
@@ -157,8 +156,7 @@ excl <-
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
-    "shinrinkanriCd",
-    "midorinokairoCd"
+    "shinrinkanriCd"
   )
 names(d)[excl]
 ```
@@ -171,8 +169,7 @@ names(d)[excl]
     ## [11] "LandUseProperty-77"      "LandUseProperty-88"     
     ## [13] "LandUseProperty-92_98"   "PortRouteCd"            
     ## [15] "TokyoAreaStationCd"      "TokyoAreaZoneCd"        
-    ## [17] "jushuCd"                 "midorinokairoCd"        
-    ## [19] "shinrinkanriCd"
+    ## [17] "jushuCd"                 "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -227,7 +224,7 @@ l %>%
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
-    ## [5] "hoanrinCd"      
+    ## [5] "hoanrinCd"       "midorinokairoCd"
     ## 
     ## $`5`
     ## [1] "AdminAreaCd_R105"
@@ -356,6 +353,9 @@ l$`4` %>%
     ## [1] "コード"       "対応する内容" "コード"       "対応する内容"
     ## 
     ## $hoanrinCd
+    ## [1] "コード" "内容"   "コード" "内容"  
+    ## 
+    ## $midorinokairoCd
     ## [1] "コード" "内容"   "コード" "内容"
 
 ``` r
@@ -376,7 +376,7 @@ l$`4`[!idx] %>%
       d[, 3:4]
     ) %>% 
       select(code = 1, label = 2) %>% 
-      filter(!is.na(code)) %>% 
+      filter(!is.na(code), code != "") %>% 
       readr::write_csv(f)
   })
 ```
