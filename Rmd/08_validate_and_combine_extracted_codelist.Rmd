@@ -1,5 +1,5 @@
 ---
-title: "Validate codelist"
+title: "Validate and combine codelist"
 output: github_document
 ---
 
@@ -41,6 +41,7 @@ col_types <- cols(
 d <- purrr::pmap_dfr(d_csv_file, function(file, id, ...) {
   d <- readr::read_csv(file, col_types = col_types)
   d %>% 
+    tibble::rowid_to_column() %>% 
     mutate(id = id, .before = 1L)
 })
 ```
@@ -123,7 +124,7 @@ d_codelist <- d_codelist %>%
 ```{r codelist_join}
 d_joined_manual <- d %>% 
   filter(!is.na(codelist_id_manual)) %>% 
-  select(id, code, name, type, codelist, codelist_id = codelist_id_manual)
+  select(id, rowid, code, name, type, codelist, codelist_id = codelist_id_manual)
 
 d_joined_regex <- d %>% 
   filter(is.na(codelist_id_manual)) %>% 
@@ -133,7 +134,7 @@ d_joined_regex <- d %>%
     # 複数のパターンにマッチする場合は長い方を採用する（P31のみのはず）
     matched_size = if_else(matched, nchar(type_part), 0L)
   ) %>% 
-  group_by(id, code, name, type, codelist) %>% 
+  group_by(id, rowid, code, name, type, codelist) %>% 
   summarise(
     codelist_id = if (sum(matched, na.rm = TRUE) > 1) {
       list(codelist_id[which.max(matched_size)])
@@ -153,7 +154,10 @@ d_joined_regex <- d_joined_regex %>%
 
 stopifnot(nrow_before == nrow(d_joined_regex))
 
-d_joined <- bind_rows(d_joined_manual, d_joined_regex)
+d_joined <- bind_rows(d_joined_manual, d_joined_regex) %>% 
+  # rowidで並べ替えて元の順序を保持する
+  arrange(id, rowid) %>% 
+  select(!rowid)
 ```
 
 
