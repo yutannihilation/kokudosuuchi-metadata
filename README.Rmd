@@ -27,7 +27,7 @@ dir.create(cache_dir, showWarnings = FALSE)
 source(here::here("scripts", "read_ksj_data.R"))
 ```
 
-```{r}
+```{r warning=FALSE}
 translate_columns_safe <- purrr::safely(translate_columns)
 read_zip_with_cache_safe <- purrr::safely(read_zip_with_cache)
 
