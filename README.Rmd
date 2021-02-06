@@ -1,0 +1,58 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# kokudosuuchi-metadata
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Coverages
+
+```{r data}
+test_data <- fs::dir_ls(here::here("data-raw", "zip"))
+cache_dir <- here::here("cache")
+
+dir.create(cache_dir, showWarnings = FALSE)
+
+source(here::here("scripts", "read_ksj_data.R"))
+```
+
+```{r}
+translate_columns_safe <- purrr::safely(translate_columns)
+read_zip_with_cache_safe <- purrr::safely(read_zip_with_cache)
+
+result <- purrr::map(test_data, ~ {
+  l <- read_zip_with_cache_safe(.x)
+  if (!is.null(l$error)) {
+    return(l)
+  }
+  translate_columns_safe(l$result)
+})
+
+errors <- purrr::map_chr(result, ~ {
+  if (is.null(.$error)) {
+    return(NA_character_)
+  }
+  
+  as.character(.$error)
+})
+
+library(dplyr, warn.conflicts = FALSE)
+
+tibble::enframe(errors) %>% 
+  mutate(
+    name = stringr::str_replace(basename(names(errors)), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+  ) %>% 
+  knitr::kable()
+```
+
