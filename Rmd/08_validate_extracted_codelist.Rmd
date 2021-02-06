@@ -165,9 +165,16 @@ d_joined %>%
     is.na(codelist_id),
     !(id == "A03" & name %in% c("区域コード", "区域区分")),
     !(id %in% c("A03", "A17", "A18", "A19", "A22", "A23", "A24", "A25") & name == "行政区域コード"),
-    !code %in% c("A38a_001", "A38b_001", "A39_001", "A39_002", "A45_002", "A45_003", "A45_008", "A45_009", "A45_015", "A45_018", "A45_021")
-  ) %>% 
-  knitr::kable()
+    !code %in% c("A38a_001", "A38b_001", "A39_001", "A39_002", "A45_002", "A45_003", "A45_008", "A45_009", "A45_015", "A45_018", "A45_021", "L05_005", "P14_006"),
+    !(id %in% c("L03-b", "L03-b-u") & name == "土地利用種別"),
+    !(str_detect(id, "S05-[a-d]") & str_detect(name, "ゾーンコード")),
+    !(id == "S05-c" & name %in% c("運営会社", "駅コード", "駅名"))
+  ) %>%
+  { stopifnot(nrow(.) == 0) }
+
+d_joined %>% 
+  select(!codelist) %>% 
+  readr::write_csv(here::here("data", "joined.csv"))
 ```
 
 
