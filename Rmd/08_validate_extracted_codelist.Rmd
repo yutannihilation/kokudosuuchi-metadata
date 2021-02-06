@@ -14,12 +14,22 @@ library(readr)
 library(stringr)
 library(dplyr, warn.conflicts = FALSE)
 
-csv_files <- c(
-  list.files(here::here("data", "colnames_exact"), full.names = TRUE),
-  list.files(here::here("data", "colnames_positional"), full.names = TRUE),
-  list.files(here::here("data", "colnames_other"), full.names = TRUE)
-)
-names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
+matching_types <- c("exact", "positional", "other")
+
+d_csv_file <- purrr::map_dfr(matching_types, ~ {
+  dir <- here::here("data", glue::glue("colnames_{.x}"))
+  tibble::tibble(
+    file = fs::dir_ls(dir),
+    id = tools::file_path_sans_ext(basename(file)),
+    matching_type = .x
+  )
+})
+
+# 列名のマッチングの仕方の種類は書き出しておく
+d_csv_file %>% 
+  select(id, matching_type) %>% 
+  filter(matching_type != "other") %>% 
+  readr::write_csv(here::here("data", "matching_types.csv"))
 
 col_types <- cols(
   name = col_character(),
@@ -28,7 +38,11 @@ col_types <- cols(
   type = col_character()
 )
 
-d <- purrr::map_dfr(csv_files, read_csv, col_types = col_types, .id = "id")
+d <- purrr::pmap_dfr(d_csv_file, function(file, id, ...) {
+  d <- readr::read_csv(file, col_types = col_types)
+  d %>% 
+    mutate(id = id, .before = 1L)
+})
 ```
 
 いくつか重複があるので、`id`, `code`, `name`の組がユニークになるようにまとめなおす
