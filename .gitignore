@@ -3,6 +3,11 @@
 .RData
 .Ruserdata
 
+# scraped data
 /data-raw
 
+# intermediate data
 /data/attrs
+
+# test data
+/cache
