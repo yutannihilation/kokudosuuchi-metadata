@@ -54,7 +54,7 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
                     options = glue::glue("ENCODING={encoding}")
   )
   
-  attr(res, "id") <- stringr::str_split(id, "-")[[1]][1]
+  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?(-[a-z])?")
   res
 }
 
@@ -165,6 +165,55 @@ match_by_name <- function(d, id) {
   exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
   no_translated_cols <- setdiff(old_names[is.na(idx)], exclude_cols)
   
+  if (length(no_translated_cols) > 0) {
+    msg <- glue::glue(
+      "There are some columns yet to be translated: ",
+      paste(no_translated_cols, collapse = ",")
+    )
+    rlang::abort(msg)
+  }
+  
+  d
+}
+
+# A22-m has two types of colnames; by exact match and by pattern
+`match_A22-m` <- function(d, id) {
+  dc <- d_col_info[d_col_info$id == id, ]
+  
+  old_names <- colnames(d)
+  
+  fixed_readable_names <- dc$name
+  fixed_idx <- match(colnames(d), dc$code)
+  
+  colnames(d)[which(!is.na(fixed_idx))] <- dc$name[fixed_idx[!is.na(fixed_idx)]]
+
+  replace_year <- function(d, prefix, format) {
+    idx <- stringr::str_detect(colnames(d), paste0(prefix, "[12][0-9]{3}"))
+    year <- stringr::str_sub(colnames(d)[idx], -4L)
+    colnames(d)[idx] <- glue::glue(format)
+    d
+  }
+  
+  d <- replace_year(d, "A22_01", "{year}年度最深積雪")
+  d <- replace_year(d, "A22_02", "{year}年度累計降雪量")
+  d <- replace_year(d, "A22_03", "{year}年度最低気温")
+  d <- replace_year(d, "A22_04", "{year}年度平均風速")
+  d <- replace_year(d, "A22_10", "{year}年度死者数")
+  d <- replace_year(d, "A22_11", "{year}年度行方不明者数")
+  d <- replace_year(d, "A22_12", "{year}年度重傷者数")
+  d <- replace_year(d, "A22_13", "{year}年度軽傷者数")
+  d <- replace_year(d, "A22_14", "{year}年度住家全壊棟数")
+  d <- replace_year(d, "A22_15", "{year}年度住家半壊棟数")
+  d <- replace_year(d, "A22_16", "{year}年度住家一部破損数")
+  d <- replace_year(d, "A22_17", "{year}年度除雪ボランティア団体数")
+  d <- replace_year(d, "A22_18", "{year}年度除雪ボランティア登録人数")
+  d <- replace_year(d, "A22_19", "{year}年度除雪ボランティア活動回数")
+  d <- replace_year(d, "A22_20", "{year}年度除雪ボランティアの延べ参加人数")
+  
+  no_translated_cols <- intersect(colnames(d), old_names)
+  exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
+  no_translated_cols <- setdiff(no_translated_cols, exclude_cols)
+
   if (length(no_translated_cols) > 0) {
     msg <- glue::glue(
       "There are some columns yet to be translated: ",

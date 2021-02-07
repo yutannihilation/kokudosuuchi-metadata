@@ -60,3 +60,21 @@ l %>%
   readr::write_csv(out)  
 ```
 
+
+## `A22-m`
+
+```{r A22-m}
+id <- "A22-m"
+
+out <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA
+  ) %>% 
+  readr::write_csv(out)  
+```

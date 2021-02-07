@@ -131,7 +131,8 @@ d %>%
 ### `A22-m`
 
 `A22-m`は正規表現を使う必要があるが、それ以外の列は exact match
-すればいい。
+すればいい。 あと、 `A22_050001` が `A22_500001`
+と間違えられているらしい。
 
 ``` r
 d %>%
@@ -161,7 +162,8 @@ d %>%
 d %>%
   filter(id == "A22-m", !is.na(code)) %>% 
   mutate(
-    codelist = detect_codelist(type)
+    code = if_else(code == "A22_500001", "A22_050001", code),
+    codelist = detect_codelist(type),
   ) %>% 
   select(!id) %>% 
   readr::write_csv(file.path(out_other, "A22-m.csv"))

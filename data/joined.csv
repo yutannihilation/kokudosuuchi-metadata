@@ -105,8 +105,13 @@ A20s,NA,人口・世帯数,NA,NA
 A20s,NA,都市基盤1,NA,NA
 A20s,NA,都市基盤2,NA,NA
 A20s,NA,産業,NA,NA
-A21,NA,都道府県コード,コードリスト「都道府県コード」,PrefCd
-A21,NA,支庁区分コード,コードリスト「支庁区分コード」,SubprefectureNameCd
+A21,A21_001,小笠原ID,NA,NA
+A21,A21_002,行政コード,NA,NA
+A21,A21_003,都道府県名,NA,NA
+A21,A21_004,支庁名,NA,NA
+A21,A21_005,市区町村名,NA,NA
+A21,A21_006,島嶼名,NA,NA
+A21,A21_007,指定日,NA,NA
 A21s,NA,小笠原諸島,NA,NA
 A21s,NA,人口・世帯数,NA,NA
 A21s,NA,都市基盤1,NA,NA
@@ -124,7 +129,7 @@ A22,A22_009,豪雪区分コード,コードリスト「豪雪区分コード」,
 A22-m,A22_000001,観測点名,文字列型（CharacterString）,NA
 A22-m,A22_000002,観測点の所在地,文字列型（CharacterString）,NA
 A22-m,A22_000003,観測点の管理者,文字列型（CharacterString）,NA
-A22-m,A22_500001,位置特定レベル,コードリスト「位置特定レベル」,PosSpecificLevel
+A22-m,A22_050001,位置特定レベル,コードリスト「位置特定レベル」,PosSpecificLevel
 A22-m,A22_010001,各年度別最深積雪（平均値）,実数型（Real）,NA
 A22-m,A22_010002,各年度別最深積雪（最大値）,実数型（Real）,NA
 A22-m,A22_020001,各年度別累計降雪量（平均値）,実数型（Real）,NA

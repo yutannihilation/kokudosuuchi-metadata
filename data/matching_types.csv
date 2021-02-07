@@ -4,6 +4,7 @@ A11,exact
 A12,exact
 A13,exact
 A15,exact
+A21,exact
 A22,exact
 A27,exact
 A29,exact
@@ -71,7 +72,6 @@ A18s-a,positional
 A19,positional
 A19s,positional
 A20s,positional
-A21,positional
 A21s,positional
 A22s,positional
 A23,positional
