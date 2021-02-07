@@ -647,7 +647,7 @@ d %>%
 
 ``` r
 d %>%
-  filter(id == "W09", is.na(code)) %>%
+  filter(id == "W09", !is.na(code)) %>%
   mutate(
     codelist = detect_codelist(type)
   ) %>% 
