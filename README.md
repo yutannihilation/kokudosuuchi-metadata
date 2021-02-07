@@ -105,7 +105,7 @@ tibble::enframe(errors) %>%
 | G04-c-11\_6742-jgd\_GML.zip             | NA                                                                           |
 | G04-d-11\_4530-jgd\_GML.zip             | NA                                                                           |
 | G08-15\_44\_GML.zip                     | NA                                                                           |
-| L01-20\_30\_GML.zip                     | Error: The numbers of columns don’t match. expected: 55, actual: 130         |
+| L01-20\_30\_GML.zip                     | NA                                                                           |
 | L02-20\_33\_GML.zip                     | Error: The numbers of columns don’t match. expected: 53, actual: 128         |
 | L03-a-16\_3622-jgd\_GML.zip             | NA                                                                           |
 | L03-b-14\_5536.zip                      | NA                                                                           |

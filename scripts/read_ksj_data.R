@@ -256,4 +256,50 @@ match_C09 <- function(d, id) {
   d
 }
 
+match_L01 <- function(d, id) {
+  dc <- d_col_info[d_col_info$id == id, ]
+  
+  old_names <- colnames(d)
+  
+  colnames(d)[seq_along(dc$name)] <- dc$name
+  
+  # confirm the last positonally matched column is 選定年次ビット
+  nenji_bits <- stringr::str_detect(d[["選定年次ビット"]], "^[01]+$")
+  if (!all(nenji_bits)) {
+    rlang::abort("Failed to match colnames")
+  }
+  
+  nendo <- as.integer(unique(d[["年度"]]))
+  if (length(nendo) != 1) {
+    rlang::warn("Data seems to over multiple years, using the latest one to calculate colnames...")
+    nendo <- max(nendo, na.rm = TRUE)
+  }
+  
+  col_price <- paste0("調査価格_", seq(1983, nendo))
+  col_move  <- paste0("属性移動_", seq(1984, nendo))
+  
+  idx_col_price <- length(dc$name) + seq_along(col_price)
+  idx_col_move  <- max(idx_col_price) + seq_along(col_move)
+  
+  if (max(idx_col_move) != ncol(d) - 1L) {
+    rlang::abort("The number of columns doesn't match with the expectation")
+  }
+  
+  is_probably_move <- function(i) {
+    all(nchar(d[[i]]) == 14L & stringr::str_detect(d[[i]], "^[0124]+$"))
+  }
+  
+  if (any(vapply(idx_col_price, is_probably_move, logical(1L))) ||
+      !all(vapply(idx_col_move, is_probably_move, logical(1L)))) {
+    rlang::abort("The values of columns don't match with the expectation")
+  }
+  
+  colnames(d)[idx_col_price] <- col_price
+  colnames(d)[idx_col_move] <- col_move
+  
+  assert_all_translated(colnames(d), old_names, id)
+  
+  d
+}
+
 `match_L03-a` <- function(d, id) d
