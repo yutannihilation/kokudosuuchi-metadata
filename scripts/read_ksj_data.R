@@ -20,34 +20,22 @@ d_col_info <- readr::read_csv(
 `%||%` <- rlang::`%||%`
 
 read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
+  if (!isTRUE(file.exists(f))) {
+    rlang::abort(f, " doesn't seem a ZIP file.")
+  }
+  
   id <- tools::file_path_sans_ext(basename(f))
   
   cache <- file.path(cache_dir, id)
   
   if (file.exists(cache)) {
     if (!dir.exists(cache)) {
-      stop(cache, " is a file", call. = FALSE)
+      rlang::abort(cache, " is a file")
     }
   } else {
     dir.create(cache)
     unzip(f, exdir = cache)
-    
-    orig_names <- list.files(cache, full.names = TRUE)
-    # if it contains only 1 directory, move down 1 step
-    if (length(orig_names) == 1L && dir.exists(orig_names)) {
-      orig_names <- list.files(orig_names, full.names = TRUE)
-    }
-    
-    utf8_names <- iconv(orig_names, from = "CP932", to = "UTF-8")
-    
-    idx <- orig_names != utf8_names
-    if (any(idx)) {
-      purrr::walk2(orig_names[idx], utf8_names[idx], ~ {
-        msg <- glue::glue("Renaming {.x} to {.y}")
-        rlang::inform(msg)
-        file.rename(.x, .y)
-      })
-    }
+    rename_to_utf8_recursively(cache)
   }
   
   shp_files <- list.files(cache, pattern = ".*\\.shp$", recursive = TRUE, full.names = TRUE)
@@ -70,6 +58,50 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
   res
 }
 
+rename_to_utf8_recursively <- function(path, max_depth = 10L) {
+  if (max_depth <= 0) {
+    rlang::abort("Reached to max depth")
+  }
+  
+  path <- normalizePath(path)
+  
+  # Convert only the child path, because parent paths might be
+  # already converted to UTF-8
+  orig_names <- list.files(path)
+  if (length(orig_names) == 0) {
+    return()
+  }
+  
+  utf8_names <- iconv(orig_names, from = "CP932", to = "UTF-8")
+
+  # file.path() doesn't work for this...
+  orig_names <- paste(path, orig_names, sep = .Platform$file.sep)
+  utf8_names <- paste(path, utf8_names, sep = .Platform$file.sep)
+  
+  # Rename
+  purrr::walk2(orig_names, utf8_names, function(src, dst) {
+    if (identical(src, dst)) {
+      return()
+    }
+    
+    msg <- glue::glue("Renaming {src} to {dst}")
+    rlang::inform(msg)
+    
+    file.rename(src, dst)
+    if (!file.exists(dst)) {
+      msg <- glue::glue("Failed to rename to {dst}")
+      rlang::abort(msg)
+    }
+  })
+  
+  # If it's a directory, apply recursively
+  utf8_names <- utf8_names[file.info(utf8_names)$isdir]
+  if (length(utf8_names) > 0) {
+    purrr::walk(utf8_names, rename_to_utf8_recursively, max_depth = max_depth - 1L)
+  }
+}
+
+
 translate_columns <- function(l, id = NULL) {
   id <- id %||% attr(l, "id")
   
@@ -89,6 +121,17 @@ translate_columns <- function(l, id = NULL) {
   lapply(l, matching_fun, id = id)
 }
 
+
+ok_with_no_translation <- list(
+  A10 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A11 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A12 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "ET_ID", "ET_Source"),
+  A15 = c("ORIG_FID"),
+  # unexpected columns...
+  A19 = c("A19_010", "A19_011", "A19_012", "A19_013")
+)
+
 match_by_position <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
   
@@ -97,7 +140,7 @@ match_by_position <- function(d, id) {
   # minus 1 is for geometry column
   ncol <- ncol(d) - 1L
   
-  if (length(readable_names) != ncol) {
+  if (length(readable_names) != ncol && !id %in% ok_with_no_translation[[id]]) {
     msg <- glue::glue(
       "The numbers of columns don't match. ",
       "expected: ", nrow(dc), ", actual: ", ncol
@@ -110,14 +153,6 @@ match_by_position <- function(d, id) {
   colnames(d)[seq_along(readable_names)] <- readable_names
   d
 }
-
-ok_with_no_translation <- list(
-  A10 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
-  A11 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
-  A12 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
-  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "ET_ID", "ET_Source"),
-  A15 = c("ORIG_FID")
-)
 
 match_by_name <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
