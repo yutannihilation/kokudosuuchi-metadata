@@ -73,11 +73,14 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
 translate_columns <- function(l, id = NULL) {
   id <- id %||% attr(l, "id")
   
-  matching_fun <- switch (matching_types[id],
-    positional = match_by_position,
-    exact      = match_by_name,
-    get0(paste0("match_", id), ifnotfound = NULL)
-  )
+  matching_fun <- get0(paste0("match_", id), ifnotfound = NULL)
+  
+  if (is.null(matching_fun)) {
+    matching_fun <- switch (matching_types[id],
+      positional = match_by_position,
+      exact      = match_by_name
+    )
+  }
   
   if (is.null(matching_fun)) {
     rlang::abort("Not implemented")
@@ -112,7 +115,8 @@ ok_with_no_translation <- list(
   A10 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
   A11 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
   A12 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
-  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area")
+  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "ET_ID", "ET_Source"),
+  A15 = c("ORIG_FID")
 )
 
 match_by_name <- function(d, id) {
