@@ -109,10 +109,10 @@ match_by_position <- function(d, id) {
 }
 
 ok_with_no_translation <- list(
-  A10 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
-  A11 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
-  A12 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
-  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry")
+  A10 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A11 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A12 = c("OBJECTID", "Shape_Leng", "Shape_Area"),
+  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area")
 )
 
 match_by_name <- function(d, id) {
@@ -123,7 +123,8 @@ match_by_name <- function(d, id) {
   idx <- match(old_names, dc$code)
   colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
 
-  no_translated_cols <- setdiff(old_names[is.na(idx)], ok_with_no_translation[[id]])
+  exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
+  no_translated_cols <- setdiff(old_names[is.na(idx)], exclude_cols)
   
   if (length(no_translated_cols) > 0) {
     msg <- glue::glue(
