@@ -16,6 +16,27 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
+## Structure
+
+* `Rmd`: R Markdownを置く
+    * `01`: 調査
+    * `02`: HTMLファイルをダウンロード
+    * `03`: HTMLファイルの調査
+    * `04`: HTMLファイルから列名とコードの対応、その説明を抜き出す（`data/attrs`に入る）
+    * `05`: 抜き出したデータの確認
+    * `06`: 抜き出したデータを整形してコードと列名の対応のデータを生成（`data/colnames_*`に入る）
+    * `07`: コードリストの情報を抜き出す（`data/codelist`に入る）
+    * `08`: 抜き出してきたデータを統合する
+* `data-raw`: 生データを置くところ
+    * `zip`: テスト用のデータ
+    * `datalist`: データについての説明のHTML
+    * `codelist`: コードリスト型の列のコードとラベルの対応のHTMLやExcel
+* `data`: 展開したデータを置くところ
+    * `attrs`: とりあえず抜き出してきた状態のデータ
+    * `colnames_*`: 列名とコードの対応
+    * `codelist`: コードリストのコードトラベルの対応
+* `scripts`: 参考実装（いずれ `kokudosuuchi` に移植する）
+
 ## Coverages
 
 ```{r data}
