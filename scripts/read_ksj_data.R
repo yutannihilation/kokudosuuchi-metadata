@@ -129,8 +129,23 @@ ok_with_no_translation <- list(
   A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "ET_ID", "ET_Source"),
   A15 = c("ORIG_FID"),
   # unexpected columns...
-  A19 = c("A19_010", "A19_011", "A19_012", "A19_013")
+  A19 = c("A19_010", "A19_011", "A19_012", "A19_013"),
+  C02 = c("C12_018")
 )
+
+assert_all_translated <- function(new_names, old_names, id) {
+  no_translated_cols <- intersect(new_names, old_names)
+  exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
+  no_translated_cols <- setdiff(no_translated_cols, exclude_cols)
+  
+  if (length(no_translated_cols) > 0) {
+    msg <- glue::glue(
+      "There are some columns yet to be translated: ",
+      paste(no_translated_cols, collapse = ",")
+    )
+    rlang::abort(msg)
+  }
+}
 
 match_by_position <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
@@ -162,16 +177,7 @@ match_by_name <- function(d, id) {
   idx <- match(old_names, dc$code)
   colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
 
-  exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
-  no_translated_cols <- setdiff(old_names[is.na(idx)], exclude_cols)
-  
-  if (length(no_translated_cols) > 0) {
-    msg <- glue::glue(
-      "There are some columns yet to be translated: ",
-      paste(no_translated_cols, collapse = ",")
-    )
-    rlang::abort(msg)
-  }
+  assert_all_translated(colnames(d), old_names, id)
   
   d
 }
@@ -210,18 +216,25 @@ match_by_name <- function(d, id) {
   d <- replace_year(d, "A22_19", "{year}年度除雪ボランティア活動回数")
   d <- replace_year(d, "A22_20", "{year}年度除雪ボランティアの延べ参加人数")
   
-  no_translated_cols <- intersect(colnames(d), old_names)
-  exclude_cols <- c(ok_with_no_translation[[id]], "geometry")
-  no_translated_cols <- setdiff(no_translated_cols, exclude_cols)
+  assert_all_translated(colnames(d), old_names, id)
 
-  if (length(no_translated_cols) > 0) {
-    msg <- glue::glue(
-      "There are some columns yet to be translated: ",
-      paste(no_translated_cols, collapse = ",")
-    )
-    rlang::abort(msg)
-  }
-  
   d
 }
 
+match_C02 <- function(d, id) {
+  dc <- d_col_info[d_col_info$id == id, ]
+  
+  old_names <- colnames(d)
+  
+  # PortDistrictBoundary have unknown thrid column, but let's ignore...
+  if (ncol(d) <= 4) {
+    colnames(d)[1:2] <- c("県コード", "港湾コード")
+  } else {
+    idx <- seq_len(ncol(d) - 1L)
+    colnames(d)[idx] <- dc$name[idx]
+  }
+
+  assert_all_translated(colnames(d), old_names, id)
+
+  d
+}
