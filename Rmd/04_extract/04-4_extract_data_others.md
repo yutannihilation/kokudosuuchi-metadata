@@ -9,10 +9,14 @@ dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
 ```
 
 ``` r
-datalist_files <- list.files(here::here("data-raw", "datalist"), full.names = TRUE)
+datalist_files <- list.files(
+  here::here("data-raw", "datalist"),
+  pattern = ".*\\.html",
+  full.names = TRUE,
+)
 id <- stringr::str_replace(basename(datalist_files), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
 
-idx_exclude <- id %in% c("A10", "A11", "A12", "A13", "C23", "A09", "A20", "A31", "S10a")
+idx_exclude <- id %in% c("A10", "A11", "A12", "A13", "C23", "A09", "A20", "A21", "A31", "S10a")
 datalist_files <- datalist_files[!idx_exclude]
 id <- id[!idx_exclude]
 

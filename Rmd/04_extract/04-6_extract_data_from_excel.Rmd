@@ -1,0 +1,62 @@
+---
+title: "Extract codelist: shape_property_table.xls"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+excel_file <- here::here("data-raw", "codelist", "shape_property_table.xls")
+```
+
+コードとカラム名の対応は <https://nlftp.mlit.go.jp/ksj/gml/shape_property_table.xls> にも含まれている。
+こちらはデータの型については記載がないので、基本はHTMLから抜き出した情報を使う。
+Excelにしか載っていないやつはこっちを使う。
+
+注意点として、HTMLに書かれていることとExcelの情報が一致しているとは限らないし、一致していても実データと同じとは限らない。
+
+
+```{r download, eval=!file.exists(excel_file)}
+curl::curl_download(
+  "https://nlftp.mlit.go.jp/ksj/gml/shape_property_table.xls",
+  destfile = excel_file
+)
+```
+
+
+```{r extract_data}
+library(dplyr, warn.conflicts = FALSE)
+
+sheets <- readxl::excel_sheets(excel_file)
+names(sheets) <- sheets
+
+l <- purrr::map_dfr(sheets, ~ {
+  readxl::read_excel(excel_file, sheet = .x, skip = 4) %>% 
+    select(
+      id = 識別子,
+      item = データ項目,
+      tag = タグ名,
+      code = 対応番号,
+      name = 属性名
+    )
+}, .id = "sheet")
+```
+
+## `A21`
+
+```{r A21}
+id <- "A21"
+
+out <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA
+  ) %>% 
+  readr::write_csv(out)  
+```
+
