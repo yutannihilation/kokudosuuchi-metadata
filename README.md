@@ -97,8 +97,8 @@ tibble::enframe(errors) %>%
 | A44-18\_GML.zip                         | NA                                                                           |
 | A45-19\_18\_GML.zip                     | NA                                                                           |
 | C02-14\_GML.zip                         | NA                                                                           |
-| C09-06\_GML.zip                         | Error: The numbers of columns don’t match. expected: 12, actual: 10          |
-| C23-06\_32\_GML.zip                     | Error: The numbers of columns don’t match. expected: 6, actual: 7            |
+| C09-06\_GML.zip                         | NA                                                                           |
+| C23-06\_32\_GML.zip                     | NA                                                                           |
 | C28-19\_GML.zip                         | NA                                                                           |
 | G02-12\_4229-jgd\_GML.zip               | Error: The numbers of columns don’t match. expected: 58, actual: 84          |
 | G04-a-11\_3927-jgd\_GML.zip             | NA                                                                           |
@@ -107,7 +107,7 @@ tibble::enframe(errors) %>%
 | G08-15\_44\_GML.zip                     | NA                                                                           |
 | L01-20\_30\_GML.zip                     | Error: The numbers of columns don’t match. expected: 55, actual: 130         |
 | L02-20\_33\_GML.zip                     | Error: The numbers of columns don’t match. expected: 53, actual: 128         |
-| L03-a-16\_3622-jgd\_GML.zip             | Error: Not implemented                                                       |
+| L03-a-16\_3622-jgd\_GML.zip             | NA                                                                           |
 | L03-b-14\_5536.zip                      | NA                                                                           |
 | L03-b-16\_3623-tky\_GML.zip             | Error: The numbers of columns don’t match. expected: 2, actual: 3            |
 | L03-b-c-16\_5440\_GML.zip               | Error: The numbers of columns don’t match. expected: 2, actual: 4            |

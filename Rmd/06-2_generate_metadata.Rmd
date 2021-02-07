@@ -15,7 +15,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A16", "A22-m", "30b", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "A22-m", "30b", "A34", "A35a", "A35b", "A37", "C23", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -293,6 +293,31 @@ d %>%
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A38.csv"))
+```
+
+### `C23`
+
+これはよくわからないけど、「海岸保全区域・海岸管理者名」の前に「海岸保全区域・海岸管理者コード」が入ってるっぽい。
+
+```{r C23}
+d_tmp <- d %>%
+  filter(id == "C23")
+
+idx <- which(d_tmp$name == "海岸保全区域・海岸管理者名")
+
+d_tmp_new <- d_tmp[idx, ]
+d_tmp_new$name <- "海岸保全区域・海岸管理者コード"
+
+bind_rows(
+  d_tmp[1:(idx - 1L), ],
+  d_tmp_new,
+  d_tmp[idx:nrow(d_tmp), ]
+) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "C23.csv"))
 ```
 
 ### `C28`

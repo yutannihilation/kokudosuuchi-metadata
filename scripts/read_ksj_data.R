@@ -238,3 +238,22 @@ match_C02 <- function(d, id) {
 
   d
 }
+
+match_C09 <- function(d, id) {
+  dc <- d_col_info[d_col_info$id == id, ]
+  
+  old_names <- colnames(d)
+  
+  if (ncol(d) <= 4) {
+    colnames(d)[1:2] <- c("県コード", "漁港番号")
+  } else {
+    idx <- seq_len(ncol(d) - 1L)
+    colnames(d)[idx] <- dc$name[idx]
+  }
+  
+  assert_all_translated(colnames(d), old_names, id)
+  
+  d
+}
+
+`match_L03-a` <- function(d, id) d

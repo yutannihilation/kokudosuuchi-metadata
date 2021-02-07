@@ -9,7 +9,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A16", "A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "A22-m", "30b", "A34", "A35a", "A35b", "A37", "C23", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -51,15 +51,16 @@ id_types
     ## 
     ## $other
     ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
-    ##  [7] "A38"      "C28"      "L03-a"    "mesh1000" "mesh500"  "N05"     
-    ## [13] "P15"      "P16"      "P17"      "P18"      "P21"      "W09"     
+    ##  [7] "A38"      "C23"      "C28"      "L03-a"    "mesh1000" "mesh500" 
+    ## [13] "N05"      "P15"      "P16"      "P17"      "P18"      "P21"     
+    ## [19] "W09"     
     ## 
     ## $positional
     ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
     ##  [8] "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"    
-    ## [15] "C02"     "C09"     "C23"     "G02"     "L01"     "L02"     "L03-b"  
-    ## [22] "L03-b-u" "N04"     "P02"     "P05"     "P07"     "P09"     "P11"    
-    ## [29] "S05-a"   "S05-b"   "S05-c"   "W05"     "W07"
+    ## [15] "C02"     "C09"     "G02"     "L01"     "L02"     "L03-b"   "L03-b-u"
+    ## [22] "N04"     "P02"     "P05"     "P07"     "P09"     "P11"     "S05-a"  
+    ## [29] "S05-b"   "S05-c"   "W05"     "W07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -167,6 +168,39 @@ d %>%
   ) %>% 
   select(!id) %>% 
   readr::write_csv(file.path(out_other, "A22-m.csv"))
+```
+
+### `A30b`
+
+備考欄にあるやつをうまく抜き出せていない。
+
+``` r
+d_tmp <- tibble::tribble(
+       ~code,       ~name,
+  "A30b_027", "発生位置緯度誤差",
+  "A30b_028", "発生位置経度誤差",
+  "A30b_029",   "発生位置緯度",
+  "A30b_030",   "発生位置経度",
+  "A30b_031", "消滅位置緯度誤差",
+  "A30b_032", "消滅位置経度誤差",
+  "A30b_033",   "消滅位置緯度",
+  "A30b_034",   "消滅位置経度"
+) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+  )
+
+d %>%
+  filter(id == "A30b") %>% 
+  select(!id) %>% 
+  bind_rows(d_tmp) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A30b.csv"))
 ```
 
 ### `A34`
@@ -305,6 +339,31 @@ d %>%
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A38.csv"))
+```
+
+### `C23`
+
+これはよくわからないけど、「海岸保全区域・海岸管理者名」の前に「海岸保全区域・海岸管理者コード」が入ってるっぽい。
+
+``` r
+d_tmp <- d %>%
+  filter(id == "C23")
+
+idx <- which(d_tmp$name == "海岸保全区域・海岸管理者名")
+
+d_tmp_new <- d_tmp[idx, ]
+d_tmp_new$name <- "海岸保全区域・海岸管理者コード"
+
+bind_rows(
+  d_tmp[1:(idx - 1L), ],
+  d_tmp_new,
+  d_tmp[idx:nrow(d_tmp), ]
+) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_other, "C23.csv"))
 ```
 
 ### `C28`
