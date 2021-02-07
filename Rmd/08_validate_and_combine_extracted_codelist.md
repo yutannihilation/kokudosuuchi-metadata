@@ -122,8 +122,9 @@ d <- d %>%
       id == "L01" & name == "標準地行政区域コード" ~ "AdminAreaCd",
       id == "L02" & name == "基準地行政区域コード" ~ "AdminAreaCd",
       id == "P02" & name == "行政区域コード" ~ "AdminAreaCd",
-      id == "P02" & name == "行政区域コード" ~ "AdminAreaCd",
-      id == "P02" & name == "行政区域コード" ~ "AdminAreaCd",
+      id %in% c("A10", "A11", "A12", "A13") & code == "PREFEC_CD" ~ "PrefCd",
+      id %in% c("A10", "A11", "A12", "A13") & code == "AREA_CD"   ~ "A10_area_code",
+      id %in% c("A10", "A11", "A12", "A13") & code == "LAYER_NO" ~ "A10_layer_no",
     )
   )
 ```
@@ -154,12 +155,17 @@ d_codelist <- d_codelist %>%
 次に、データを手動で紐づけたものとそれ以外に分割し、それ以外の方に正規表現でくっつける。その際、複数マッチする可能性があるのでなんとかがんばる。
 
 ``` r
-d_joined_manual <- d %>% 
-  filter(!is.na(codelist_id_manual)) %>% 
+d_split <- d %>% 
+  mutate(
+    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13")
+  )
+
+d_joined_manual <- d_split %>% 
+  filter(!needs_regex) %>% 
   select(id, rowid, code, name, type, codelist, codelist_id = codelist_id_manual)
 
-d_joined_regex <- d %>% 
-  filter(is.na(codelist_id_manual)) %>% 
+d_joined_regex <- d_split %>% 
+  filter(needs_regex) %>% 
   left_join(d_codelist, by = "id") %>% 
   mutate(
     matched = str_detect(type, fixed(type_part)),

@@ -97,7 +97,7 @@ match_by_position <- function(d, id) {
   if (length(readable_names) != ncol) {
     msg <- glue::glue(
       "The numbers of columns don't match. ",
-      "expected: ", nrow(dc), "actual: ", ncol
+      "expected: ", nrow(dc), ", actual: ", ncol
     )
     rlang::abort(msg)
     
@@ -108,19 +108,27 @@ match_by_position <- function(d, id) {
   d
 }
 
+ok_with_no_translation <- list(
+  A10 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
+  A11 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
+  A12 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry"),
+  A13 = c("OBJECTID", "Shape_Leng", "Shape_Area", "geometry")
+)
+
 match_by_name <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
   
-  readable_names <- setNames(dc$code, dc$name)
-  d <- dplyr::rename(d, !!!readable_names)
+  readable_names <- setNames(dc$name, dc$code)
+  old_names <- colnames(d)
+  idx <- match(old_names, dc$code)
+  colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
+
+  no_translated_cols <- setdiff(old_names[is.na(idx)], ok_with_no_translation[[id]])
   
-  new_names <- colnames(d)
-  untranslated <- new_names[stringr::str_detect(new_names, id)]
-  
-  if (length(untranslated) > 0) {
+  if (length(no_translated_cols) > 0) {
     msg <- glue::glue(
       "There are some columns yet to be translated: ",
-      paste(untranslated, collapse = ",")
+      paste(no_translated_cols, collapse = ",")
     )
     rlang::abort(msg)
   }
