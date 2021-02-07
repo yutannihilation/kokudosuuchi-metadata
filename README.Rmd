@@ -31,9 +31,8 @@ source(here::here("scripts", "read_ksj_data.R"))
 translate_columns_safe <- purrr::safely(translate_columns)
 read_zip_with_cache_safe <- purrr::safely(read_zip_with_cache)
 
-options(warn = 2)
 result <- purrr::map(test_data, ~ {
-  l <- read_zip_with_cache_safe(.x, cache_dir = cache_dir)
+  suppressWarnings(l <- read_zip_with_cache_safe(.x, cache_dir = cache_dir))
   if (!is.null(l$error)) {
     return(l)
   }

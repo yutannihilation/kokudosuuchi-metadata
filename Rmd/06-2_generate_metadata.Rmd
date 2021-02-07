@@ -15,7 +15,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A16", "A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "A22-m", "30b", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -133,6 +133,40 @@ d %>%
   select(!id) %>% 
   readr::write_csv(file.path(out_other, "A22-m.csv"))
 ```
+
+### `A30b`
+
+備考欄にあるやつをうまく抜き出せていない。
+
+```{r A30b}
+d_tmp <- tibble::tribble(
+       ~code,       ~name,
+  "A30b_027", "発生位置緯度誤差",
+  "A30b_028", "発生位置経度誤差",
+  "A30b_029",   "発生位置緯度",
+  "A30b_030",   "発生位置経度",
+  "A30b_031", "消滅位置緯度誤差",
+  "A30b_032", "消滅位置経度誤差",
+  "A30b_033",   "消滅位置緯度",
+  "A30b_034",   "消滅位置経度"
+) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+  )
+
+d %>%
+  filter(id == "A30b") %>% 
+  select(!id) %>% 
+  bind_rows(d_tmp) %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A30b.csv"))
+```
+
 
 ### `A34`
 
