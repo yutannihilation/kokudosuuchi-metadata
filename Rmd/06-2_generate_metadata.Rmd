@@ -15,7 +15,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A10", "A11", "A12", "A13", "A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -487,3 +487,43 @@ d %>%
   select(!id) %>% 
   readr::write_csv(file.path(out_exact, "W09.csv"))
 ```
+
+
+### `A10`, `A11`, `A12`, `A13`
+
+列名との紐付けは手動でがんばる
+
+```{r A10}
+A10_type <- c("A10", "A11", "A12", "A13")
+
+d %>% 
+  filter(id %in% A10_type) %>% 
+  knitr::kable()
+
+d_A10 <- tibble::tribble(
+      ~name,        ~code,
+  "都道府県コード",  "PREFEC_CD",
+    "地区コード",    "AREA_CD",
+     "市町村名",   "CTV_NAME",
+       "年度",   "FIS_YEAR",
+     "主題番号",   "THEMA_NO",
+    "レイヤ番号",   "LAYER_NO",
+       "名称",   "OBJ_NAME",
+   "ポリゴン面積",  "AREA_SIZE",
+     "内外区分", "IOSIDE_DIV",
+       "備考", "REMARK_STR"
+)
+
+purrr::walk(A10_type, function(id) {
+  d_A10 %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = code %in% c("PREFEC_CD", "AREA_CD", "LAYER_NO")
+  ) %>% 
+    readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+})
+```
+
