@@ -15,7 +15,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -96,6 +96,23 @@ out_other <- here::here("data", "colnames_other")
 
 dir.create(out_other, showWarnings = FALSE)
 ```
+
+### `A16`
+
+どうやら実データと列の数が合わないっぽい。見比べた結果、「都道府県コード」がなさそう。
+
+```{r}
+d %>%
+  filter(id == "A16", name != "都道府県コード") %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_positional, "A16.csv"))
+```
+
+
+
 
 ### `A22-m`
 
@@ -487,3 +504,5 @@ d %>%
   select(!id) %>% 
   readr::write_csv(file.path(out_exact, "W09.csv"))
 ```
+
+

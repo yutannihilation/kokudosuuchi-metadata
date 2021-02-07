@@ -54,7 +54,6 @@ A15,A15_004,保護区分：保護区分コード,コードリスト「保護区�
 A15,A15_005,指定日,時間型（TM_Instant）,NA
 A15,A15_006,解除日,時間型（TM_Instant）,NA
 A16,NA,DIDid,整数型,NA
-A16,NA,都道府県コード,コードリスト「都道府県コード」,PrefCd
 A16,NA,市区町村コード,整数型,NA
 A16,NA,市区町村名称,文字列型,NA
 A16,NA,人口集中地区符合,整数型※同一市区町村内に１箇所のみのDIDについては、”1“とする。,NA
@@ -1645,4 +1644,7 @@ W07,NA,河川コード,整数型（Integer）「河川コード種別」,RiverCo
 W07,NA,水系名,文字列型（CharacterString）,NA
 W07,NA,河川名,文字列型（CharacterString）,NA
 W07,NA,単位流域コード,整数型（Integer）,NA
-W09,NA,iD,文字列型（CharacterString）,NA
+W09,W09_001,湖沼名,文字列型（CharacterString）,NA
+W09,W09_002,行政区域,コードリスト「行政コード」,AdminAreaCd
+W09,W09_003,最大水深,整数型（Integer）,NA
+W09,W09_004,水面標高,整数型（Integer）,NA

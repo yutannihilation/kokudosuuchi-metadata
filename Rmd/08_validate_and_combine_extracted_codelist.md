@@ -116,6 +116,7 @@ d <- d %>%
       code %in% c("P17_002", "P18_002", "P20_001", "P24_002", "P32_003") ~ "AdminAreaCd",
       code == "P19_002" ~ "PrefCd",
       code == "L01_005" ~ "seaside_type",
+      code == "W09_002" ~ "AdminAreaCd",
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",

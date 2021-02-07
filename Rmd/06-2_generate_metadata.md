@@ -9,7 +9,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "A22-m", "A34", "A35a", "A35b", "A37", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
@@ -50,16 +50,16 @@ id_types
     ## [50] "S05-d"   "S10a"    "S10b"    "S12"     "W01"    
     ## 
     ## $other
-    ##  [1] "A22-m"    "A34"      "A35a"     "A35b"     "A37"      "A38"     
-    ##  [7] "C28"      "L03-a"    "mesh1000" "mesh500"  "N05"      "P15"     
-    ## [13] "P16"      "P17"      "P18"      "P21"      "W09"     
+    ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
+    ##  [7] "A38"      "C28"      "L03-a"    "mesh1000" "mesh500"  "N05"     
+    ## [13] "P15"      "P16"      "P17"      "P18"      "P21"      "W09"     
     ## 
     ## $positional
-    ##  [1] "A03"     "A16"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"   
-    ##  [8] "A20s"    "A21"     "A21s"    "A22s"    "A23"     "A24"     "A25"    
-    ## [15] "A26"     "A28"     "C02"     "C09"     "C23"     "G02"     "L01"    
-    ## [22] "L02"     "L03-b"   "L03-b-u" "N04"     "P02"     "P05"     "P07"    
-    ## [29] "P09"     "P11"     "S05-a"   "S05-b"   "S05-c"   "W05"     "W07"
+    ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
+    ##  [8] "A21"     "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"    
+    ## [15] "A28"     "C02"     "C09"     "C23"     "G02"     "L01"     "L02"    
+    ## [22] "L03-b"   "L03-b-u" "N04"     "P02"     "P05"     "P07"     "P09"    
+    ## [29] "P11"     "S05-a"   "S05-b"   "S05-c"   "W05"     "W07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -112,6 +112,20 @@ purrr::walk(id_types$positional, ~ {
 out_other <- here::here("data", "colnames_other")
 
 dir.create(out_other, showWarnings = FALSE)
+```
+
+### `A16`
+
+どうやら実データと列の数が合わないっぽい。見比べた結果、「都道府県コード」がなさそう。
+
+``` r
+d %>%
+  filter(id == "A16", name != "都道府県コード") %>% 
+  mutate(
+    codelist = detect_codelist(type)
+  ) %>% 
+  select(!id) %>% 
+  readr::write_csv(file.path(out_positional, "A16.csv"))
 ```
 
 ### `A22-m`
