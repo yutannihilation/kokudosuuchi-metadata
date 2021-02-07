@@ -19,7 +19,7 @@ d_col_info <- readr::read_csv(
 
 `%||%` <- rlang::`%||%`
 
-read_zip_with_cache <- function(f, encoding = "CP932") {
+read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
   id <- tools::file_path_sans_ext(basename(f))
   
   cache <- file.path(cache_dir, id)
@@ -31,6 +31,23 @@ read_zip_with_cache <- function(f, encoding = "CP932") {
   } else {
     dir.create(cache)
     unzip(f, exdir = cache)
+    
+    orig_names <- list.files(cache, full.names = TRUE)
+    # if it contains only 1 directory, move down 1 step
+    if (length(orig_names) == 1L && dir.exists(orig_names)) {
+      orig_names <- list.files(orig_names, full.names = TRUE)
+    }
+    
+    utf8_names <- iconv(orig_names, from = "CP932", to = "UTF-8")
+    
+    idx <- orig_names != utf8_names
+    if (any(idx)) {
+      purrr::walk2(orig_names[idx], utf8_names[idx], ~ {
+        msg <- glue::glue("Renaming {.x} to {.y}")
+        rlang::inform(msg)
+        file.rename(.x, .y)
+      })
+    }
   }
   
   shp_files <- list.files(cache, pattern = ".*\\.shp$", recursive = TRUE, full.names = TRUE)
