@@ -100,7 +100,7 @@ tibble::enframe(errors) %>%
 | C09-06\_GML.zip                         | NA                                                                           |
 | C23-06\_32\_GML.zip                     | NA                                                                           |
 | C28-19\_GML.zip                         | NA                                                                           |
-| G02-12\_4229-jgd\_GML.zip               | Error: The numbers of columns don’t match. expected: 58, actual: 84          |
+| G02-12\_4229-jgd\_GML.zip               | NA                                                                           |
 | G04-a-11\_3927-jgd\_GML.zip             | NA                                                                           |
 | G04-c-11\_6742-jgd\_GML.zip             | NA                                                                           |
 | G04-d-11\_4530-jgd\_GML.zip             | NA                                                                           |
