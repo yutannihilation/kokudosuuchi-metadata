@@ -12,7 +12,7 @@ names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 id_exception <- c(
   "30b", "A16", "A34", "A35a", "A35b", "A37", "C23", "G02", "L03-a",
   "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
-  "P21"
+  "P21", "S05-a", "S05-b"
 )
 
 col_types <- cols(
@@ -57,13 +57,13 @@ id_types
     ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
     ##  [7] "A38"      "C23"      "C28"      "G02"      "L03-a"    "mesh1000"
     ## [13] "mesh500"  "N05"      "P09"      "P11"      "P15"      "P16"     
-    ## [19] "P17"      "P18"      "P21"      "W09"     
+    ## [19] "P17"      "P18"      "P21"      "S05-a"    "S05-b"    "W09"     
     ## 
     ## $positional
     ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
     ##  [8] "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"    
     ## [15] "C02"     "C09"     "L01"     "L02"     "L03-b"   "L03-b-u" "P02"    
-    ## [22] "P05"     "P07"     "S05-a"   "S05-b"   "S05-c"   "W05"     "W07"
+    ## [22] "P05"     "P07"     "S05-c"   "W05"     "W07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")

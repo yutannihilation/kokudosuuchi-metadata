@@ -68,7 +68,7 @@ l %>%
 
 ## `N04`
 
-N04は、年度によってカラムが違う。
+年度によってカラムが違う。
 いずれもExcelにあるので、別途書き出す。`joined.csv`には含めない。
 
 ```{r N04}
@@ -110,3 +110,107 @@ l %>%
   readr::write_csv(out)
 ```
 
+## `S05-a`
+
+年度によってカラムが違う。
+いずれもExcelにあるので、別途書き出す。`joined.csv`には含めない。
+
+よくわからないが、HTMLと見比べた感じ47カラムの方は「不明」のカラムが足りてなさそうなので追加する。
+
+```{r S05-a}
+id <- "S05-a"
+
+out <- here::here("data", glue::glue("{id}.csv"))
+
+l_tmp <- l %>%
+  # id に S05-b が入っているのでcodeで絞り込む
+  filter(stringr::str_detect(code, "^S05a")) %>% 
+  group_by(sub_id = cumsum(code == "S05a_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns
+  ) %>% 
+  split(.$columns)
+
+stopifnot(identical(sort(names(l_tmp)), c("35", "47")))
+
+missing <- tibble::tribble(
+                ~name,      ~code,
+"不明-出勤トリップ数", "S05a_047",
+"不明-登校トリップ数", "S05a_048",
+"不明-自由トリップ数", "S05a_049",
+"不明-業務トリップ数", "S05a_050",
+"不明-帰宅トリップ数", "S05a_051",
+"不明-不明トリップ数", "S05a_052",
+"不明-合計トリップ数", "S05a_053",
+"全トリップ数",        "S05a_054"
+)
+
+missing$columns <- 54L
+
+l_tmp$`47` %>% 
+  # 列がずれてるっぽい
+  filter(code != "S05a_047") %>% 
+  mutate(columns = 54L) %>% 
+  bind_rows(
+    missing,
+    l_tmp$`35`
+  ) %>% 
+  readr::write_csv(out)
+```
+
+## `S05-b`
+
+同上
+
+```{r S05-b}
+id <- "S05-b"
+
+out <- here::here("data", glue::glue("{id}.csv"))
+
+l_tmp <- l %>%
+  # id に S05-b が入っているのでcodeで絞り込む
+  filter(stringr::str_detect(code, "^S05b")) %>% 
+  group_by(sub_id = cumsum(code == "S05b_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns
+  ) %>% 
+  split(.$columns)
+
+stopifnot(identical(sort(names(l_tmp)), c("35", "47")))
+
+missing <- tibble::tribble(
+                ~name,      ~code,
+"不明-出勤トリップ数", "S05b_047",
+"不明-登校トリップ数", "S05b_048",
+"不明-自由トリップ数", "S05b_049",
+"不明-業務トリップ数", "S05b_050",
+"不明-帰宅トリップ数", "S05b_051",
+"不明-不明トリップ数", "S05b_052",
+"不明-合計トリップ数", "S05b_053",
+"全トリップ数",        "S05b_054"
+)
+
+missing$columns <- 54L
+
+l_tmp$`47` %>% 
+  # 列がずれてるっぽい
+  filter(code != "S05b_047") %>% 
+  mutate(columns = 54L) %>% 
+  bind_rows(
+    missing,
+    l_tmp$`35`
+  ) %>% 
+  readr::write_csv(out)
+```

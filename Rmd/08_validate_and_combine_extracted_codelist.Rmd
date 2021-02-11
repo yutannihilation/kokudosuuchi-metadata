@@ -84,6 +84,10 @@ d <- d %>%
       code == "P19_002" ~ "PrefCd",
       code == "L01_005" ~ "seaside_type",
       code == "W09_002" ~ "AdminAreaCd",
+      code %in% c("S05a_001", "S05b_001") ~ "PTAreaCd",
+      code == "S05a_003" ~ "TripGenerationCd",
+      code %in% c("S05a_004", "S05b_003", "S05b_004") ~ "AreaZoneCd", # TODO
+      
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",

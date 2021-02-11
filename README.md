@@ -181,8 +181,10 @@ tibble::enframe(errors) %>%
 | P33-14\_44\_GML.zip                     | Error: Not implemented                                              |
 | P34-14\_42\_GML.zip                     | NA                                                                  |
 | P35-18\_GML.zip                         | NA                                                                  |
-| S05-a-13\_CHUBU-g.zip                   | Error: The numbers of columns don’t match. expected: 66, actual: 54 |
-| S05-b-13\_CHUBU-g.zip                   | Error: The numbers of columns don’t match. expected: 65, actual: 54 |
+| S05-a-10\_KINKI\_GML.zip                | NA                                                                  |
+| S05-a-13\_CHUBU-g.zip                   | NA                                                                  |
+| S05-b-10\_KINKI\_GML.zip                | NA                                                                  |
+| S05-b-13\_CHUBU-g.zip                   | NA                                                                  |
 | S05-c-12\_KINKI\_GML.zip                | Error: The numbers of columns don’t match. expected: 44, actual: 24 |
 | S05-d-16\_GML.zip                       | NA                                                                  |
 | S10a-16\_GML.zip                        | NA                                                                  |

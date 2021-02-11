@@ -11,6 +11,7 @@ dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
 ### `S05-b`
 
 これは5列目を取り除くだけでよさそう。
+（最終的には、列の数が合わないのでExcelから取ってきたコードでマッチさせる）
 
 ``` r
 input <- here::here("data-raw", "datalist", "KsjTmplt-S05-b-v2_2.html")

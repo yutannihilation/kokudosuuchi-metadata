@@ -318,7 +318,7 @@ match_N04 <- function(d, id) {
   ncol <- ncol(d) - 1L
   
   dc_N04 <- readr::read_csv(
-    here::here("data", "N04.csv"),
+    here::here("data", glue::glue("{id}.csv")),
     col_types = readr::cols(
       name = readr::col_character(),
       code = readr::col_character(),
@@ -334,6 +334,9 @@ match_N04 <- function(d, id) {
   
   match_by_name(d, id, dc = dc)
 }
+
+`match_S05-a` <- match_N04
+`match_S05-b` <- match_N04
 
 match_P21 <- function(d, id) {
   colnames <- colnames(d)
