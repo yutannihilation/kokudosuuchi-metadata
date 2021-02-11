@@ -65,7 +65,7 @@ l %>%
     type = NA,
     codelist = NA
   ) %>% 
-  readr::write_csv(out)  
+  readr::write_csv(out)
 ```
 
 ## `N04`
@@ -89,6 +89,25 @@ l_tmp <- l %>%
     name,
     code,
     columns
+  ) %>% 
+  readr::write_csv(out)
+```
+
+## `P09`
+
+``` r
+id <- "P09"
+
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = NA
   ) %>% 
   readr::write_csv(out)
 ```

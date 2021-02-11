@@ -1,0 +1,15 @@
+name,code,description,type,codelist
+3次メッシュコード,P09_001,NA,NA,NA
+施設数（ホテル）,P09_002,NA,NA,NA
+施設数（旅館）,P09_003,NA,NA,NA
+施設数（公共宿泊施設）,P09_004,NA,NA,NA
+施設数（民宿）,P09_005,NA,NA,NA
+施設数（ペンション）,P09_006,NA,NA,NA
+施設数（宿坊）,P09_007,NA,NA,NA
+施設数（コテージ・貸し別荘・山荘）,P09_008,NA,NA,NA
+施設数（ユースホステル）,P09_009,NA,NA,NA
+施設数（カプセルホテル）,P09_010,NA,NA,NA
+施設数（研修センター）,P09_011,NA,NA,NA
+施設総数,P09_012,NA,NA,NA
+収容人数,P09_013,NA,NA,NA
+室数,P09_014,NA,NA,NA

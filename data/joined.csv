@@ -992,19 +992,20 @@ P05,NA,名称,文字列型（CharacterString）,NA
 P05,NA,所在地,文字列型（CharacterString）,NA
 P07,NA,所在地,文字列型（CharacterString）,NA
 P07,NA,店舗分類コード,コードリスト「燃料店舗分類コード」,FuelStoreCd
-P09,NA,施設数（ホテル）,整数型（Integer）,NA
-P09,NA,施設数（旅館）,整数型（Integer）,NA
-P09,NA,施設数（公共宿泊施設）,整数型（Integer）,NA
-P09,NA,施設数（民宿）,整数型（Integer）,NA
-P09,NA,施設数（ペンション）,整数型（Integer）,NA
-P09,NA,施設数（宿坊）,整数型（Integer）,NA
-P09,NA,施設数（コテージ・貸し別荘・山荘）,整数型（Integer）,NA
-P09,NA,施設数（ユースホステル）,整数型（Integer）,NA
-P09,NA,施設数（カプセルホテル）,整数型（Integer）,NA
-P09,NA,施設数（研修センター）,整数型 （Integer）,NA
-P09,NA,施設総数,整数型 （Integer）,NA
-P09,NA,収容人数,整数型 （Integer）,NA
-P09,NA,客室数,整数型 （Integer）,NA
+P09,P09_001,3次メッシュコード,NA,NA
+P09,P09_002,施設数（ホテル）,NA,NA
+P09,P09_003,施設数（旅館）,NA,NA
+P09,P09_004,施設数（公共宿泊施設）,NA,NA
+P09,P09_005,施設数（民宿）,NA,NA
+P09,P09_006,施設数（ペンション）,NA,NA
+P09,P09_007,施設数（宿坊）,NA,NA
+P09,P09_008,施設数（コテージ・貸し別荘・山荘）,NA,NA
+P09,P09_009,施設数（ユースホステル）,NA,NA
+P09,P09_010,施設数（カプセルホテル）,NA,NA
+P09,P09_011,施設数（研修センター）,NA,NA
+P09,P09_012,施設総数,NA,NA
+P09,P09_013,収容人数,NA,NA
+P09,P09_014,室数,NA,NA
 P11,NA,バス停名,文字列型,NA
 P11,NA,バス区分,コードリスト「バス区分コード」,BusClassCd
 P11,NA,事業者名,文字列型,NA
