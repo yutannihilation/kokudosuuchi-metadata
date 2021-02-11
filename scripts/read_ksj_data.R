@@ -172,8 +172,8 @@ match_by_position <- function(d, id) {
   d
 }
 
-match_by_name <- function(d, id) {
-  dc <- d_col_info[d_col_info$id == id, ]
+match_by_name <- function(d, id, dc = NULL) {
+  dc <- dc %||% d_col_info[d_col_info$id == id, ]
   
   readable_names <- setNames(dc$name, dc$code)
   old_names <- colnames(d)
@@ -330,12 +330,5 @@ match_N04 <- function(d, id) {
     rlang::abort("Unexpected number of columns")
   }
   
-  readable_names <- setNames(dc$name, dc$code)
-  old_names <- colnames(d)
-  idx <- match(old_names, dc$code)
-  colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
-  
-  assert_all_translated(colnames(d), old_names, id)
-  
-  d
+  match_by_name(d, id, dc = dc)
 }
