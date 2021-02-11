@@ -156,7 +156,7 @@ tibble::enframe(errors) %>%
 | P05-10\_36\_GML.zip                     | NA                                                                           |
 | P07-15\_35\_GML.zip                     | NA                                                                           |
 | P09-10\_5032-jgd\_GML.zip               | NA                                                                           |
-| P11-10\_36\_GML.zip                     | Error: The numbers of columns don’t match. expected: 4, actual: 40           |
+| P11-10\_36\_GML.zip                     | NA                                                                           |
 | P12-14\_35\_GML.zip                     | Error: Not implemented                                                       |
 | P13-11\_34\_GML.zip                     | NA                                                                           |
 | P14-15\_32\_GML.zip                     | NA                                                                           |

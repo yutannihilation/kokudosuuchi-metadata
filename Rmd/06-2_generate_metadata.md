@@ -11,7 +11,7 @@ names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
   "30b", "A16", "A34", "A35a", "A35b", "A37", "C23", "G02", "L03-a",
-  "mesh1000", "mesh500", "N05", "P09", "P15", "P16", "P17", "P18",
+  "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
   "P21"
 )
 
@@ -56,15 +56,14 @@ id_types
     ## $other
     ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
     ##  [7] "A38"      "C23"      "C28"      "G02"      "L03-a"    "mesh1000"
-    ## [13] "mesh500"  "N05"      "P09"      "P15"      "P16"      "P17"     
-    ## [19] "P18"      "P21"      "W09"     
+    ## [13] "mesh500"  "N05"      "P09"      "P11"      "P15"      "P16"     
+    ## [19] "P17"      "P18"      "P21"      "W09"     
     ## 
     ## $positional
     ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
     ##  [8] "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"    
     ## [15] "C02"     "C09"     "L01"     "L02"     "L03-b"   "L03-b-u" "P02"    
-    ## [22] "P05"     "P07"     "P11"     "S05-a"   "S05-b"   "S05-c"   "W05"    
-    ## [29] "W07"
+    ## [22] "P05"     "P07"     "S05-a"   "S05-b"   "S05-c"   "W05"     "W07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -526,6 +525,35 @@ bind_rows(
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "N05.csv"))
+```
+
+### `P11`
+
+Excelに範囲で入っているコードを手動展開
+
+``` r
+d_list <- d %>%
+  filter(id == "P11")
+
+codes <- bind_rows(
+  tibble(name = c("バス停名", "バス区分"), code = c("P11_001", "P11_002"), num = NA_integer_),
+  tibble(name = "事業者名", code = "P11_003", num = 1:19),
+  tibble(name = "バス系統", code = "P11_004", num = 1:19),
+)
+
+d_list %>% 
+  select(!code) %>% 
+  inner_join(codes, by = "name") %>% 
+  arrange(code) %>% 
+  transmute(
+    id,
+    name = if_else(is.na(num), name, paste(name, num, sep = "_")),
+    code = if_else(is.na(num), code, paste(code, num, sep = "_")),
+    description,
+    type,
+    codelist = detect_codelist(type)
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "P11.csv"))
 ```
 
 ### `P15`
