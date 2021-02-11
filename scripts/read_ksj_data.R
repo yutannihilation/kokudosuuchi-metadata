@@ -130,7 +130,9 @@ ok_with_no_translation <- list(
   A15 = c("ORIG_FID"),
   # unexpected columns...
   A19 = c("A19_010", "A19_011", "A19_012", "A19_013"),
-  C02 = c("C12_018")
+  C02 = c("C12_018"),
+  P20 = c("レベル", "備考", "緯度", "経度", "NO"),
+  P21 = c("検査ID")
 )
 
 assert_all_translated <- function(new_names, old_names, id) {
@@ -331,4 +333,20 @@ match_N04 <- function(d, id) {
   }
   
   match_by_name(d, id, dc = dc)
+}
+
+match_P21 <- function(d, id) {
+  colnames <- colnames(d)
+  # wrong colname?
+  idx <- stringr::str_detect(colnames, "^P21[A-Z]_00$")
+  if (any(idx)) {
+    # Uncomment this when moving to kokudosuuchi
+    
+    # msg <- glue::glue("Found invalid colname(s): {colnames[idx]}")
+    # rlang::warn(msg)
+    
+    colnames(d)[idx] <- stringr::str_replace(colnames[idx], "\\d+$", sprintf("%03d", which(idx)))
+  }
+  
+  match_by_name(d, id)
 }
