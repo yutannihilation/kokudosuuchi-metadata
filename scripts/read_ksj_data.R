@@ -310,3 +310,32 @@ match_L02 <- match_L01
 `match_L03-a` <- function(d, id) d
 `match_L03-b` <- function(d, id) d
 `match_L03-b-u` <- function(d, id) d
+
+match_N04 <- function(d, id) {
+  # geometry は抜く
+  ncol <- ncol(d) - 1L
+  
+  dc_N04 <- readr::read_csv(
+    here::here("data", "N04.csv"),
+    col_types = readr::cols(
+      name = readr::col_character(),
+      code = readr::col_character(),
+      columns = readr::col_integer()
+    )
+  )
+  
+  dc <- dc_N04[dc_N04$columns == ncol, ]
+  
+  if (nrow(dc) == 0) {
+    rlang::abort("Unexpected number of columns")
+  }
+  
+  readable_names <- setNames(dc$name, dc$code)
+  old_names <- colnames(d)
+  idx <- match(old_names, dc$code)
+  colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
+  
+  assert_all_translated(colnames(d), old_names, id)
+  
+  d
+}

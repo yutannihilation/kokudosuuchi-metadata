@@ -138,7 +138,11 @@ tibble::enframe(errors) %>%
 | L05-2-09\_33\_GML.zip                   | NA                                                                           |
 | N02-19\_GML.zip                         | NA                                                                           |
 | N03-20200101\_04\_GML.zip               | NA                                                                           |
-| N04-10\_4934-jgd\_GML.zip               | Error: Not implemented                                                       |
+| N04-02\_4934-jgd\_GML.zip               | NA                                                                           |
+| N04-03\_4934-jgd\_GML.zip               | NA                                                                           |
+| N04-04\_4934-jgd\_GML.zip               | NA                                                                           |
+| N04-10\_4934-jgd\_GML.zip               | NA                                                                           |
+| N04-78\_4934-tky\_GML.zip               | NA                                                                           |
 | N05-19\_GML.zip                         | NA                                                                           |
 | N06-19\_GML.zip                         | NA                                                                           |
 | N07-11\_41\_GML.zip                     | NA                                                                           |
