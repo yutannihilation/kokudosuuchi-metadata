@@ -22,6 +22,13 @@ library(dplyr, warn.conflicts = FALSE)
 sheets <- readxl::excel_sheets(excel_file)
 names(sheets) <- sheets
 
+dir.create(here::here("data", "excel"))
+```
+
+    ## Warning in dir.create(here::here("data", "excel")): '/home/yutani/repo/
+    ## kokudosuuchi-metadata/data/excel' already exists
+
+``` r
 l <- purrr::map_dfr(sheets, ~ {
   readxl::read_excel(excel_file, sheet = .x, skip = 4) %>% 
     select(
@@ -30,7 +37,8 @@ l <- purrr::map_dfr(sheets, ~ {
       tag = タグ名,
       code = 対応番号,
       name = 属性名
-    )
+    ) %>% 
+    tidyr::fill(id, item, tag)
 }, .id = "sheet")
 ```
 
@@ -41,10 +49,12 @@ l <- purrr::map_dfr(sheets, ~ {
 
 ## `A21`
 
+A21はHTMLにほぼ情報がないのでExcelから抜き出した情報を使う
+
 ``` r
 id <- "A21"
 
-out <- here::here("data", "attrs", glue::glue("{id}.csv"))
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
 
 l %>% 
   filter(id == {{ id }}) %>% 
@@ -52,7 +62,33 @@ l %>%
     name,
     code,
     description = NA,
-    type = NA
+    type = NA,
+    codelist = NA
   ) %>% 
   readr::write_csv(out)  
+```
+
+## `N04`
+
+N04は、年度によってカラムが違う。
+いずれもExcelにあるので、別途書き出す。`joined.csv`には含めない。
+
+``` r
+id <- "N04"
+
+out <- here::here("data", glue::glue("{id}.csv"))
+
+l_tmp <- l %>%
+  filter(id == {{ id }}) %>% 
+  group_by(sub_id = cumsum(code == "N04_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns
+  ) %>% 
+  readr::write_csv(out)
 ```

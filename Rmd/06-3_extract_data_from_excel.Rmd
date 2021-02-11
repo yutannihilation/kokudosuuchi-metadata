@@ -30,6 +30,8 @@ library(dplyr, warn.conflicts = FALSE)
 sheets <- readxl::excel_sheets(excel_file)
 names(sheets) <- sheets
 
+dir.create(here::here("data", "excel"))
+
 l <- purrr::map_dfr(sheets, ~ {
   readxl::read_excel(excel_file, sheet = .x, skip = 4) %>% 
     select(
@@ -38,16 +40,19 @@ l <- purrr::map_dfr(sheets, ~ {
       tag = タグ名,
       code = 対応番号,
       name = 属性名
-    )
+    ) %>% 
+    tidyr::fill(id, item, tag)
 }, .id = "sheet")
 ```
 
 ## `A21`
 
+A21はHTMLにほぼ情報がないのでExcelから抜き出した情報を使う
+
 ```{r A21}
 id <- "A21"
 
-out <- here::here("data", "attrs", glue::glue("{id}.csv"))
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
 
 l %>% 
   filter(id == {{ id }}) %>% 
@@ -55,26 +60,34 @@ l %>%
     name,
     code,
     description = NA,
-    type = NA
+    type = NA,
+    codelist = NA
   ) %>% 
   readr::write_csv(out)  
 ```
 
+## `N04`
 
-## `A22-m`
+N04は、年度によってカラムが違う。
+いずれもExcelにあるので、別途書き出す。`joined.csv`には含めない。
 
-```{r A22-m}
-id <- "A22-m"
+```{r N04}
+id <- "N04"
 
-out <- here::here("data", "attrs", glue::glue("{id}.csv"))
+out <- here::here("data", glue::glue("{id}.csv"))
 
-l %>% 
+l_tmp <- l %>%
   filter(id == {{ id }}) %>% 
+  group_by(sub_id = cumsum(code == "N04_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
   transmute(
     name,
     code,
-    description = NA,
-    type = NA
+    columns
   ) %>% 
-  readr::write_csv(out)  
+  readr::write_csv(out)
 ```
+

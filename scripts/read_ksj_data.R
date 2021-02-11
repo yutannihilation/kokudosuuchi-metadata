@@ -54,7 +54,7 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
                     options = glue::glue("ENCODING={encoding}")
   )
   
-  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?(-[a-z])?")
+  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?(-[a-z])?(-[cu])?")
   res
 }
 
@@ -151,11 +151,14 @@ match_by_position <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   readable_names <- dc$name
+  old_names <- colnames(d)
+
+  # exlude columns that don't need to be translated
+  old_names <- setdiff(old_names, c(ok_with_no_translation[[id]], "geometry"))
   
-  # minus 1 is for geometry column
-  ncol <- ncol(d) - 1L
+  ncol <- length(old_names)
   
-  if (length(readable_names) != ncol && !id %in% ok_with_no_translation[[id]]) {
+  if (length(readable_names) != ncol) {
     msg <- glue::glue(
       "The numbers of columns don't match. ",
       "expected: ", nrow(dc), ", actual: ", ncol
@@ -305,3 +308,5 @@ match_L01 <- function(d, id) {
 match_L02 <- match_L01
 
 `match_L03-a` <- function(d, id) d
+`match_L03-b` <- function(d, id) d
+`match_L03-b-u` <- function(d, id) d

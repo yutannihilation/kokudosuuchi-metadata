@@ -15,7 +15,7 @@ library(dplyr, warn.conflicts = FALSE)
 csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
-id_exception <- c("A16", "A22-m", "30b", "A34", "A35a", "A35b", "A37", "C23", "G02", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
+id_exception <- c("A16", "30b", "A34", "A35a", "A35b", "A37", "C23", "G02", "P15", "P16", "P17", "P18", "L03-a", "mesh1000", "mesh500", "P21", "N05")
 
 col_types <- cols(
   name = col_character(),
