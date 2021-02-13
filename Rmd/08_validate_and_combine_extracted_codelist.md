@@ -99,6 +99,9 @@ d <- d %>%
       code == "C09_005" ~ "FishPortAdminCd",
       code == "C09_011" ~ "PrefCd",
       
+      code == "P03_0102" ~ "hydroelectric_power_plant_type",
+      code == "P03_0209" ~ "pumpingup_type",
+      
       code == "P13_009" ~ "urban_planning_decided",
       code == "P15_017" ~ "industrial_waste_disposal",
       code == "P15_018" ~ "industrial_waste_special_treatment",

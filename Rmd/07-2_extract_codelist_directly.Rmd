@@ -312,3 +312,26 @@ tibble::tribble(
 ) %>% 
   readr::write_csv(file.path(out_dir, "RitoCd.csv"))
 ```
+
+### `P03_0102`
+
+```{r}
+tibble::tribble(
+  ~code,     ~label,
+    "1",     "ダム式",
+    "2",     "水路式",
+    "3",    "ダム水路"
+) %>% 
+  readr::write_csv(file.path(out_dir, "hydroelectric_power_plant_type.csv"))
+```
+
+### `P03_0209`
+
+```{r}
+tibble::tribble(
+  ~code,     ~label,
+    "1",     "混合揚水式水力",
+    "2",     "純揚水式水力"
+) %>% 
+  readr::write_csv(file.path(out_dir, "pumpingup_type.csv"))
+```
