@@ -135,7 +135,6 @@ ok_with_no_translation <- list(
   A15 = c("ORIG_FID"),
   # unexpected columns...
   A19 = c("A19_010", "A19_011", "A19_012", "A19_013"),
-  C02 = c("C12_018"),
   P20 = c("レベル", "備考", "緯度", "経度", "NO"),
   P21 = c("検査ID"),
   # W05_007〜W05_010のと対応してるっぽいので、点のIDのようなもの？
@@ -264,21 +263,9 @@ match_by_name <- function(d, id, dc = NULL) {
 
 
 match_C02 <- function(d, id) {
-  dc <- d_col_info[d_col_info$id == id, ]
-  
-  old_names <- colnames(d)
-  
-  # PortDistrictBoundary have unknown thrid column, but let's ignore...
-  if (ncol(d) <= 4) {
-    colnames(d)[1:2] <- c("県コード", "港湾コード")
-  } else {
-    idx <- seq_len(ncol(d) - 1L)
-    colnames(d)[idx] <- dc$name[idx]
-  }
-
-  assert_all_translated(colnames(d), old_names, id)
-
-  d
+  # C02_となるべきところがC12_となっているコードが紛れている？
+  colnames(d) <- stringr::str_replace(colnames(d), "^C12_", "C02_")
+  match_by_name(d, id)
 }
 
 match_C09 <- function(d, id) {

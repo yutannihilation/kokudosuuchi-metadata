@@ -73,6 +73,13 @@ d <- d %>%
       code %in% c("G04a_007", "G04a_009","G04c_007","G04c_009","G04d_007","G04d_009") ~ "direction",
       code == "A15_003" ~ "authority_type",
       code == "A15_004" ~ "protection_area_type",
+      code == "C02_001" ~ "ClassHarbor1Cd",
+      code == "C02_002" ~ "ClassHarbor2Cd",
+      code == "C02_003" ~ "AdminAreaCd",
+      code == "C02_006" ~ "AdminHarborCd",
+      code == "C02_010" ~ "MaritimeOrgCd",
+      code == "C02_014" ~ "PrefCd",
+      code == "C02_016" ~ "PrefCd",
       code == "P13_009" ~ "urban_planning_decided",
       code == "P15_017" ~ "industrial_waste_disposal",
       code == "P15_018" ~ "industrial_waste_special_treatment",
@@ -148,7 +155,7 @@ d_codelist <- d_codelist %>%
 ```{r codelist_join}
 d_split <- d %>% 
   mutate(
-    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13", "A21", "W05", "W07")
+    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13", "A21", "C02", "W05", "W07")
   )
 
 d_joined_manual <- d_split %>% 
