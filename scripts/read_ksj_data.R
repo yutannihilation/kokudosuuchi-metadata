@@ -182,7 +182,7 @@ match_by_position <- function(d, id) {
   d
 }
 
-match_by_name <- function(d, id, dc = NULL) {
+match_by_name <- function(d, id, dc = NULL, skip_check = FALSE) {
   dc <- dc %||% d_col_info[d_col_info$id == id, ]
   
   readable_names <- setNames(dc$name, dc$code)
@@ -190,7 +190,9 @@ match_by_name <- function(d, id, dc = NULL) {
   idx <- match(old_names, dc$code)
   colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
 
-  assert_all_translated(colnames(d), old_names, id)
+  if (!skip_check) {
+    assert_all_translated(colnames(d), old_names, id)
+  }
   
   d
 }
@@ -361,6 +363,17 @@ match_N04 <- function(d, id) {
 
 `match_S05-a` <- match_N04
 `match_S05-b` <- match_N04
+
+match_P17 <- function(d, id) {
+  old_names <- colnames(d)
+  idx <- stringr::str_detect(old_names, "^P17_") &
+    !(old_names %in% c("P17_001", "P17_002", "P17_003", "P17_004", "P17_005"))
+  colnames(d)[idx] <- paste0("管轄範囲", seq_len(sum(idx)))
+
+  d <- match_by_name(d, id, skip_check = TRUE)  
+  assert_all_translated(colnames(d), old_names, id)
+  d
+}
 
 match_P21 <- function(d, id) {
   colnames <- colnames(d)
