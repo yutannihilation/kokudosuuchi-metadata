@@ -335,3 +335,32 @@ tibble::tribble(
 ) %>% 
   readr::write_csv(file.path(out_dir, "pumpingup_type.csv"))
 ```
+
+### `N04`
+
+```{r}
+tibble::tribble(
+  ~code, ~label,
+    "1", "幅員13.0m（11.0m）以上",
+    "2", "幅員5.5m以上13.0m（11.0m）未満",
+    "3", "幅員3.0m（2.5m）以上5.5m未満",
+    "4", "幅員3.0m（2.5m）未満",
+    "5", "幅員未調査",
+    "6", "幅員合計"
+) %>% 
+  readr::write_csv(file.path(out_dir, "N04_fukuin_H16.csv"))
+
+tibble::tribble(
+  ~code, ~label,
+    "1", "幅員25.0m以上",
+    "2", "幅員19.5m以上25.0m未満",
+    "3", "幅員13.0m（11.0m）以上19.5m未満",
+    "4", "幅員13.0m（11.0m）以上で幅員不明",
+    "5", "幅員5.5m以上13.0m（11.0m）未満",
+    "6", "幅員3.0m（2.5m）以上5.5m未満",
+    "7", "幅員3.0m（2.5m）未満",
+    "8", "幅員未調査",
+    "9", "幅員合計"
+) %>% 
+  readr::write_csv(file.path(out_dir, "N04_fukuin_H22.csv"))
+```

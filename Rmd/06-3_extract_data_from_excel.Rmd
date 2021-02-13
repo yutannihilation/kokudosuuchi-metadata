@@ -129,7 +129,45 @@ l_tmp <- l %>%
   transmute(
     name,
     code,
-    columns
+    columns,
+    codelist = if_else(
+      columns == 56L,
+      "N04_fukuin_H22",
+      "N04_fukuin_H16"
+    )
+  ) %>% 
+  readr::write_csv(out)
+```
+
+## `P02`
+
+年度によってカラムが違う。
+いずれもExcelにあるので、別途書き出す。`joined.csv`には含めない。
+
+```{r P02}
+id <- "P02"
+
+out <- here::here("data", glue::glue("{id}.csv"))
+
+l_tmp <- l %>%
+  filter(id == {{ id }}) %>% 
+  group_by(sub_id = cumsum(code == "P02_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns,
+    codelist_id = case_when(
+      code == "P02_001" ~ "AdminAreaCd",
+      name == "公共施設大分類" ~ "PubFacMaclassCd",
+      name == "公共施設小分類" ~ "PubFacMiclassCd",
+      name == "管理者コード" ~ "PubFacAdminCd",
+      name == "管理者コード_行政区域コード" ~ "AdminAreaCd",
+      name == "管理者コード_その他管理者コード" ~ "PubFacAdminCd"
+    )
   ) %>% 
   readr::write_csv(out)
 ```
@@ -215,7 +253,12 @@ l_tmp <- l %>%
   transmute(
     name,
     code,
-    columns
+    columns,
+    codelist = case_when(
+      code == "S05a_001" ~ "PTAreaCd",
+      code == "S05a_003" ~ "TripGenerationCd",
+      code == "S05a_004" ~ "AreaZoneCd"        # TODO
+    )
   ) %>% 
   split(.$columns)
 
@@ -266,7 +309,12 @@ l_tmp <- l %>%
   transmute(
     name,
     code,
-    columns
+    columns,
+    codelist = case_when(
+      code == "S05a_001" ~ "PTAreaCd",
+      code == "S05a_003" ~ "AreaZoneCd", # TODO
+      code == "S05a_004" ~ "AreaZoneCd"  # TODO
+    )
   ) %>% 
   split(.$columns)
 

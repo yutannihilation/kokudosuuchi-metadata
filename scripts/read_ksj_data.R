@@ -350,7 +350,8 @@ match_N04 <- function(d, id) {
     col_types = readr::cols(
       name = readr::col_character(),
       code = readr::col_character(),
-      columns = readr::col_integer()
+      columns = readr::col_integer(),
+      codelist_ide = readr::col_character()
     )
   )
   
@@ -365,6 +366,7 @@ match_N04 <- function(d, id) {
 
 `match_S05-a` <- match_N04
 `match_S05-b` <- match_N04
+`match_P02`   <- match_N04
 
 # exact matchに加えて、ある範囲以上のカラムには「管轄範囲1」、「管轄範囲2」...というルールで名前がついていく
 match_P17 <- function(d, id) {

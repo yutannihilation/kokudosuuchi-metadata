@@ -147,7 +147,6 @@ d <- d %>%
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",
       id == "L01" & name == "標準地行政区域コード" ~ "AdminAreaCd",
       id == "L02" & name == "基準地行政区域コード" ~ "AdminAreaCd",
-      id == "P02" & name == "行政区域コード" ~ "AdminAreaCd",
       id == "A09" & code == "prefec_cd" ~ "PrefCd",
       id == "A09" & code == "area_cd"   ~ "A10_area_code",
       id == "A09" & code == "layer_no"  ~ "A10_layer_no",

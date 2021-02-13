@@ -3099,13 +3099,6 @@ N11,N11_004,都道府県コード,コードリスト「都道府県コード」,
 N11,N11_005,所在地,文字列型（CharacterString）,NA
 N11,N11_006,管理者名,文字列型（CharacterString）,NA
 N11,N11_007,滑走路面積,文字列型（CharacterString）,NA
-P02,NA,行政区域コード,コードリスト「行政コード」,AdminAreaCd
-P02,NA,公共施設大分類,コードリスト「公共施設大分類コード」,PubFacMaclassCd
-P02,NA,公共施設小分類,コードリスト「公共施設小分類コード」,PubFacMiclassCd
-P02,NA,名称,文字列型,NA
-P02,NA,所在地,文字列型,NA
-P02,NA,管理者コード,コードリスト「公共施設管理者コード」,PubFacAdminCd
-P02,NA,原典資料名,文字列型,NA
 P03,P03_0001,事業者名等,文字列型,NA
 P03,P03_0002,発電施設名称,文字列型,NA
 P03,P03_0003,所在地,文字列型,NA
