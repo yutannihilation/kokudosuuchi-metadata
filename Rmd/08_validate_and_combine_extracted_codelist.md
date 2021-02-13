@@ -117,6 +117,9 @@ d <- d %>%
       id == "A20s"   & code == "A20_008" ~ "SpecificAirPortSpecifiedSituationCd",
       id == "A21s"   & code == "A21_002" ~ "AdminAreaCd",
       id == "A21s"   & code == "A21_007" ~ "SpecificAirPortSpecifiedSituationCd",
+      id == "A22s"   & code == "A22_002" ~ "AdminAreaCd",
+      id == "A22s"   & code == "A22_007" ~ "HeavySnowTypeCode",
+      id == "A22s"   & code == "A22_008" ~ "SpecificAirPortSpecifiedSituationCd",
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",
