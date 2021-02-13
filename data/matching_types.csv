@@ -10,6 +10,7 @@ A16,exact
 A17,exact
 A18,exact
 A18s-a,exact
+A19,exact
 A19s,exact
 A20,exact
 A20s,exact
@@ -87,7 +88,6 @@ W01,exact
 W05,exact
 W07,exact
 W09,exact
-A19,positional
 A19s,positional
 A20s,positional
 A21s,positional
