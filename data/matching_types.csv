@@ -19,6 +19,9 @@ A21s,exact
 A22,exact
 A22s,exact
 A23,exact
+A24,exact
+A25,exact
+A26,exact
 A27,exact
 A29,exact
 A30a5,exact
@@ -89,9 +92,6 @@ W01,exact
 W05,exact
 W07,exact
 W09,exact
-A24,positional
-A25,positional
-A26,positional
 A28,positional
 C23,positional
 G02,positional

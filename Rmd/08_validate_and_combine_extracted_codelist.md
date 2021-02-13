@@ -88,6 +88,8 @@ d <- d %>%
       
       code == "A20_002" ~ "AdminAreaCd",
       
+      code == "A26_005" ~ "SedimentDisastersProneAreaCd",
+      
       code == "C02_001" ~ "ClassHarbor1Cd",
       code == "C02_002" ~ "ClassHarbor2Cd",
       code == "C02_003" ~ "AdminAreaCd",
