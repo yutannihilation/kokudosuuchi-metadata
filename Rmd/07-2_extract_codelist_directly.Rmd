@@ -279,3 +279,19 @@ tibble::tribble(
   readr::write_csv(file.path(out_dir, "section_type.csv"))
 ```
 
+### `A18_008`
+
+<https://nlftp.mlit.go.jp/ksj/gmlold/codelist/SpecificAirPortSpecifiedSituationCd.html> にある
+
+```{r}
+tibble(
+  code = c("1", "2", "3"),
+  label = c(
+    "「公共用飛行場周辺における航空機騒音による障害の防止等に関する法律」に基づく特定飛行場で、かつ周辺整備空港に指定されている場合",
+    "周辺整備空港に指定されていない特定飛行場",
+    "特定飛行場以外"
+  )
+) %>% 
+  readr::write_csv(file.path(out_dir, "SpecificAirPortSpecifiedSituationCd.csv"))
+```
+

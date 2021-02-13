@@ -108,6 +108,8 @@ d <- d %>%
       code == "W05_003" ~ "section_type",
       code == "W05_005" ~ "OriginalDataCodeCd",
       
+      id == "A18s-a" & code == "A18_002" ~ "AdminAreaCd",
+      id == "A18s-a" & code == "A18_008" ~ "SpecificAirPortSpecifiedSituationCd",
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",

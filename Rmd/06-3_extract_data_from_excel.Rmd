@@ -281,3 +281,40 @@ l %>%
   ) %>% 
   readr::write_csv(out)
 ```
+
+## `A18s-a`
+
+`A18s-a`の定義はエクセルにある
+
+```{r A18s-a}
+id <- "A18s-a"
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+excel_file_A18s_a <- here::here("data-raw", "codelist", "A18s-a_property_table.xls")
+
+if (!file.exists(excel_file_A18s_a)) {
+  curl::curl_download(
+    "https://nlftp.mlit.go.jp/ksj/gml/datalist/A18s-a_property_table.xls",
+    destfile = excel_file_A18s_a
+  )
+}
+
+d <- readxl::read_excel(excel_file_A18s_a)
+d %>% 
+  select(
+    name = 2,
+    code = 4,
+    type = 3
+  ) %>% 
+  filter(stringr::str_detect(code, "^A18")) %>% 
+  arrange(code) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type,
+    codelist = NA,
+  ) %>% 
+  readr::write_csv(out)
+```
+
