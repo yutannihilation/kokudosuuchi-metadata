@@ -16,7 +16,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A30b", "A34", "A35a", "A35b", "A37", 
+  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", 
   "C02", "C09", "C23", 
   "G02", "L03-a",
   "mesh1000", "mesh500", 
@@ -263,6 +263,21 @@ d_tmp <- d %>%
   filter(id == {{ id }})
 
 d_tmp$code <- paste(id, sprintf("%03d", 1:8), sep = "_")
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+```
+
+### `A28`
+
+```{r}
+id <- "A28"
+
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+# ExcelではA28_001となっているが、実データはこうなっていた
+d_tmp$code <- "WHC"
 
 d_tmp %>% 
   readr::write_csv(file.path(out_exact, paste0(id, ".csv")))

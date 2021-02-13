@@ -10,7 +10,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A30b", "A34", "A35a", "A35b", "A37", 
+  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", 
   "C02", "C09", "C23", 
   "G02", "L03-a",
   "mesh1000", "mesh500", 
@@ -62,16 +62,15 @@ id_types
     ## $other
     ##  [1] "A03"      "A16"      "A17"      "A18"      "A18s-a"   "A19"     
     ##  [7] "A19s"     "A20s"     "A21s"     "A22-m"    "A22s"     "A23"     
-    ## [13] "A24"      "A25"      "A26"      "A30b"     "A34"      "A35a"    
-    ## [19] "A35b"     "A37"      "A38"      "C02"      "C09"      "C23"     
-    ## [25] "C28"      "G02"      "L03-a"    "mesh1000" "mesh500"  "N05"     
-    ## [31] "P09"      "P11"      "P15"      "P16"      "P17"      "P18"     
-    ## [37] "P21"      "S05-a"    "S05-b"    "S05-c"    "W05"      "W07"     
-    ## [43] "W09"     
+    ## [13] "A24"      "A25"      "A26"      "A28"      "A30b"     "A34"     
+    ## [19] "A35a"     "A35b"     "A37"      "A38"      "C02"      "C09"     
+    ## [25] "C23"      "C28"      "G02"      "L03-a"    "mesh1000" "mesh500" 
+    ## [31] "N05"      "P09"      "P11"      "P15"      "P16"      "P17"     
+    ## [37] "P18"      "P21"      "S05-a"    "S05-b"    "S05-c"    "W05"     
+    ## [43] "W07"      "W09"     
     ## 
     ## $positional
-    ## [1] "A28"     "L01"     "L02"     "L03-b"   "L03-b-u" "P02"     "P05"    
-    ## [8] "P07"
+    ## [1] "L01"     "L02"     "L03-b"   "L03-b-u" "P02"     "P05"     "P07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -302,6 +301,21 @@ d_tmp <- d %>%
   filter(id == {{ id }})
 
 d_tmp$code <- paste(id, sprintf("%03d", 1:8), sep = "_")
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+```
+
+### `A28`
+
+``` r
+id <- "A28"
+
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+# ExcelではA28_001となっているが、実データはこうなっていた
+d_tmp$code <- "WHC"
 
 d_tmp %>% 
   readr::write_csv(file.path(out_exact, paste0(id, ".csv")))

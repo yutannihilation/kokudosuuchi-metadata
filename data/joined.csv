@@ -2322,7 +2322,7 @@ A27,A27_005,市区町村コード,コードリスト「行政コード」,AdminA
 A27,A27_006,設置主体,文字列型（CharacterString）,NA
 A27,A27_007,名称,文字列型（CharacterString）,NA
 A27,A27_008,所在地,文字列型（CharacterString）,NA
-A28,NA,世界自然遺産名称コード,コードリスト「世界自然遺産コード」,WorldHeritageCd
+A28,WHC,世界自然遺産名称コード,コードリスト「世界自然遺産コード」,WorldHeritageCd
 A29,A29_001,行政区域コード,コードリスト「行政コード」,AdminAreaCd_R105
 A29,A29_002,都道府県名,文字列型（CharacterString）,NA
 A29,A29_003,市区町村名,文字列型（CharacterString）,NA
