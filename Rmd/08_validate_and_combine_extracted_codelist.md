@@ -114,9 +114,12 @@ d <- d %>%
       id == "L01" & name == "標準地行政区域コード" ~ "AdminAreaCd",
       id == "L02" & name == "基準地行政区域コード" ~ "AdminAreaCd",
       id == "P02" & name == "行政区域コード" ~ "AdminAreaCd",
+      id == "A09" & code == "prefec_cd" ~ "PrefCd",
+      id == "A09" & code == "area_cd"   ~ "A10_area_code",
+      id == "A09" & code == "layer_no"  ~ "A10_layer_no",
       id %in% c("A10", "A11", "A12", "A13") & code == "PREFEC_CD" ~ "PrefCd",
       id %in% c("A10", "A11", "A12", "A13") & code == "AREA_CD"   ~ "A10_area_code",
-      id %in% c("A10", "A11", "A12", "A13") & code == "LAYER_NO" ~ "A10_layer_no",
+      id %in% c("A10", "A11", "A12", "A13") & code == "LAYER_NO"  ~ "A10_layer_no",
     )
   )
 ```

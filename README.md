@@ -89,7 +89,7 @@ tibble::enframe(errors) %>%
 | 1km\_mesh\_suikei\_2018\_shape\_06.zip  | Error: Not implemented                                              |
 | 500m\_mesh\_suikei\_2018\_shape\_23.zip | Error: Not implemented                                              |
 | A03-03\_SYUTO-tky\_GML.zip              | NA                                                                  |
-| A09-18\_22\_GML.zip                     | Error: Not implemented                                              |
+| A09-18\_22\_GML.zip                     | NA                                                                  |
 | A10-15\_13\_GML.zip                     | NA                                                                  |
 | A11-15\_42\_GML.zip                     | NA                                                                  |
 | A12-15\_08\_GML.zip                     | NA                                                                  |

@@ -44,14 +44,14 @@ id_types
 ```
 
     ## $exact
-    ##  [1] "A10"     "A11"     "A12"     "A13"     "A15"     "A21"     "A22"    
-    ##  [8] "A27"     "A29"     "A30a5"   "A30b"    "A31"     "A32"     "A33"    
-    ## [15] "A35c"    "A39"     "A40"     "A42"     "A43"     "A44"     "A45"    
-    ## [22] "G04-a"   "G04-c"   "G04-d"   "G08"     "L03-b-c" "L05"     "N02"    
-    ## [29] "N03"     "N06"     "N07"     "N08"     "N09"     "N10"     "N11"    
-    ## [36] "P04"     "P13"     "P14"     "P19"     "P20"     "P24"     "P26"    
-    ## [43] "P27"     "P28"     "P29"     "P30"     "P31"     "P32"     "P34"    
-    ## [50] "P35"     "S05-d"   "S10a"    "S10b"    "S12"     "W01"    
+    ##  [1] "A09"     "A10"     "A11"     "A12"     "A13"     "A15"     "A21"    
+    ##  [8] "A22"     "A27"     "A29"     "A30a5"   "A30b"    "A31"     "A32"    
+    ## [15] "A33"     "A35c"    "A39"     "A40"     "A42"     "A43"     "A44"    
+    ## [22] "A45"     "G04-a"   "G04-c"   "G04-d"   "G08"     "L03-b-c" "L05"    
+    ## [29] "N02"     "N03"     "N06"     "N07"     "N08"     "N09"     "N10"    
+    ## [36] "N11"     "P04"     "P13"     "P14"     "P19"     "P20"     "P24"    
+    ## [43] "P26"     "P27"     "P28"     "P29"     "P30"     "P31"     "P32"    
+    ## [50] "P34"     "P35"     "S05-d"   "S10a"    "S10b"    "S12"     "W01"    
     ## 
     ## $other
     ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
@@ -117,6 +117,28 @@ purrr::walk(id_types$positional, ~ {
 out_other <- here::here("data", "colnames_other")
 
 dir.create(out_other, showWarnings = FALSE)
+```
+
+### `A09`
+
+A09は<https://nlftp.mlit.go.jp/ksj/gml/5Area_shape_property.pdf>に定義がある。
+A10〜13と違って大文字な点に注意。
+
+``` r
+tibble::tribble(
+      ~name,        ~code,
+  "都道府県コード",  "prefec_cd",
+    "地区コード",    "area_cd",
+    "レイヤ番号",   "layer_no"
+) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = TRUE,
+  ) %>% 
+  readr::write_csv(file.path(out_exact, "A09.csv"))
 ```
 
 ### `A16`

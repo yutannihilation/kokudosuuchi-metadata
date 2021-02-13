@@ -1,0 +1,4 @@
+name,code,description,type,codelist
+都道府県コード,prefec_cd,NA,NA,TRUE
+地区コード,area_cd,NA,NA,TRUE
+レイヤ番号,layer_no,NA,NA,TRUE
