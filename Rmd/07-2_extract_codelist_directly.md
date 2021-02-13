@@ -46,11 +46,11 @@ d %>%
 ```
 
     ## # A tibble: 3 x 6
-    ##   id    name     code   description                      type           codelist
-    ##   <chr> <chr>    <chr>  <chr>                            <chr>          <lgl>   
-    ## 1 G04-a 最低標高コード… G04a_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE    
-    ## 2 G04-c 最低標高コード… G04c_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE    
-    ## 3 G04-d 最低標高コード… G04d_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE
+    ##   name     code   description                      type           codelist id   
+    ##   <chr>    <chr>  <chr>                            <chr>          <lgl>    <chr>
+    ## 1 最低標高コード… G04a_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE     G04-a
+    ## 2 最低標高コード… G04c_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE     G04-c
+    ## 3 最低標高コード… G04d_… 最低標高が海面下であるかどうかの区分。※基盤地図情報の標高では… コードリスト型（海面下=5… TRUE     G04-d
 
 ``` r
 tibble(
@@ -68,14 +68,14 @@ d %>%
 ```
 
     ## # A tibble: 6 x 6
-    ##   id    name    code   description                type                  codelist
-    ##   <chr> <chr>   <chr>  <chr>                      <chr>                 <lgl>   
-    ## 1 G04-a 最大傾斜方向… G04a_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE    
-    ## 2 G04-a 最小傾斜方向… G04a_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE    
-    ## 3 G04-c 最大傾斜方向… G04c_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE    
-    ## 4 G04-c 最小傾斜方向… G04c_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE    
-    ## 5 G04-d 最大傾斜方向… G04d_… 10mメッシュ標高をリサンプリングした50mメッシ… コードリスト型（0=方向なし、1=北、2… TRUE    
-    ## 6 G04-d 最小傾斜方向… G04d_… 10mメッシュ標高をリサンプリングした50mメッシ… コードリスト型（0=方向なし、1=北、2… TRUE
+    ##   name    code   description                type                  codelist id   
+    ##   <chr>   <chr>  <chr>                      <chr>                 <lgl>    <chr>
+    ## 1 最大傾斜方向… G04a_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE     G04-a
+    ## 2 最小傾斜方向… G04a_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE     G04-a
+    ## 3 最大傾斜方向… G04c_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE     G04-c
+    ## 4 最小傾斜方向… G04c_… 標高傾斜度5次メッシュ（250m）の標高から算出す… コードリスト型（0=方向なし、1=北、2… TRUE     G04-c
+    ## 5 最大傾斜方向… G04d_… 10mメッシュ標高をリサンプリングした50mメッシ… コードリスト型（0=方向なし、1=北、2… TRUE     G04-d
+    ## 6 最小傾斜方向… G04d_… 10mメッシュ標高をリサンプリングした50mメッシ… コードリスト型（0=方向なし、1=北、2… TRUE     G04-d
 
 ``` r
 tibble(
@@ -93,9 +93,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name           code   description              type             codelist
-    ##   <chr> <chr>          <chr>  <chr>                    <chr>            <lgl>   
-    ## 1 A15   指定機関：指定機関コード… A15_0… 国指定及び県指定の区分1：国指定　2：県指定… コードリスト「指定機関コード」… TRUE
+    ##   name           code   description              type             codelist id   
+    ##   <chr>          <chr>  <chr>                    <chr>            <lgl>    <chr>
+    ## 1 指定機関：指定機関コード… A15_0… 国指定及び県指定の区分1：国指定　2：県指定… コードリスト「指定機関コード」… TRUE     A15
 
 ``` r
 tibble(
@@ -113,9 +113,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name        code   description                     type         codelist
-    ##   <chr> <chr>       <chr>  <chr>                           <chr>        <lgl>   
-    ## 1 A15   保護区分：保護区分コ… A15_0… 鳥獣保護区と特別保護区域，休猟区の区別1：鳥獣保護区　2：特… コードリスト「保護区分… TRUE
+    ##   name        code   description                     type         codelist id   
+    ##   <chr>       <chr>  <chr>                           <chr>        <lgl>    <chr>
+    ## 1 保護区分：保護区分コ… A15_0… 鳥獣保護区と特別保護区域，休猟区の区別1：鳥獣保護区　2：特… コードリスト「保護区分… TRUE     A15
 
 ``` r
 tibble(
@@ -133,9 +133,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name     code   description    type                             codelist
-    ##   <chr> <chr>    <chr>  <chr>          <chr>                            <lgl>   
-    ## 1 P13   都市計画決定… P13_0… 都市計画決定コード… コードリスト「都市計画決定コード」（０＝未確認、１＝決定、２＝… TRUE
+    ##   name     code   description    type                             codelist id   
+    ##   <chr>    <chr>  <chr>          <chr>                            <lgl>    <chr>
+    ## 1 都市計画決定… P13_0… 都市計画決定コード… コードリスト「都市計画決定コード」（０＝未確認、１＝決定、２＝… TRUE     P13
 
 ``` r
 tibble(
@@ -153,9 +153,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name       code   description   type                            codelist
-    ##   <chr> <chr>      <chr>  <chr>         <chr>                           <lgl>   
-    ## 1 P15   産廃施設種別… P15_0… 産廃施設コード… 産廃施設コード中間処理施設=1、最終処理施設=2… TRUE
+    ##   name       code   description   type                            codelist id   
+    ##   <chr>      <chr>  <chr>         <chr>                           <lgl>    <chr>
+    ## 1 産廃施設種別… P15_0… 産廃施設コード… 産廃施設コード中間処理施設=1、最終処理施設=2… TRUE     P15
 
 ``` r
 tibble(
@@ -173,9 +173,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name    code   description  type                                codelist
-    ##   <chr> <chr>   <chr>  <chr>        <chr>                               <lgl>   
-    ## 1 P15   特別管理… P15_0… 特別管理コード… 特別管理コード特別管理産業廃棄物処理以外=0、特別管理産業廃棄物処理… TRUE
+    ##   name    code   description  type                                codelist id   
+    ##   <chr>   <chr>  <chr>        <chr>                               <lgl>    <chr>
+    ## 1 特別管理… P15_0… 特別管理コード… 特別管理コード特別管理産業廃棄物処理以外=0、特別管理産業廃棄物処理… TRUE     P15
 
 ``` r
 tibble(
@@ -193,9 +193,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name    code   description                  type                codelist
-    ##   <chr> <chr>   <chr>  <chr>                        <chr>               <lgl>   
-    ## 1 P17   種別コード… P17_0… 消防施設の区分。各消防本部で施設区分が異なるため、H2… コードリスト「種別コード」消防本部=… TRUE
+    ##   name    code   description                  type                codelist id   
+    ##   <chr>   <chr>  <chr>                        <chr>               <lgl>    <chr>
+    ## 1 種別コード… P17_0… 消防施設の区分。各消防本部で施設区分が異なるため、H2… コードリスト「種別コード」消防本部=… TRUE     P17
 
 ``` r
 tibble(
@@ -213,9 +213,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name  code   description           type                         codelist
-    ##   <chr> <chr> <chr>  <chr>                 <chr>                        <lgl>   
-    ## 1 P21   種別  P21A_… 当該給水区域の種別から得られた種別コード… コードリスト型（種別コード）上水道=1、簡易水道（公営… TRUE
+    ##   name  code   description           type                         codelist id   
+    ##   <chr> <chr>  <chr>                 <chr>                        <lgl>    <chr>
+    ## 1 種別  P21A_… 当該給水区域の種別から得られた種別コード… コードリスト型（種別コード）上水道=1、簡易水道（公営… TRUE     P21
 
 ``` r
 tibble(
@@ -233,9 +233,9 @@ d %>%
 ```
 
     ## # A tibble: 1 x 6
-    ##   id    name    code   description       type                           codelist
-    ##   <chr> <chr>   <chr>  <chr>             <chr>                          <lgl>   
-    ## 1 P24   原典コード… P24_0… データの作成に使用した原典資料… コードリスト1:グリーン・ツーリズムデータベース2:農業協… TRUE
+    ##   name    code   description       type                           codelist id   
+    ##   <chr>   <chr>  <chr>             <chr>                          <lgl>    <chr>
+    ## 1 原典コード… P24_0… データの作成に使用した原典資料… コードリスト1:グリーン・ツーリズムデータベース2:農業協… TRUE     P24
 
 ``` r
 tibble(
@@ -255,10 +255,10 @@ d %>%
 ```
 
     ## # A tibble: 2 x 6
-    ##   id    name     code    description                    type            codelist
-    ##   <chr> <chr>    <chr>   <chr>                          <chr>           <lgl>   
-    ## 1 A35b  種別コード… A35d_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE    
-    ## 2 A35b  種別コード… A35e_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE
+    ##   name     code    description                    type            codelist id   
+    ##   <chr>    <chr>   <chr>                          <chr>           <lgl>    <chr>
+    ## 1 種別コード… A35d_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE     A35b 
+    ## 2 種別コード… A35e_0… 景観地区・準景観地区の種別1：景観地区、2：準景観地区… コードリスト「種別コード」… TRUE     A35b
 
 ``` r
 tibble(
@@ -278,8 +278,8 @@ d %>%
 ```
 
     ## # A tibble: 0 x 6
-    ## # … with 6 variables: id <chr>, name <chr>, code <chr>, description <chr>,
-    ## #   type <chr>, codelist <lgl>
+    ## # … with 6 variables: name <chr>, code <chr>, description <chr>, type <chr>,
+    ## #   codelist <lgl>, id <chr>
 
 ``` r
 tibble(
@@ -334,4 +334,24 @@ tibble::tribble(
   "16",        "特別地区"
   ) %>% 
   readr::write_csv(file.path(out_dir, "A10_layer_no.csv"))
+```
+
+### `W05_003`
+
+description から取り出すタイプ。
+
+``` r
+tibble::tribble(
+  ~code, ~label,
+    "1", "1級直轄区間",
+    "2", "1級指定区間",
+    "3", "2級河川区間",
+    "4", "指定区間外",
+    "5", "1級直轄区間でかつ湖沼区間を兼ねる場合",
+    "6", "1級指定区間でかつ湖沼区間を兼ねる場合",
+    "7", "2級河川区間でかつ湖沼区間を兼ねる場合",
+    "8", "指定区間外でかつ湖沼区間を兼ねる場合",
+    "0", "不明"
+) %>% 
+  readr::write_csv(file.path(out_dir, "section_type.csv"))
 ```

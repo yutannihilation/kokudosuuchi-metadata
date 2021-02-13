@@ -104,6 +104,9 @@ d <- d %>%
       code %in% c("S05a_001", "S05b_001") ~ "PTAreaCd",
       code == "S05a_003" ~ "TripGenerationCd",
       code %in% c("S05a_004", "S05b_003", "S05b_004") ~ "AreaZoneCd", # TODO
+      code == "W05_001" ~ "WaterSystemCodeCd",
+      code == "W05_003" ~ "section_type",
+      code == "W05_005" ~ "OriginalDataCodeCd",
       
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
@@ -146,7 +149,7 @@ d_codelist <- d_codelist %>%
 ``` r
 d_split <- d %>% 
   mutate(
-    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13", "A21")
+    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13", "A21", "W05")
   )
 
 d_joined_manual <- d_split %>% 

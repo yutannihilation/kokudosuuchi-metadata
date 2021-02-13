@@ -30,6 +30,20 @@
     -   `codelist`: コードリストのコードトラベルの対応
 -   `scripts`: 参考実装（いずれ `kokudosuuchi` に移植する）
 
+## 難しい点
+
+### コードと列名の対応
+
+コードと列名の対応は主に、HTMLとExcelの2箇所にある。
+
+-   HTML:
+    列の説明や型、コードリストへのリンクなど詳細情報があるが、列のIDが書かれていない場合がある（ので、列名でマッチさせるのでなく順序でマッチさせる必要がある）。
+-   Excel:
+    列のIDと名前の対応は揃っているが、型やコードリストの記載がない。
+
+この2つを紐付ければ列の型もIDも揃ってよさそうに見えるが、たぶんそれはそれで列名ではjoinできないやつがあったりして苦労が増えそう。
+また、どちらも実データと一致している保証はないので、結局確認しながら手で修正していくことになる。
+
 ## Coverages
 
 ``` r
@@ -192,7 +206,7 @@ tibble::enframe(errors) %>%
 | S10b-14\_GML.zip                        | NA                                                                  |
 | S12-19\_GML.zip                         | NA                                                                  |
 | W01-14\_GML.zip                         | NA                                                                  |
-| W05-07\_45\_GML.zip                     | Error: The numbers of columns don’t match. expected: 7, actual: 3   |
+| W05-07\_45\_GML.zip                     | Error: There are some columns yet to be translated: W05\_000        |
 | W07-09\_6841-jgd\_GML.zip               | Error: The numbers of columns don’t match. expected: 5, actual: 6   |
 | W09-05\_GML.zip                         | NA                                                                  |
 | m1000-17\_39\_GML.zip                   | Error: Not implemented                                              |

@@ -1,0 +1,12 @@
+name,code,description,type,codelist
+水系域,W05_001,NA,NA,TRUE
+河川コード,W05_002,NA,NA,FALSE
+区間種別,W05_003,NA,NA,TRUE
+河川名,W05_004,NA,NA,FALSE
+原典資料種別,W05_005,NA,NA,TRUE
+流下方向判定,W05_006,NA,NA,FALSE
+河川始点,W05_007,NA,NA,FALSE
+河川終点,W05_008,NA,NA,FALSE
+流路始点,W05_009,NA,NA,FALSE
+流路終点,W05_010,NA,NA,FALSE
+標高,W05_011,NA,NA,FALSE

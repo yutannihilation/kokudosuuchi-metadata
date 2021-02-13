@@ -1574,13 +1574,17 @@ W01,W01_011,ダム事業者,コードリスト「ダム事業者コード」,Dam
 W01,W01_012,竣工年,時間型（TM_Instant）,NA
 W01,W01_013,所在地,文字列型（CharacterString）,NA
 W01,W01_014,位置情報精度,コードリスト「位置情報精度コード」,LocationAccuracyCd
-W05,NA,水系域コード,コードリスト「水系域コード種別」,WaterSystemCodeCd
-W05,NA,河川コード,コードリスト「河川コード種別」,RiverCodeCd
-W05,NA,区間種別,列挙型（1：1級直轄区間、2：1級指定区間、3：2級河川区間、4：指定区間外、5：1級直轄区間でかつ湖沼区間を兼ねる場合、6：1級指定区間でかつ湖沼区間を兼ねる場合、7：2級河川区間でかつ湖沼区間を兼ねる場合、 8：指定区間外でかつ湖沼区間を兼ねる場合、0：不明）,NA
-W05,NA,河川名,文字列型,NA
-W05,NA,原典資料種別,コードリスト「原典資料種別コード」,OriginalDataCodeCd
-W05,NA,流下方向判定,真偽値型（trueまたは1：流下方向が判明している場合、falseまたは0：流下方向が不明な場合）,NA
-W05,NA,標高,実数型,NA
+W05,W05_001,水系域,NA,WaterSystemCodeCd
+W05,W05_002,河川コード,NA,NA
+W05,W05_003,区間種別,NA,section_type
+W05,W05_004,河川名,NA,NA
+W05,W05_005,原典資料種別,NA,OriginalDataCodeCd
+W05,W05_006,流下方向判定,NA,NA
+W05,W05_007,河川始点,NA,NA
+W05,W05_008,河川終点,NA,NA
+W05,W05_009,流路始点,NA,NA
+W05,W05_010,流路終点,NA,NA
+W05,W05_011,標高,NA,NA
 W07,NA,水系域コード,整数型（Integer） 「水系域コード種別」,WaterSystemCodeCd
 W07,NA,河川コード,整数型（Integer）「河川コード種別」,RiverCodeCd
 W07,NA,水系名,文字列型（CharacterString）,NA

@@ -259,3 +259,23 @@ tibble::tribble(
   readr::write_csv(file.path(out_dir, "A10_layer_no.csv"))
 ```
 
+### `W05_003`
+
+description から取り出すタイプ。
+
+```{r}
+tibble::tribble(
+  ~code, ~label,
+    "1", "1級直轄区間",
+    "2", "1級指定区間",
+    "3", "2級河川区間",
+    "4", "指定区間外",
+    "5", "1級直轄区間でかつ湖沼区間を兼ねる場合",
+    "6", "1級指定区間でかつ湖沼区間を兼ねる場合",
+    "7", "2級河川区間でかつ湖沼区間を兼ねる場合",
+    "8", "指定区間外でかつ湖沼区間を兼ねる場合",
+    "0", "不明"
+) %>% 
+  readr::write_csv(file.path(out_dir, "section_type.csv"))
+```
+

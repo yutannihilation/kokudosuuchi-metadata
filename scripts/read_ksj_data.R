@@ -132,7 +132,8 @@ ok_with_no_translation <- list(
   A19 = c("A19_010", "A19_011", "A19_012", "A19_013"),
   C02 = c("C12_018"),
   P20 = c("レベル", "備考", "緯度", "経度", "NO"),
-  P21 = c("検査ID")
+  P21 = c("検査ID"),
+  W05 = c("W05_000")
 )
 
 assert_all_translated <- function(new_names, old_names, id) {
