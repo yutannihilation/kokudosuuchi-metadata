@@ -135,12 +135,13 @@ ok_with_no_translation <- list(
   A15 = c("ORIG_FID"),
   # unexpected columns...
   A19 = c("A19_010", "A19_011", "A19_012", "A19_013"),
+  A19s = c("LINK"),
+  A37 = c("A37_330002"),
   P20 = c("レベル", "備考", "緯度", "経度", "NO"),
   P21 = c("検査ID"),
+  P22 = c("IDO", "KEIDO", "TreeCode", "PosStat", "Origna", "ORigna"),
   # W05_007〜W05_010のと対応してるっぽいので、点のIDのようなもの？
-  W05 = c("W05_000"),
-  A19s = c("LINK"),
-  A37 = c("A37_330002")
+  W05 = c("W05_000")
 )
 
 assert_all_translated <- function(new_names, old_names, id) {

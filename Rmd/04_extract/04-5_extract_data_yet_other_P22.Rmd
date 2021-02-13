@@ -1,0 +1,87 @@
+---
+title: "Extract data from P22"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `P22`
+
+コードが入っている列が2パターンある。
+`*`には`a`または`b`が入る。
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-P22.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table(convert = FALSE) %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+```{r get_tables2}
+# 便宜上名前を付ける
+colnames(attr_table) <- paste0("c", 1:5)
+
+res <- attr_table %>% 
+  tidyr::fill(c3) %>% 
+  mutate(
+    name = case_when(
+      stringr::str_detect(c2, "（P22._[0-9]{3}）") ~ c2,
+      stringr::str_detect(c4, "（P22._[0-9]{3}）") ~ c4
+    ),
+    description = c3,
+    type = c5
+  ) %>% 
+  filter(!is.na(name)) %>% 
+  tidyr::extract(name, into = c("name", "code"), regex = "(.*?)(（[A-Za-z0-9]+._[A-Za-z0-9]+）)") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description,
+    type
+  )
+```
+
+`*` を展開する必要がある
+
+```{r extract}
+res2 <- res %>%
+  rowwise() %>%
+  summarise(
+    name,
+    code = {
+      # * を含んでいれば a と b にそれぞれ置き換えた結果を、含んでいなければそのままの結果を
+      if (stringr::str_detect(code, stringr::fixed("*"))) {
+        stringr::str_replace(code, stringr::fixed("*"), c("a", "b"))
+      } else {
+        code
+      }
+    },
+    description,
+    type
+  ) %>% 
+  arrange(code)
+
+knitr::kable(res2)
+```
+
+```{r write}
+res2 %>% 
+  readr::write_csv(output)
+```

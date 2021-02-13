@@ -182,7 +182,7 @@ tibble::enframe(errors) %>%
 | P20-12\_28\_GML.zip                     | NA                     |
 | P21-12\_15\_GML.zip                     | NA                     |
 | P21-12\_27\_GML.zip                     | NA                     |
-| P22-12\_14\_GML.zip                     | Error: Not implemented |
+| P22-12\_14\_GML.zip                     | NA                     |
 | P23-12\_17\_GML.zip                     | Error: Not implemented |
 | P24-12\_GML.zip                         | NA                     |
 | P26-13\_34.zip                          | NA                     |

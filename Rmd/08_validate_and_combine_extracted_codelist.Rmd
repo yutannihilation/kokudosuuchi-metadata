@@ -97,6 +97,8 @@ d <- d %>%
       code == "P21A_003" ~ "water_supply_type",
       code == "P24_011" ~ "refereced_from_agri",
       code == "L03b_c_002" ~ "tweak_LandUseCd",
+      code == "P22a_001" ~ "AdminAreaCd",
+      code == "P22b_001" ~ "AdminAreaCd",
       code %in% c("P17_002", "P18_002", "P20_001", "P24_002", "P32_003") ~ "AdminAreaCd",
       code == "P19_002" ~ "PrefCd",
       code == "L01_005" ~ "seaside_type",
