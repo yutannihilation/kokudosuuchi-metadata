@@ -54,7 +54,7 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
                     options = glue::glue("ENCODING={encoding}")
   )
   
-  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?(-[a-z])?(-[cu])?")
+  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?[0-9]?(-[a-z])?(-[cu])?")
   res
 }
 
