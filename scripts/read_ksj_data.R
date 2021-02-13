@@ -364,16 +364,32 @@ match_N04 <- function(d, id) {
 `match_S05-a` <- match_N04
 `match_S05-b` <- match_N04
 
+# exact matchに加えて、ある範囲以上のカラムには「管轄範囲1」、「管轄範囲2」...というルールで名前がついていく
 match_P17 <- function(d, id) {
   old_names <- colnames(d)
-  idx <- stringr::str_detect(old_names, "^P17_") &
-    !(old_names %in% c("P17_001", "P17_002", "P17_003", "P17_004", "P17_005"))
-  colnames(d)[idx] <- paste0("管轄範囲", seq_len(sum(idx)))
+  d <- match_by_name(d, id, skip_check = TRUE)
+  
+  idx <- which(stringr::str_detect(colnames(d), paste0("^", id)))
 
-  d <- match_by_name(d, id, skip_check = TRUE)  
+  if (length(idx) > 0) {
+    offset <- nchar(id) + 2L
+    num <- as.integer(stringr::str_sub(colnames(d)[idx], offset))
+    
+    if (any(diff(num) != 1)) {
+      colnames_joined <- paste(colnames(d), collapse = ", ")
+      msg <- glue::glue("Columns are not sequencial: {colnames_joined}")
+      rlang::abort(msg)
+    }
+    
+    colnames(d)[idx] <- paste0("管轄範囲", seq_along(num))
+  }
+  
   assert_all_translated(colnames(d), old_names, id)
+  
   d
 }
+
+match_P18 <- match_P17
 
 match_P21 <- function(d, id) {
   colnames <- colnames(d)
