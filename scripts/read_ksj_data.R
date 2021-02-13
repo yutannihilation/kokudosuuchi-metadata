@@ -288,6 +288,7 @@ match_C09 <- function(d, id) {
   d
 }
 
+# L01は年度によってカラムが異なる。基本的には最新版に前年までのデータも含まれるはずなので最新版だけ対応でよさそう...？
 match_L01 <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
   
@@ -295,7 +296,7 @@ match_L01 <- function(d, id) {
   
   colnames(d)[seq_along(dc$name)] <- dc$name
   
-  # confirm the last positonally matched column is 選定年次ビット
+  # confirm the last positionally matched column is 選定年次ビット
   nenji_bits <- stringr::str_detect(d[["選定年次ビット"]], "^[01]+$")
   if (!all(nenji_bits)) {
     rlang::abort("Failed to match colnames")
