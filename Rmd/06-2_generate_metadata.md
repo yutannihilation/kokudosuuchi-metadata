@@ -511,10 +511,11 @@ bind_rows(
   d_tmp[idx:nrow(d_tmp), ]
 ) %>% 
   mutate(
+    code = paste("C23", sprintf("%03d", 1:7), sep = "_"),
     codelist = detect_codelist(type)
   ) %>% 
   select(!id) %>% 
-  readr::write_csv(file.path(out_other, "C23.csv"))
+  readr::write_csv(file.path(out_exact, "C23.csv"))
 ```
 
 ### `C28`
