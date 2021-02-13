@@ -164,13 +164,17 @@ tibble::tribble(
 どうやら実データと列の数が合わないっぽい。見比べた結果、「都道府県コード」がなさそう。
 
 ``` r
-d %>%
+d_tmp <- d %>%
   filter(id == "A16", name != "都道府県コード") %>% 
   mutate(
     codelist = detect_codelist(type)
   ) %>% 
-  select(!id) %>% 
-  readr::write_csv(file.path(out_positional, "A16.csv"))
+  select(!id)
+
+d_tmp$code <- paste0("A16_", sprintf("%03d", 1:11))
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, "A16.csv"))
 ```
 
 ### `A22-m`
