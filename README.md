@@ -183,7 +183,7 @@ tibble::enframe(errors) %>%
 | P21-12\_15\_GML.zip                     | NA                     |
 | P21-12\_27\_GML.zip                     | NA                     |
 | P22-12\_14\_GML.zip                     | NA                     |
-| P23-12\_17\_GML.zip                     | Error: Not implemented |
+| P23-12\_17\_GML.zip                     | NA                     |
 | P24-12\_GML.zip                         | NA                     |
 | P26-13\_34.zip                          | NA                     |
 | P27-13\_38.zip                          | NA                     |
@@ -192,7 +192,7 @@ tibble::enframe(errors) %>%
 | P30-13\_47.zip                          | NA                     |
 | P31-13\_46.zip                          | NA                     |
 | P32-14\_45\_GML.zip                     | NA                     |
-| P33-14\_44\_GML.zip                     | Error: Not implemented |
+| P33-14\_44\_GML.zip                     | NA                     |
 | P34-14\_42\_GML.zip                     | NA                     |
 | P35-18\_GML.zip                         | NA                     |
 | S05-a-10\_KINKI\_GML.zip                | NA                     |
