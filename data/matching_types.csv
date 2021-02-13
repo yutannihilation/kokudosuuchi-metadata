@@ -31,6 +31,7 @@ A43,exact
 A44,exact
 A45,exact
 C02,exact
+C09,exact
 C28,exact
 G04-a,exact
 G04-c,exact
@@ -91,7 +92,6 @@ A24,positional
 A25,positional
 A26,positional
 A28,positional
-C09,positional
 C23,positional
 G02,positional
 L01,positional

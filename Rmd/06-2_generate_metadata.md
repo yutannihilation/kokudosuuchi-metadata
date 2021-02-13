@@ -10,7 +10,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "30b", "A16", "A34", "A35a", "A35b", "A37", "C02", "C23", "G02", "L03-a",
+  "30b", "A16", "A34", "A35a", "A35b", "A37", "C02", "C09", "C23", "G02", "L03-a",
   "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
   "P21", "S05-a", "S05-b", "S05-c", "W05", "W07"
 )
@@ -55,16 +55,15 @@ id_types
     ## 
     ## $other
     ##  [1] "A16"      "A22-m"    "A34"      "A35a"     "A35b"     "A37"     
-    ##  [7] "A38"      "C02"      "C23"      "C28"      "G02"      "L03-a"   
-    ## [13] "mesh1000" "mesh500"  "N05"      "P09"      "P11"      "P15"     
-    ## [19] "P16"      "P17"      "P18"      "P21"      "S05-a"    "S05-b"   
-    ## [25] "S05-c"    "W05"      "W07"      "W09"     
+    ##  [7] "A38"      "C02"      "C09"      "C23"      "C28"      "G02"     
+    ## [13] "L03-a"    "mesh1000" "mesh500"  "N05"      "P09"      "P11"     
+    ## [19] "P15"      "P16"      "P17"      "P18"      "P21"      "S05-a"   
+    ## [25] "S05-b"    "S05-c"    "W05"      "W07"      "W09"     
     ## 
     ## $positional
     ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
     ##  [8] "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"    
-    ## [15] "C09"     "L01"     "L02"     "L03-b"   "L03-b-u" "P02"     "P05"    
-    ## [22] "P07"
+    ## [15] "L01"     "L02"     "L03-b"   "L03-b-u" "P02"     "P05"     "P07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")

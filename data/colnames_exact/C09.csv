@@ -1,0 +1,13 @@
+name,code,description,type,codelist
+漁港コード,C09_001,NA,NA,NA
+漁港名,C09_002,NA,NA,NA
+行政区域コード,C09_003,NA,NA,NA
+種別,C09_004,NA,NA,NA
+管理者区分,C09_005,NA,NA,NA
+管理者名,C09_006,NA,NA,NA
+指定年月日,C09_007,NA,NA,NA
+関係漁業共同組合,C09_008,NA,NA,NA
+外郭施設延長,C09_009,NA,NA,NA
+係留施設延長,C09_010,NA,NA,NA
+都道府県コード,C09_011,NA,NA,NA
+漁港コード,C09_012,NA,NA,NA

@@ -131,6 +131,25 @@ l %>%
   readr::write_csv(out)
 ```
 
+## `C09`
+
+``` r
+id <- "C09"
+
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = NA
+  ) %>% 
+  readr::write_csv(out)
+```
+
 ## `S05-a`
 
 年度によってカラムが違う。
