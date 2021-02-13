@@ -104,6 +104,11 @@ rename_to_utf8_recursively <- function(path, max_depth = 10L) {
 
 translate_columns <- function(l, id = NULL) {
   id <- id %||% attr(l, "id")
+
+  # A19s-aは島嶼単位、A19sは指定地域単位  
+  if (identical(id, "A19s-a")) {
+    id <- "A19s"
+  }
   
   matching_fun <- get0(paste0("match_", id), ifnotfound = NULL)
   
@@ -134,7 +139,8 @@ ok_with_no_translation <- list(
   P20 = c("レベル", "備考", "緯度", "経度", "NO"),
   P21 = c("検査ID"),
   # W05_007〜W05_010のと対応してるっぽいので、点のIDのようなもの？
-  W05 = c("W05_000")
+  W05 = c("W05_000"),
+  A19s = c("LINK")
 )
 
 assert_all_translated <- function(new_names, old_names, id) {

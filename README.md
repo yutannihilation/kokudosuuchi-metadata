@@ -99,9 +99,9 @@ tibble::enframe(errors) %>%
 | A17-17\_01\_GML.zip                     | NA                                                                  |
 | A18-16\_12\_GML.zip                     | NA                                                                  |
 | A18-16\_24\_GML.zip                     | NA                                                                  |
-| A18s-a-10\_GML.zip                      | Error: The numbers of columns don’t match. expected: 3, actual: 113 |
+| A18s-a-10\_GML.zip                      | NA                                                                  |
 | A19-001001\_01\_GML.zip                 | NA                                                                  |
-| A19s-a-10\_28\_GML.zip                  | Error: Not implemented                                              |
+| A19s-a-10\_28\_GML.zip                  | NA                                                                  |
 | A20-540621\_46\_GML.zip                 | Error: Not implemented                                              |
 | A20s-10\_46\_GML.zip                    | Error: The numbers of columns don’t match. expected: 5, actual: 109 |
 | A21-070402\_13\_GML.zip                 | NA                                                                  |

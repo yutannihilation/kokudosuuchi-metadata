@@ -93,6 +93,9 @@ d <- d %>%
       
       id == "A18s-a" & code == "A18_002" ~ "AdminAreaCd",
       id == "A18s-a" & code == "A18_008" ~ "SpecificAirPortSpecifiedSituationCd",
+      id == "A19s"   & code == "A19_002" ~ "AdminAreaCd",
+      id == "A19s"   & code == "A19_009" ~ "RitoCd",
+      id == "A19s"   & code == "A19_010" ~ "SpecificAirPortSpecifiedSituationCd",
 
       id == "A35b" & name %in% c("種別", "種別コード") ~ "landscape_district_type",
       id %in% c("C02", "C09", "C23") & name == "行政区域コード" ~ "AdminAreaCd",

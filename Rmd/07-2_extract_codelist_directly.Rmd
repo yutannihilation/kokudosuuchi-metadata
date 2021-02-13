@@ -295,3 +295,20 @@ tibble(
   readr::write_csv(file.path(out_dir, "SpecificAirPortSpecifiedSituationCd.csv"))
 ```
 
+### `A19_009`
+
+<https://nlftp.mlit.go.jp/ksj/jpgis/codelist/RitoCd.html> にある
+
+```{r}
+tibble::tribble(
+  ~code,    ~label,
+     0L,  "類型区分なし",
+     1L, "外海本土近接型",
+     2L, "内海本土近接型",
+     3L,   "群島型主島",
+     4L,   "群島型属島",
+     5L,  "孤立大型離島",
+     6L,  "孤立小型離島"
+) %>% 
+  readr::write_csv(file.path(out_dir, "RitoCd.csv"))
+```
