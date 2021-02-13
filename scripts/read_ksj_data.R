@@ -140,7 +140,8 @@ ok_with_no_translation <- list(
   P21 = c("検査ID"),
   # W05_007〜W05_010のと対応してるっぽいので、点のIDのようなもの？
   W05 = c("W05_000"),
-  A19s = c("LINK")
+  A19s = c("LINK"),
+  A37 = c("A37_330002")
 )
 
 assert_all_translated <- function(new_names, old_names, id) {
@@ -213,26 +214,54 @@ match_by_name <- function(d, id, dc = NULL) {
     d
   }
   
-  d <- replace_year(d, "A22_01", "{year}年度最深積雪")
-  d <- replace_year(d, "A22_02", "{year}年度累計降雪量")
-  d <- replace_year(d, "A22_03", "{year}年度最低気温")
-  d <- replace_year(d, "A22_04", "{year}年度平均風速")
-  d <- replace_year(d, "A22_10", "{year}年度死者数")
-  d <- replace_year(d, "A22_11", "{year}年度行方不明者数")
-  d <- replace_year(d, "A22_12", "{year}年度重傷者数")
-  d <- replace_year(d, "A22_13", "{year}年度軽傷者数")
-  d <- replace_year(d, "A22_14", "{year}年度住家全壊棟数")
-  d <- replace_year(d, "A22_15", "{year}年度住家半壊棟数")
-  d <- replace_year(d, "A22_16", "{year}年度住家一部破損数")
-  d <- replace_year(d, "A22_17", "{year}年度除雪ボランティア団体数")
-  d <- replace_year(d, "A22_18", "{year}年度除雪ボランティア登録人数")
-  d <- replace_year(d, "A22_19", "{year}年度除雪ボランティア活動回数")
-  d <- replace_year(d, "A22_20", "{year}年度除雪ボランティアの延べ参加人数")
+  d <- replace_year(d, "A22_01", "最深積雪_{year}年度")
+  d <- replace_year(d, "A22_02", "累計降雪量_{year}年度")
+  d <- replace_year(d, "A22_03", "最低気温_{year}年度")
+  d <- replace_year(d, "A22_04", "平均風速_{year}年度")
+  d <- replace_year(d, "A22_10", "死者数_{year}年度")
+  d <- replace_year(d, "A22_11", "行方不明者数_{year}年度")
+  d <- replace_year(d, "A22_12", "重傷者数_{year}年度")
+  d <- replace_year(d, "A22_13", "軽傷者数_{year}年度")
+  d <- replace_year(d, "A22_14", "住家全壊棟数_{year}年度")
+  d <- replace_year(d, "A22_15", "住家半壊棟数_{year}年度")
+  d <- replace_year(d, "A22_16", "住家一部破損数_{year}年度")
+  d <- replace_year(d, "A22_17", "除雪ボランティア団体数_{year}年度")
+  d <- replace_year(d, "A22_18", "除雪ボランティア登録人数_{year}年度")
+  d <- replace_year(d, "A22_19", "除雪ボランティア活動回数_{year}年度")
+  d <- replace_year(d, "A22_20", "除雪ボランティアの延べ参加人数_{year}年度")
   
   assert_all_translated(colnames(d), old_names, id)
 
   d
 }
+
+`match_A37` <- function(d, id) {
+  dc <- d_col_info[d_col_info$id == id, ]
+  
+  old_names <- colnames(d)
+  
+  fixed_readable_names <- dc$name
+  fixed_idx <- match(colnames(d), dc$code)
+  
+  colnames(d)[which(!is.na(fixed_idx))] <- dc$name[fixed_idx[!is.na(fixed_idx)]]
+  
+  replace_year <- function(d, prefix, format) {
+    idx <- stringr::str_detect(colnames(d), paste0(prefix, "[12][0-9]{3}"))
+    year <- stringr::str_sub(colnames(d)[idx], -4L)
+    colnames(d)[idx] <- glue::glue(format)
+    d
+  }
+  
+  d <- replace_year(d, "A37_34", "救急車出動件数_{year}年")
+  d <- replace_year(d, "A37_35", "消防防災ヘリ出動件数_{year}年")
+  d <- replace_year(d, "A37_36", "平均現場到着所要時間_{year}年")
+  d <- replace_year(d, "A37_37", "平均病院収容時間_{year}年")
+  
+  assert_all_translated(colnames(d), old_names, id)
+  
+  d
+}
+
 
 match_C02 <- function(d, id) {
   dc <- d_col_info[d_col_info$id == id, ]
