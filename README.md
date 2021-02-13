@@ -102,7 +102,7 @@ tibble::enframe(errors) %>%
 | A18s-a-10\_GML.zip                      | NA                     |
 | A19-001001\_01\_GML.zip                 | NA                     |
 | A19s-a-10\_28\_GML.zip                  | NA                     |
-| A20-540621\_46\_GML.zip                 | Error: Not implemented |
+| A20-540621\_46\_GML.zip                 | NA                     |
 | A20s-10\_46\_GML.zip                    | NA                     |
 | A21-070402\_13\_GML.zip                 | NA                     |
 | A21s-10\_13\_GML.zip                    | NA                     |

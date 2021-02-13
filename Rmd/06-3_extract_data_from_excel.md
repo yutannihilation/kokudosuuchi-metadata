@@ -47,6 +47,27 @@ l <- purrr::map_dfr(sheets, ~ {
     ## New names:
     ## * `` -> ...6
 
+## `A20`
+
+A20はHTMLにほぼ情報がないのでExcelから抜き出した情報を使う
+
+``` r
+id <- "A20"
+
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = NA
+  ) %>% 
+  readr::write_csv(out)
+```
+
 ## `A21`
 
 A21はHTMLにほぼ情報がないのでExcelから抜き出した情報を使う

@@ -16,7 +16,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "30b", "A16", "A34", "A35a", "A35b", "A37", "C02", "C09", "C23", "G02", "L03-a",
+  "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", "C02", "C09", "C23", "G02", "L03-a",
   "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
   "P21", "S05-a", "S05-b", "S05-c", "W05", "W07"
 )
