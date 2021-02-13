@@ -103,9 +103,9 @@ tibble::enframe(errors) %>%
 | A19-001001\_01\_GML.zip                 | NA                                                                  |
 | A19s-a-10\_28\_GML.zip                  | NA                                                                  |
 | A20-540621\_46\_GML.zip                 | Error: Not implemented                                              |
-| A20s-10\_46\_GML.zip                    | Error: The numbers of columns don’t match. expected: 5, actual: 109 |
+| A20s-10\_46\_GML.zip                    | NA                                                                  |
 | A21-070402\_13\_GML.zip                 | NA                                                                  |
-| A21s-10\_13\_GML.zip                    | Error: The numbers of columns don’t match. expected: 5, actual: 108 |
+| A21s-10\_13\_GML.zip                    | NA                                                                  |
 | A22-16\_17\_GML.zip                     | NA                                                                  |
 | A22-16\_19\_GML.zip                     | NA                                                                  |
 | A22-m-14\_34\_GML.zip                   | NA                                                                  |
