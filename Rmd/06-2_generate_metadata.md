@@ -10,7 +10,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A03", "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", 
+  "A03", "A16", "A17", "A18", "A20", "A30b", "A34", "A35a", "A35b", "A37", 
   "C02", "C09", "C23", 
   "G02", "L03-a",
   "mesh1000", "mesh500", 
@@ -60,17 +60,17 @@ id_types
     ## [57] "S10a"    "S10b"    "S12"     "W01"    
     ## 
     ## $other
-    ##  [1] "A03"      "A16"      "A22-m"    "A30b"     "A34"      "A35a"    
-    ##  [7] "A35b"     "A37"      "A38"      "C02"      "C09"      "C23"     
-    ## [13] "C28"      "G02"      "L03-a"    "mesh1000" "mesh500"  "N05"     
-    ## [19] "P09"      "P11"      "P15"      "P16"      "P17"      "P18"     
-    ## [25] "P21"      "S05-a"    "S05-b"    "S05-c"    "W05"      "W07"     
-    ## [31] "W09"     
+    ##  [1] "A03"      "A16"      "A17"      "A18"      "A22-m"    "A30b"    
+    ##  [7] "A34"      "A35a"     "A35b"     "A37"      "A38"      "C02"     
+    ## [13] "C09"      "C23"      "C28"      "G02"      "L03-a"    "mesh1000"
+    ## [19] "mesh500"  "N05"      "P09"      "P11"      "P15"      "P16"     
+    ## [25] "P17"      "P18"      "P21"      "S05-a"    "S05-b"    "S05-c"   
+    ## [31] "W05"      "W07"      "W09"     
     ## 
     ## $positional
-    ##  [1] "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"    "A21s"   
-    ##  [8] "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"     "L01"    
-    ## [15] "L02"     "L03-b"   "L03-b-u" "P02"     "P05"     "P07"
+    ##  [1] "A18s-a"  "A19"     "A19s"    "A20s"    "A21s"    "A22s"    "A23"    
+    ##  [8] "A24"     "A25"     "A26"     "A28"     "L01"     "L02"     "L03-b"  
+    ## [15] "L03-b-u" "P02"     "P05"     "P07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -128,13 +128,15 @@ dir.create(out_other, showWarnings = FALSE)
 ### `A03`
 
 ``` r
-d_tmp <- d %>% 
-  filter(id == "A03")
+id <- "A03"
 
-d_tmp$code <- paste0("A03_", sprintf("%03d", 1:8))
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+d_tmp$code <- paste(id, sprintf("%03d", 1:8), sep = "_")
 
 d_tmp %>% 
-  readr::write_csv(file.path(out_exact, "A03.csv"))
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
 ```
 
 ### `A09`
@@ -164,17 +166,47 @@ tibble::tribble(
 どうやら実データと列の数が合わないっぽい。見比べた結果、「都道府県コード」がなさそう。
 
 ``` r
+id <- "A16"
+
 d_tmp <- d %>%
-  filter(id == "A16", name != "都道府県コード") %>% 
+  filter(id == {{ id }}, name != "都道府県コード") %>% 
   mutate(
     codelist = detect_codelist(type)
   ) %>% 
   select(!id)
 
-d_tmp$code <- paste0("A16_", sprintf("%03d", 1:11))
+d_tmp$code <- paste(id, sprintf("%03d", 1:11), sep = "_")
 
 d_tmp %>% 
-  readr::write_csv(file.path(out_exact, "A16.csv"))
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+```
+
+### `A17`
+
+``` r
+id <- "A17"
+
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+d_tmp$code <- paste(id, sprintf("%03d", 1:9), sep = "_")
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+```
+
+### `A18`
+
+``` r
+id <- "A18"
+
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+d_tmp$code <- paste(id, sprintf("%03d", 1:10), sep = "_")
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
 ```
 
 ### `A22-m`
