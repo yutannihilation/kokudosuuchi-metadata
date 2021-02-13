@@ -165,13 +165,13 @@ tibble::enframe(errors) %>%
 | N10-15\_40\_GML.zip                     | NA                     |
 | N11-13\_39.zip                          | NA                     |
 | P02-06\_38\_GML.zip                     | NA                     |
-| P03-13.zip                              | Error: Not implemented |
+| P03-13.zip                              | NA                     |
 | P04-14\_37\_GML.zip                     | NA                     |
 | P05-10\_36\_GML.zip                     | NA                     |
 | P07-15\_35\_GML.zip                     | NA                     |
 | P09-10\_5032-jgd\_GML.zip               | NA                     |
 | P11-10\_36\_GML.zip                     | NA                     |
-| P12-14\_35\_GML.zip                     | Error: Not implemented |
+| P12-14\_35\_GML.zip                     | NA                     |
 | P13-11\_34\_GML.zip                     | NA                     |
 | P14-15\_32\_GML.zip                     | NA                     |
 | P15-12\_31\_GML.zip                     | NA                     |

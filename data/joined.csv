@@ -3231,6 +3231,13 @@ P11,P11_004_16,バス系統_16,文字列型,NA
 P11,P11_004_17,バス系統_17,文字列型,NA
 P11,P11_004_18,バス系統_18,文字列型,NA
 P11,P11_004_19,バス系統_19,文字列型,NA
+P12,P12_001,観光資源_ID,整数型（Integer）,NA
+P12,P12_002,観光資源名,文字列型（CharacterString）,NA
+P12,P12_003,都道府県コード,コードリスト「都道府県コード」,PrefCd
+P12,P12_004,行政コード,コードリスト「行政コード」,AdminAreaCd
+P12,P12_005,種別名称,文字列型（CharacterString）,NA
+P12,P12_006,所在地住所,文字列型（CharacterString）,NA
+P12,P12_007,観光資源分類コード,コードリスト「観光資源分類コード」,tourismResourceCategoryCd
 P13,P13_001,管理都道府県・整備局,文字列型（CharacterString）,NA
 P13,P13_002,管理市区町村,文字列型（CharacterString）,NA
 P13,P13_003,公園名,文字列型（CharacterString）,NA

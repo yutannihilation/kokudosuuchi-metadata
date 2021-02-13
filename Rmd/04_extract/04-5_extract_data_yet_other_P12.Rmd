@@ -1,0 +1,71 @@
+---
+title: "Extract data from P12"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r prepare}
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+dir.create(here::here("data", "attrs"), recursive = TRUE, showWarnings = FALSE)
+```
+
+### `P12`
+
+これは災害分類を手動でなんとかする必要がある。
+
+```{r get_tables1}
+input <- here::here("data-raw", "datalist", "KsjTmplt-P12-v2_2.html")
+id <- stringr::str_replace(basename(input), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+output <- here::here("data", "attrs", glue::glue("{id}.csv"))
+
+attr_table <- read_html(input) %>% 
+  html_table(convert = FALSE) %>% 
+  purrr::keep(~ "地物情報" %in% colnames(.x))
+
+stopifnot(length(attr_table) == 1)
+attr_table <- attr_table[[1]]
+
+knitr::kable(attr_table)
+```
+
+```{r get_tables2}
+colnames(attr_table) <- c("_", "name", "description", "type")
+
+attr_table <- attr_table %>% 
+  filter(
+    # 名前が違う
+    `_` == "地物情報",
+    # テーブルのヘッダは取り除く
+    !startsWith(name, "属性名"),
+    !startsWith(name, "地物名"),
+    type != "説明",
+    # 地物は属性情報ではない
+    !stringr::str_detect(stringr::str_remove_all(type, "\\s+"), "^(曲面型|曲線型|点型|GM_Surface|GM_Curve|GM_Point)")
+  )
+
+res <- attr_table %>%
+  tidyr::extract(name, into = c("name", "code"), regex = "(.*?)(（[A-Za-z0-9]+_[A-Za-z0-9]+）)") %>% 
+  transmute(
+    name,
+    code = if_else(code != '', stringr::str_remove_all(code, "[（）]"), NA_character_),
+    description,
+    type
+  ) %>% 
+  filter(!is.na(code))
+```
+
+最後の行もいらなそうなので消しておく
+
+```{r check}
+knitr::kable(res)
+```
+
+```{r write}
+res %>% 
+  readr::write_csv(output)
+```
