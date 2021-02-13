@@ -1,0 +1,33 @@
+name,code,description,type,codelist
+行政区域,P23a_001,施設が立地する海岸保全区域を所管する省庁。,コードリスト型（行政区域コード）,TRUE
+所管省庁,P23a_002,施設が立地する海岸保全区域を所管する省庁。,文字列型（CharacterString）,FALSE
+管理者,P23a_003,施設が立地する海岸保全区域の海岸管理者の名称,文字列型（CharacterString）,FALSE
+堤防,P23a_004,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+突堤,P23a_005,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+護岸,P23a_006,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+胸壁,P23a_007,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+離岸堤,P23a_008,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+砂浜,P23a_009,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+その他の施設,P23a_010,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+延長,P23a_011,施設の長さ。単位は「m」。,実数型（Real）,FALSE
+天端高最大（現況）,P23a_012,既存施設の天端高の最大値。単位は「m」。,実数型（Real）,FALSE
+天端高最小（現況）,P23a_013,既存施設の天端高の最小値。単位は「m」。,実数型（Real）,FALSE
+天端高最大（計画）,P23a_014,計画施設の天端高の最大値。単位は「m」。,実数型（Real）,FALSE
+天端高最小（計画）,P23a_015,計画施設の天端高の最小値。単位は「m」。,実数型（Real）,FALSE
+基準面,P23a_016,天端高の高さの基準面。潮位観測基準面（DL:Datum Line）、東京湾平均海面（TP：Mean Sea Level of Tokyo Bay） 等がある。,文字列型（CharacterString）,FALSE
+行政区域,P23b_001,施設が立地する海岸保全区域を所管する省庁。,コードリスト型（行政区域コード）,TRUE
+所管省庁,P23b_002,施設が立地する海岸保全区域を所管する省庁。,文字列型（CharacterString）,FALSE
+管理者,P23b_003,施設が立地する海岸保全区域の海岸管理者の名称,文字列型（CharacterString）,FALSE
+堤防,P23b_004,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+突堤,P23b_005,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+護岸,P23b_006,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+胸壁,P23b_007,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+離岸堤,P23b_008,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+砂浜,P23b_009,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+その他の施設,P23b_010,海岸保全施設の種類。,真偽値型（Boolean）,FALSE
+延長,P23b_011,施設の長さ。単位は「m」。,実数型（Real）,FALSE
+天端高最大（現況）,P23b_012,既存施設の天端高の最大値。単位は「m」。,実数型（Real）,FALSE
+天端高最小（現況）,P23b_013,既存施設の天端高の最小値。単位は「m」。,実数型（Real）,FALSE
+天端高最大（計画）,P23b_014,計画施設の天端高の最大値。単位は「m」。,実数型（Real）,FALSE
+天端高最小（計画）,P23b_015,計画施設の天端高の最小値。単位は「m」。,実数型（Real）,FALSE
+基準面,P23b_016,天端高の高さの基準面。潮位観測基準面（DL:Datum Line）、東京湾平均海面（TP：Mean Sea Level of Tokyo Bay） 等がある。,文字列型（CharacterString）,FALSE
