@@ -60,6 +60,7 @@ P31,exact
 P32,exact
 P34,exact
 P35,exact
+S05-c,exact
 S05-d,exact
 S10a,exact
 S10b,exact
@@ -92,6 +93,5 @@ L03-b,positional
 P02,positional
 P05,positional
 P07,positional
-S05-c,positional
 W05,positional
 W07,positional

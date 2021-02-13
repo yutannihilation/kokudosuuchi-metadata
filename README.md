@@ -151,7 +151,7 @@ tibble::enframe(errors) %>%
 | N10-15\_40\_GML.zip                     | NA                                                                  |
 | N11-13\_39.zip                          | NA                                                                  |
 | P02-06\_38\_GML.zip                     | NA                                                                  |
-| P03-13.zip                              | Error in nchar(dsn): invalid multibyte string, element 1            |
+| P03-13.zip                              | Error: Not implemented                                              |
 | P04-14\_37\_GML.zip                     | NA                                                                  |
 | P05-10\_36\_GML.zip                     | NA                                                                  |
 | P07-15\_35\_GML.zip                     | NA                                                                  |
@@ -185,7 +185,8 @@ tibble::enframe(errors) %>%
 | S05-a-13\_CHUBU-g.zip                   | NA                                                                  |
 | S05-b-10\_KINKI\_GML.zip                | NA                                                                  |
 | S05-b-13\_CHUBU-g.zip                   | NA                                                                  |
-| S05-c-12\_KINKI\_GML.zip                | Error: The numbers of columns don’t match. expected: 44, actual: 24 |
+| S05-c-10\_SYUTO\_GML.zip                | NA                                                                  |
+| S05-c-12\_KINKI\_GML.zip                | NA                                                                  |
 | S05-d-16\_GML.zip                       | NA                                                                  |
 | S10a-16\_GML.zip                        | NA                                                                  |
 | S10b-14\_GML.zip                        | NA                                                                  |

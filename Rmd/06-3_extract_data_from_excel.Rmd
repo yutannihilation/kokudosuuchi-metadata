@@ -214,3 +214,27 @@ l_tmp$`47` %>%
   ) %>% 
   readr::write_csv(out)
 ```
+
+## `S05-c`
+
+首都圏と中部でコードの範囲が違っているが、HTML版には載っていない情報。
+Excelにのってるコードでマッチさせないといけない。
+
+駅コードはコードリスト型だが、駅名が載っているのでそのままで問題ない。
+
+```{r S05-c}
+id <- "S05-c"
+
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = NA
+  ) %>% 
+  readr::write_csv(out)
+```
