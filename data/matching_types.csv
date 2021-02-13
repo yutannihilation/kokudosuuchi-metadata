@@ -67,6 +67,7 @@ S10b,exact
 S12,exact
 W01,exact
 W05,exact
+W07,exact
 W09,exact
 A03,positional
 A16,positional
@@ -94,4 +95,3 @@ L03-b,positional
 P02,positional
 P05,positional
 P07,positional
-W07,positional

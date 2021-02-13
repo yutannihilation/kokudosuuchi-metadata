@@ -1585,11 +1585,12 @@ W05,W05_008,河川終点,NA,NA
 W05,W05_009,流路始点,NA,NA
 W05,W05_010,流路終点,NA,NA
 W05,W05_011,標高,NA,NA
-W07,NA,水系域コード,整数型（Integer） 「水系域コード種別」,WaterSystemCodeCd
-W07,NA,河川コード,整数型（Integer）「河川コード種別」,RiverCodeCd
-W07,NA,水系名,文字列型（CharacterString）,NA
-W07,NA,河川名,文字列型（CharacterString）,NA
-W07,NA,単位流域コード,整数型（Integer）,NA
+W07,W07_001,細分メッシュコード,NA,NA
+W07,W07_002,水系域コード,NA,NA
+W07,W07_003,河川コード,NA,NA
+W07,W07_004,水系名,NA,NA
+W07,W07_005,河川名,NA,NA
+W07,W07_006,単位流域コード,NA,NA
 W09,W09_001,湖沼名,文字列型（CharacterString）,NA
 W09,W09_002,行政区域,コードリスト「行政コード」,AdminAreaCd
 W09,W09_003,最大水深,整数型（Integer）,NA

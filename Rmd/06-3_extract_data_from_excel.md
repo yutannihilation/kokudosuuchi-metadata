@@ -261,3 +261,25 @@ l %>%
   ) %>% 
   readr::write_csv(out)
 ```
+
+## `W07`
+
+`W07_002`, `W07_003`
+は水域名、河川名が併記されているので変換しなくて問題なさそう。
+
+``` r
+id <- "W07"
+
+out <- here::here("data", "colnames_exact", glue::glue("{id}.csv"))
+
+l %>% 
+  filter(id == {{ id }}) %>% 
+  transmute(
+    name,
+    code,
+    description = NA,
+    type = NA,
+    codelist = NA,
+  ) %>% 
+  readr::write_csv(out)
+```

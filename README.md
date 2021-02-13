@@ -206,8 +206,8 @@ tibble::enframe(errors) %>%
 | S10b-14\_GML.zip                        | NA                                                                  |
 | S12-19\_GML.zip                         | NA                                                                  |
 | W01-14\_GML.zip                         | NA                                                                  |
-| W05-07\_45\_GML.zip                     | Error: There are some columns yet to be translated: W05\_000        |
-| W07-09\_6841-jgd\_GML.zip               | Error: The numbers of columns don’t match. expected: 5, actual: 6   |
+| W05-07\_45\_GML.zip                     | NA                                                                  |
+| W07-09\_6841-jgd\_GML.zip               | NA                                                                  |
 | W09-05\_GML.zip                         | NA                                                                  |
 | m1000-17\_39\_GML.zip                   | Error: Not implemented                                              |
 | m500-17\_14\_GML.zip                    | Error: Not implemented                                              |
