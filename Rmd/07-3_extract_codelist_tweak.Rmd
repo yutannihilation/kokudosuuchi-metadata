@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(stringr)
 
-l <- fs::dir_ls(here::here("data", "codelist"), regexp = "LandUseCd")
+l <- fs::dir_ls(here::here("data", "codelist"), regexp = "LandUseCd-09")
 l <- str_subset(l, "tweak_", negate = TRUE)
 names(l) <- tools::file_path_sans_ext(basename(l))
 
@@ -32,6 +32,32 @@ knitr::kable(d_distinct)
 
 readr::write_csv(
   d_distinct,
-  here::here("data", "codelist", "tweak_LandUseCd.csv")
+  here::here("data", "codelist", "tweak_LandUseCd-09.csv")
 )
 ```
+
+### `SectionCd`
+
+`A03`。
+
+```{r A03}
+l <- fs::dir_ls(here::here("data", "codelist"), regexp = "SectionCd_")
+l <- str_subset(l, "tweak_", negate = TRUE)
+names(l) <- tools::file_path_sans_ext(basename(l))
+
+d <- l %>% 
+  purrr::map_dfr(readr::read_csv, col_types = "cc", .id = "file")
+
+d_distinct <- d %>% 
+  distinct(code, label) %>% 
+  arrange(code)
+
+knitr::kable(d_distinct)
+
+readr::write_csv(
+  d_distinct,
+  here::here("data", "codelist", "tweak_SectionCd.csv")
+)
+```
+
+

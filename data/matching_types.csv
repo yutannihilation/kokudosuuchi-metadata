@@ -1,4 +1,5 @@
 id,matching_type
+A03,exact
 A09,exact
 A10,exact
 A11,exact
@@ -83,7 +84,6 @@ W01,exact
 W05,exact
 W07,exact
 W09,exact
-A03,positional
 A16,positional
 A17,positional
 A18,positional

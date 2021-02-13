@@ -69,8 +69,8 @@ d <- d %>%
   mutate(
     type = str_squish(type),
     codelist_id_manual = case_when(
-      code %in% c("G04a_005", "G04c_005", "G04d_005") ~ "undersea",
-      code %in% c("G04a_007", "G04a_009","G04c_007","G04c_009","G04d_007","G04d_009") ~ "direction",
+      code == "A03_007" ~ "tweak_SectionCd",
+      
       code == "A15_003" ~ "authority_type",
       code == "A15_004" ~ "protection_area_type",
       
@@ -88,31 +88,45 @@ d <- d %>%
       code == "C09_004" ~ "ClassFishPortCd",
       code == "C09_005" ~ "FishPortAdminCd",
       code == "C09_011" ~ "PrefCd",
+
+      code %in% c("G04a_005", "G04c_005", "G04d_005") ~ "undersea",
+      code %in% c("G04a_007", "G04a_009","G04c_007","G04c_009","G04d_007","G04d_009") ~ "direction",
       
       code == "P03_0102" ~ "hydroelectric_power_plant_type",
       code == "P03_0209" ~ "pumpingup_type",
       
       code == "P13_009" ~ "urban_planning_decided",
+      
       code == "P15_017" ~ "industrial_waste_disposal",
       code == "P15_018" ~ "industrial_waste_special_treatment",
+      
       code == "P17_003" ~ "firehouse_type",
+      
+      code == "P19_002" ~ "PrefCd",
+      
       code == "P21A_003" ~ "water_supply_type",
+      
       code == "P24_011" ~ "refereced_from_agri",
-      code == "L03b_c_002" ~ "tweak_LandUseCd",
+      
+      code == "L03b_c_002" ~ "tweak_LandUseCd-09",
+      
+      code == "L01_005" ~ "seaside_type",
+      
+      code %in% c("P17_002", "P18_002", "P20_001", "P24_002", "P32_003") ~ "AdminAreaCd",
       code == "P22a_001" ~ "AdminAreaCd",
       code == "P22b_001" ~ "AdminAreaCd",
       code == "P23a_001" ~ "AdminAreaCd",
       code == "P23b_001" ~ "AdminAreaCd",
-      code %in% c("P17_002", "P18_002", "P20_001", "P24_002", "P32_003") ~ "AdminAreaCd",
-      code == "P19_002" ~ "PrefCd",
-      code == "L01_005" ~ "seaside_type",
-      code == "W09_002" ~ "AdminAreaCd",
+      
       code %in% c("S05a_001", "S05b_001") ~ "PTAreaCd",
       code == "S05a_003" ~ "TripGenerationCd",
       code %in% c("S05a_004", "S05b_003", "S05b_004") ~ "AreaZoneCd", # TODO
+      
       code == "W05_001" ~ "WaterSystemCodeCd",
       code == "W05_003" ~ "section_type",
       code == "W05_005" ~ "OriginalDataCodeCd",
+      
+      code == "W09_002" ~ "AdminAreaCd",
       
       id == "A18s-a" & code == "A18_002" ~ "AdminAreaCd",
       id == "A18s-a" & code == "A18_008" ~ "SpecificAirPortSpecifiedSituationCd",
@@ -155,8 +169,8 @@ codelist_existing <- fs::dir_ls(here::here("data", "codelist")) %>%
   tools::file_path_sans_ext()
 
 # LandUseCd は tweak_LandUseCd の方を使うので除外
-# SectionTypeCd/SectionCd も年度によって微妙に違うので個別対応が必要、ここでは除外する
-exclude_pattern <- "^LandUseCd|^SectionTypeCd|^SectionCd"
+# SectionTypeCd も地域によって微妙に違うので個別対応が必要、ここでは除外する
+exclude_pattern <- "^LandUseCd|^SectionTypeCd"
 
 d_codelist <- d_codelist %>% 
   filter(
@@ -215,7 +229,6 @@ d_joined <- bind_rows(d_joined_manual, d_joined_regex) %>%
 
 コードリスト型であると判定されているのに `codelist_id` がないのはおかしそう。ただし、以下は例外。
 
-* `A03`の「区域コード」「区域区分」はあとで個別対応
 * `L03-b`, `L03-b-c`の「土地利用種別」はあとで個別対応
 * `P14`の「福祉施設細分類」はあとで個別対応
 * `S05-d`はあとで個別対応
@@ -233,7 +246,7 @@ d_joined %>%
   filter(
     codelist,
     is.na(codelist_id),
-    !(id == "A03" & name %in% c("区域コード", "区域区分")),
+    !(id == "A03" & name %in% c("区域区分")),
     !(id %in% c("A03", "A17", "A18", "A19", "A22", "A23", "A24", "A25") & name == "行政区域コード"),
     !code %in% c("A38a_001", "A38b_001", "A39_001", "A39_002", "A45_002", "A45_003", "A45_008", "A45_009", "A45_015", "A45_018", "A45_021", "L05_005", "P14_006"),
     !(id %in% c("L03-b", "L03-b-u") & name == "土地利用種別"),

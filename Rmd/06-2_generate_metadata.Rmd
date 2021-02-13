@@ -16,9 +16,14 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", "C02", "C09", "C23", "G02", "L03-a",
-  "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
-  "P21", "S05-a", "S05-b", "S05-c", "W05", "W07"
+  "A03", "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", 
+  "C02", "C09", "C23", 
+  "G02", "L03-a",
+  "mesh1000", "mesh500", 
+  "N05", 
+  "P09", "P11", "P15", "P16", "P17", "P18", "P21", 
+  "S05-a", "S05-b", "S05-c",
+  "W05", "W07"
 )
 
 col_types <- cols(
@@ -100,6 +105,19 @@ out_other <- here::here("data", "colnames_other")
 
 dir.create(out_other, showWarnings = FALSE)
 ```
+
+### `A03`
+
+```{r}
+d_tmp <- d %>% 
+  filter(id == "A03")
+
+d_tmp$code <- paste0("A03_", sprintf("%03d", 1:8))
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, "A03.csv"))
+```
+
 
 ### `A09`
 

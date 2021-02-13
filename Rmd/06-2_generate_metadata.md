@@ -10,9 +10,14 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", "C02", "C09", "C23", "G02", "L03-a",
-  "mesh1000", "mesh500", "N05", "P09", "P11", "P15", "P16", "P17", "P18",
-  "P21", "S05-a", "S05-b", "S05-c", "W05", "W07"
+  "A03", "A16", "A20", "A30b", "A34", "A35a", "A35b", "A37", 
+  "C02", "C09", "C23", 
+  "G02", "L03-a",
+  "mesh1000", "mesh500", 
+  "N05", 
+  "P09", "P11", "P15", "P16", "P17", "P18", "P21", 
+  "S05-a", "S05-b", "S05-c",
+  "W05", "W07"
 )
 
 col_types <- cols(
@@ -55,16 +60,17 @@ id_types
     ## [57] "S10a"    "S10b"    "S12"     "W01"    
     ## 
     ## $other
-    ##  [1] "A16"      "A22-m"    "A30b"     "A34"      "A35a"     "A35b"    
-    ##  [7] "A37"      "A38"      "C02"      "C09"      "C23"      "C28"     
-    ## [13] "G02"      "L03-a"    "mesh1000" "mesh500"  "N05"      "P09"     
-    ## [19] "P11"      "P15"      "P16"      "P17"      "P18"      "P21"     
-    ## [25] "S05-a"    "S05-b"    "S05-c"    "W05"      "W07"      "W09"     
+    ##  [1] "A03"      "A16"      "A22-m"    "A30b"     "A34"      "A35a"    
+    ##  [7] "A35b"     "A37"      "A38"      "C02"      "C09"      "C23"     
+    ## [13] "C28"      "G02"      "L03-a"    "mesh1000" "mesh500"  "N05"     
+    ## [19] "P09"      "P11"      "P15"      "P16"      "P17"      "P18"     
+    ## [25] "P21"      "S05-a"    "S05-b"    "S05-c"    "W05"      "W07"     
+    ## [31] "W09"     
     ## 
     ## $positional
-    ##  [1] "A03"     "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"   
-    ##  [8] "A21s"    "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"    
-    ## [15] "L01"     "L02"     "L03-b"   "L03-b-u" "P02"     "P05"     "P07"
+    ##  [1] "A17"     "A18"     "A18s-a"  "A19"     "A19s"    "A20s"    "A21s"   
+    ##  [8] "A22s"    "A23"     "A24"     "A25"     "A26"     "A28"     "L01"    
+    ## [15] "L02"     "L03-b"   "L03-b-u" "P02"     "P05"     "P07"
 
 ``` r
 out_exact <- here::here("data", "colnames_exact")
@@ -117,6 +123,18 @@ purrr::walk(id_types$positional, ~ {
 out_other <- here::here("data", "colnames_other")
 
 dir.create(out_other, showWarnings = FALSE)
+```
+
+### `A03`
+
+``` r
+d_tmp <- d %>% 
+  filter(id == "A03")
+
+d_tmp$code <- paste0("A03_", sprintf("%03d", 1:8))
+
+d_tmp %>% 
+  readr::write_csv(file.path(out_exact, "A03.csv"))
 ```
 
 ### `A09`
