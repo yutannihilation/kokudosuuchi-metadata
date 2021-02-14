@@ -185,6 +185,13 @@ d %>%
         d_tmp,
         tibble::tibble(code = "99999", label = NA_character_)
       )
+    }    
+    # これはリンク外に記載されているので手動で含める
+    if (identical(codelist_name, "communityCenterType")) {
+      d_tmp <- bind_rows(
+        d_tmp,
+        tibble::tibble(code = "-1", label = "公民館以外の施設")
+      )
     }
     
     d_tmp %>% 
