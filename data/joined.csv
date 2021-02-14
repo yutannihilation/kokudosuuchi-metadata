@@ -8,7 +8,7 @@ A03,A03_006,区域区分,コードリスト「区域区分」 ※首都圏、中
 A03,A03_007,区域コード,コードリスト「区域コード」 ※首都圏、中部圏、近畿圏でコードが異なる。,tweak_SectionCd
 A03,A03_008,備考,文字列型,NA
 A09,prefec_cd,都道府県コード,NA,PrefCd
-A09,area_cd,地区コード,NA,A10_area_code
+A09,area_cd,地区コード,NA,AdminAreaCd
 A09,layer_no,レイヤ番号,NA,A10_layer_no
 A10,AREA_CD,地区コード,NA,A10_area_code
 A10,AREA_SIZE,ポリゴン面積,NA,NA
