@@ -261,7 +261,12 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
         if (length(mismatched_code) > 0) {
           mismatched_code <- paste(mismatched_code, collapse = ", ")
           msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
-          rlang::abort(msg)
+          # TODO: AdminAreaCd has many missing codes, because they actually disappeared
+          if (identical(codelist_id, "AdminAreaCd")) {
+            rlang::warn(msg)
+          } else {
+            rlang::abort(msg)
+          }
         }
         
         tbl$label[matched_code]
@@ -273,7 +278,11 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
       if (length(mismatched_code) > 0) {
         mismatched_code <- paste(mismatched_code, collapse = ", ")
         msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
-        rlang::abort(msg)
+        if (identical(codelist_id, "AdminAreaCd")) {
+          rlang::warn(msg)
+        } else {
+          rlang::abort(msg)
+        }
       }
       
       label <- tbl$label[matched_code]
@@ -350,14 +359,9 @@ translate_SectionTypeCd <- function(code, variant) {
 }
 
 `match_A37` <- function(d, id, variant = NULL, translate_codelist = TRUE) {
-  dc <- d_col_info[d_col_info$id == id, ]
-  
   old_names <- colnames(d)
   
-  fixed_readable_names <- dc$name
-  fixed_idx <- match(colnames(d), dc$code)
-  
-  colnames(d)[which(!is.na(fixed_idx))] <- dc$name[fixed_idx[!is.na(fixed_idx)]]
+  d <- match_by_name(d, id, skip_check = TRUE)
   
   replace_year <- function(d, prefix, format) {
     idx <- stringr::str_detect(colnames(d), paste0(prefix, "[12][0-9]{3}"))
@@ -381,23 +385,6 @@ match_C02 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   # C02_となるべきところがC12_となっているコードが紛れている？
   colnames(d) <- stringr::str_replace(colnames(d), "^C12_", "C02_")
   match_by_name(d, id)
-}
-
-match_C09 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
-  dc <- d_col_info[d_col_info$id == id, ]
-  
-  old_names <- colnames(d)
-  
-  if (ncol(d) <= 4) {
-    colnames(d)[1:2] <- c("県コード", "漁港番号")
-  } else {
-    idx <- seq_len(ncol(d) - 1L)
-    colnames(d)[idx] <- dc$name[idx]
-  }
-  
-  assert_all_translated(colnames(d), old_names, id)
-  
-  d
 }
 
 # L01は年度によってカラムが異なる。基本的には最新版に前年までのデータも含まれるはずなので最新版だけ対応でよさそう...？

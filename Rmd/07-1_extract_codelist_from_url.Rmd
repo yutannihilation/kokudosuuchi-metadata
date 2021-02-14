@@ -239,6 +239,14 @@ l$`3` %>%
       )
     }
     
+    # "0"がレベルに存在するので一応入れておく
+    if (identical(codelist_name, "ClassFishPortCd")) {
+      d <- bind_rows(
+        d,
+        tibble(code = "0", label = NA_character_)
+      )
+    }
+    
     d %>% 
       readr::write_csv(f)
   }) 
