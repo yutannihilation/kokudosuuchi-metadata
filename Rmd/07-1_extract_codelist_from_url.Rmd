@@ -140,6 +140,7 @@ d <- d %>%
 * `ClimateCd`は、列の説明なので特に対応する必要なし
 * `AreaStationCd`は、データ中にコードもラベルも含まれている
 * `rinshunosaibunCd`は手動でレベルを追加する
+* `DistributionCenterCd` はHTMLが間違ってるので手動で修正する
 
 ```{r}
 excl <- 
@@ -147,7 +148,8 @@ excl <-
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
-    "shinrinkanriCd"
+    "shinrinkanriCd",
+    "DistributionCenterCd"
   )
 names(d)[excl]
 
@@ -169,13 +171,23 @@ d %>%
     f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
     
     idx <- str_detect(colnames(d), "コード$|対応番号|No.")
-    tibble::tibble(
+    d_tmp <- tibble::tibble(
       code  = d[[which(idx)]],
       label = d[[which(!idx)]]
     ) %>% 
       mutate(
         code = if(is.character(code)) code else sprintf("%.0f", code)
-      ) %>% 
+      )
+    
+    # 載っていないやつがあるのでいちおうNAとして入れておく
+    if (identical(codelist_name, "PubFacMinclassCd")) {
+      d_tmp <- bind_rows(
+        d_tmp,
+        tibble::tibble(code = "99999", label = NA_character_)
+      )
+    }
+    
+    d_tmp %>% 
       readr::write_csv(f)
   }) 
 ```
@@ -379,4 +391,24 @@ d2 %>%
   readr::write_csv(here::here("data", "codelist", "WelfareFacMiclassCd_h27.csv"))
 ```
 
+
+`DistributionCenterCd`は`<tr>`が書けている行が抜けてしまっている。
+
+```{r DistributionCenterCd}
+f <- here::here("data-raw", "codelist", "DistributionCenterCd.html")
+
+html_text <- brio::read_lines(f)
+idx <- which(html_text == "<td>3</td>")
+
+stopifnot(length(idx) == 1)
+
+html_text[idx] <- "<tr>\n<td>3</td>"
+t_DistributionCenterCd <- read_html(paste(html_text, collapse = "\n")) %>% 
+  html_table(header = TRUE)
+
+stopifnot(length(t_DistributionCenterCd) == 1)
+t_DistributionCenterCd[[1]] %>% 
+  select(code = 1, label = 2) %>% 
+  readr::write_csv(here::here("data", "codelist", "DistributionCenterCd.csv"))
+```
 

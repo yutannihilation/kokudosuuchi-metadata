@@ -151,6 +151,7 @@ d <- d %>%
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
 -   `AreaStationCd`は、データ中にコードもラベルも含まれている
 -   `rinshunosaibunCd`は手動でレベルを追加する
+-   `DistributionCenterCd` はHTMLが間違ってるので手動で修正する
 
 ``` r
 excl <- 
@@ -158,19 +159,20 @@ excl <-
   names(d) %in% c(
     "PortRouteCd",
     "jushuCd",
-    "shinrinkanriCd"
+    "shinrinkanriCd",
+    "DistributionCenterCd"
   )
 names(d)[excl]
 ```
 
-    ##  [1] "ChukyoAreaZoneCd"        "KeihanshinAreaStationCd"
-    ##  [3] "KeihanshinAreaZoneCd"    "KinkiAreaStationCd"     
-    ##  [5] "KinkiAreaZoneCd"         "LandUseProperty-07"     
-    ##  [7] "LandUseProperty-09"      "LandUseProperty-77"     
-    ##  [9] "LandUseProperty-88"      "LandUseProperty-92_98"  
-    ## [11] "PortRouteCd"             "TokyoAreaStationCd"     
-    ## [13] "TokyoAreaZoneCd"         "jushuCd"                
-    ## [15] "shinrinkanriCd"
+    ##  [1] "ChukyoAreaZoneCd"        "DistributionCenterCd"   
+    ##  [3] "KeihanshinAreaStationCd" "KeihanshinAreaZoneCd"   
+    ##  [5] "KinkiAreaStationCd"      "KinkiAreaZoneCd"        
+    ##  [7] "LandUseProperty-07"      "LandUseProperty-09"     
+    ##  [9] "LandUseProperty-77"      "LandUseProperty-88"     
+    ## [11] "LandUseProperty-92_98"   "PortRouteCd"            
+    ## [13] "TokyoAreaStationCd"      "TokyoAreaZoneCd"        
+    ## [15] "jushuCd"                 "shinrinkanriCd"
 
 ``` r
 d <- d[!excl]
@@ -193,13 +195,23 @@ d %>%
     f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
     
     idx <- str_detect(colnames(d), "コード$|対応番号|No.")
-    tibble::tibble(
+    d_tmp <- tibble::tibble(
       code  = d[[which(idx)]],
       label = d[[which(!idx)]]
     ) %>% 
       mutate(
         code = if(is.character(code)) code else sprintf("%.0f", code)
-      ) %>% 
+      )
+    
+    # 載っていないやつがあるのでいちおうNAとして入れておく
+    if (identical(codelist_name, "PubFacMinclassCd")) {
+      d_tmp <- bind_rows(
+        d_tmp,
+        tibble::tibble(code = "99999", label = NA_character_)
+      )
+    }
+    
+    d_tmp %>% 
       readr::write_csv(f)
   }) 
 ```
@@ -217,12 +229,12 @@ l %>%
 
     ## $`3`
     ##  [1] "BusClassCd"           "ClassFishPortCd"      "ClassHarbor2Cd"      
-    ##  [4] "CodeDesignationCd"    "CodeNoncombustibleCd" "DistributionCenterCd"
-    ##  [7] "EntrepreneurCd"       "EstClassCd"           "KasoCd"              
-    ## [10] "LandUseCd-09-u"       "LandUseCd-09"         "LandUseCd-77"        
-    ## [13] "LandUseCd-88"         "LandUseCd-YY"         "PosSpecificLevel"    
-    ## [16] "PubOfficeCd"          "RailwayClassCd"       "ReferenceDataCd"     
-    ## [19] "UrgentRoadCd"         "kinouruikeiCd"        "rinshunosaibunCd"    
+    ##  [4] "CodeDesignationCd"    "CodeNoncombustibleCd" "EntrepreneurCd"      
+    ##  [7] "EstClassCd"           "KasoCd"               "LandUseCd-09-u"      
+    ## [10] "LandUseCd-09"         "LandUseCd-77"         "LandUseCd-88"        
+    ## [13] "LandUseCd-YY"         "PosSpecificLevel"     "PubOfficeCd"         
+    ## [16] "RailwayClassCd"       "ReferenceDataCd"      "UrgentRoadCd"        
+    ## [19] "kinouruikeiCd"        "rinshunosaibunCd"    
     ## 
     ## $`4`
     ## [1] "DistributionCd"  "PrefCd"          "PrefCdA33"       "PubFacMiclassCd"
@@ -258,9 +270,6 @@ l$`3` %>%
     ## 
     ## $CodeNoncombustibleCd
     ## [1] "コード"         "区分"           "評価指標の算定"
-    ## 
-    ## $DistributionCenterCd
-    ## [1] "コード" "種別"   "説明"  
     ## 
     ## $EntrepreneurCd
     ## [1] "コード"     "事業者分類" "説明"      
@@ -531,4 +540,24 @@ d1 %>%
 d2 %>% 
   select(code = 1, label = 2) %>% 
   readr::write_csv(here::here("data", "codelist", "WelfareFacMiclassCd_h27.csv"))
+```
+
+`DistributionCenterCd`は`<tr>`が書けている行が抜けてしまっている。
+
+``` r
+f <- here::here("data-raw", "codelist", "DistributionCenterCd.html")
+
+html_text <- brio::read_lines(f)
+idx <- which(html_text == "<td>3</td>")
+
+stopifnot(length(idx) == 1)
+
+html_text[idx] <- "<tr>\n<td>3</td>"
+t_DistributionCenterCd <- read_html(paste(html_text, collapse = "\n")) %>% 
+  html_table(header = TRUE)
+
+stopifnot(length(t_DistributionCenterCd) == 1)
+t_DistributionCenterCd[[1]] %>% 
+  select(code = 1, label = 2) %>% 
+  readr::write_csv(here::here("data", "codelist", "DistributionCenterCd.csv"))
 ```
