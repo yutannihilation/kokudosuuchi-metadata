@@ -317,14 +317,9 @@ translate_SectionTypeCd <- function(code, variant) {
 
 # A22-m has two types of colnames; by exact match and by pattern
 `match_A22-m` <- function(d, id, variant = NULL, translate_codelist = TRUE) {
-  dc <- d_col_info[d_col_info$id == id, ]
-  
   old_names <- colnames(d)
   
-  fixed_readable_names <- dc$name
-  fixed_idx <- match(colnames(d), dc$code)
-  
-  colnames(d)[which(!is.na(fixed_idx))] <- dc$name[fixed_idx[!is.na(fixed_idx)]]
+  d <- match_by_name(d, id, skip_check = TRUE)
 
   replace_year <- function(d, prefix, format) {
     idx <- stringr::str_detect(colnames(d), paste0(prefix, "[12][0-9]{3}"))

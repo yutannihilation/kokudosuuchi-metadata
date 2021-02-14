@@ -2110,7 +2110,7 @@ A22-m,A22_100003,データ整備時の行政コード,文字列型（CharacterSt
 A22-m,A22_100004,集計単位となる団体名（雪害）,文字列型（CharacterString）,NA
 A22-m,A22_100005,集計単位フラグ（雪害）,コードリスト「集計単位フラグ」,AggregateUnitFlag
 A22-m,A22_100006,集計単位となる団体名（除雪ボランティア）,文字列型（CharacterString）,NA
-A22-m,A22_100007,集計単位フラグ（雪害）,コードリスト「集計単位フラグ」,AggregateUnitFlag
+A22-m,A22_100007,集計単位フラグ（除雪ボランティア）,コードリスト「集計単位フラグ」,AggregateUnitFlag
 A22-m,A22_40001,利雪施設名,文字列型（CharacterString）,NA
 A22-m,A22_40002,利雪施設の設置者,文字列型（CharacterString）,NA
 A22-m,A22_40003,利雪施設の所在地,文字列型（CharacterString）,NA
