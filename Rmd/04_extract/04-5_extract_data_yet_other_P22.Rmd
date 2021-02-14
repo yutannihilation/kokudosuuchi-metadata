@@ -43,7 +43,7 @@ res <- attr_table %>%
   mutate(
     name = case_when(
       stringr::str_detect(c2, "（P22._[0-9]{3}）") ~ c2,
-      stringr::str_detect(c4, "（P22._[0-9]{3}）") ~ c4
+      stringr::str_detect(c4, "（P22._[0-9]{3}）") ~ paste(c2, c4, sep = "_")
     ),
     description = c3,
     type = c5
