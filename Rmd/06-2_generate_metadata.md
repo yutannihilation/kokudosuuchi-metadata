@@ -10,7 +10,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", 
+  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", "A42",
   "C02", "C09", "C23", 
   "G02", "L03-a", "L03-b", "L03-b-u",
   "mesh1000", "mesh500", 
@@ -51,23 +51,23 @@ id_types
     ## $exact
     ##  [1] "A09"     "A10"     "A11"     "A12"     "A13"     "A15"     "A21"    
     ##  [8] "A22"     "A27"     "A29"     "A30a5"   "A31"     "A32"     "A33"    
-    ## [15] "A35c"    "A39"     "A40"     "A42"     "A43"     "A44"     "A45"    
-    ## [22] "G04-a"   "G04-c"   "G04-d"   "G08"     "L03-b-c" "L05"     "N02"    
-    ## [29] "N03"     "N06"     "N07"     "N08"     "N09"     "N10"     "N11"    
-    ## [36] "P03"     "P04"     "P12"     "P13"     "P14"     "P19"     "P20"    
-    ## [43] "P22"     "P23"     "P24"     "P26"     "P27"     "P28"     "P29"    
-    ## [50] "P30"     "P31"     "P32"     "P33"     "P34"     "P35"     "S05-d"  
-    ## [57] "S10a"    "S10b"    "S12"     "W01"    
+    ## [15] "A35c"    "A39"     "A40"     "A43"     "A44"     "A45"     "G04-a"  
+    ## [22] "G04-c"   "G04-d"   "G08"     "L03-b-c" "L05"     "N02"     "N03"    
+    ## [29] "N06"     "N07"     "N08"     "N09"     "N10"     "N11"     "P03"    
+    ## [36] "P04"     "P12"     "P13"     "P14"     "P19"     "P20"     "P22"    
+    ## [43] "P23"     "P24"     "P26"     "P27"     "P28"     "P29"     "P30"    
+    ## [50] "P31"     "P32"     "P33"     "P34"     "P35"     "S05-d"   "S10a"   
+    ## [57] "S10b"    "S12"     "W01"    
     ## 
     ## $other
     ##  [1] "A03"      "A16"      "A17"      "A18"      "A18s-a"   "A19"     
     ##  [7] "A19s"     "A20s"     "A21s"     "A22-m"    "A22s"     "A23"     
     ## [13] "A24"      "A25"      "A26"      "A28"      "A30b"     "A34"     
-    ## [19] "A35a"     "A35b"     "A37"      "A38"      "C02"      "C09"     
-    ## [25] "C23"      "C28"      "G02"      "L03-a"    "L03-b"    "L03-b-u" 
-    ## [31] "mesh1000" "mesh500"  "N05"      "P02"      "P09"      "P11"     
-    ## [37] "P15"      "P16"      "P17"      "P18"      "P21"      "S05-a"   
-    ## [43] "S05-b"    "S05-c"    "W05"      "W07"      "W09"     
+    ## [19] "A35a"     "A35b"     "A37"      "A38"      "A42"      "C02"     
+    ## [25] "C09"      "C23"      "C28"      "G02"      "L03-a"    "L03-b"   
+    ## [31] "L03-b-u"  "mesh1000" "mesh500"  "N05"      "P02"      "P09"     
+    ## [37] "P11"      "P15"      "P16"      "P17"      "P18"      "P21"     
+    ## [43] "S05-a"    "S05-b"    "S05-c"    "W05"      "W07"      "W09"     
     ## 
     ## $positional
     ## [1] "L01" "L02" "P05" "P07"
@@ -490,6 +490,29 @@ d %>%
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A38.csv"))
+```
+
+### `A42`
+
+年度によって対応が異なる。`joined.csv`には入れない。
+
+``` r
+d %>%
+  filter(id == "A42") %>% 
+  group_by(sub_id = cumsum(code == "A42_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns,
+    codelist_id = case_when(
+      name == "種別" ~ "A42_historical_district_type"
+    )
+  ) %>% 
+  readr::write_csv(here::here("data", "A42.csv"))
 ```
 
 ### `C23`

@@ -391,6 +391,18 @@ tibble::tribble(
   readr::write_csv(file.path(out_dir, "RitoCd.csv"))
 ```
 
+### `A42_005`（種別）
+
+``` r
+tibble::tribble(
+  ~code,    ~label,
+  "1", "歴史的風土特別保存地区",
+  "2", "第１種歴史的風土保存地区（明日香村のみ）",
+  "3", "第２種歴史的風土保存地区（明日香村のみ）"
+) %>% 
+  readr::write_csv(file.path(out_dir, "A42_historical_district_type.csv"))
+```
+
 ### `P03_0102`
 
 ``` r

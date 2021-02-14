@@ -420,6 +420,7 @@ match_N04 <- function(d, id, translate_codelist = TRUE) {
 `match_S05-a` <- match_N04
 `match_S05-b` <- match_N04
 `match_P02`   <- match_N04
+match_A42     <- match_N04
 
 # exact matchに加えて、ある範囲以上のカラムには「管轄範囲1」、「管轄範囲2」...というルールで名前がついていく
 match_P17 <- function(d, id, translate_codelist = TRUE) {

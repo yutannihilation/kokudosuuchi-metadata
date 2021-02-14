@@ -16,7 +16,7 @@ csv_files <- list.files(here::here("data", "attrs"), full.names = TRUE)
 names(csv_files) <- tools::file_path_sans_ext(basename(csv_files))
 
 id_exception <- c(
-  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", 
+  "A03", "A16", "A17", "A18", "A18s-a", "A19", "A19s", "A20", "A20s", "A21s", "A22s", "A23", "A23s", "A24", "A25", "A26", "A28", "A30b", "A34", "A35a", "A35b", "A37", "A42",
   "C02", "C09", "C23", 
   "G02", "L03-a", "L03-b", "L03-b-u",
   "mesh1000", "mesh500", 
@@ -442,6 +442,30 @@ d %>%
     codelist = detect_codelist(type)
   ) %>% 
   readr::write_csv(file.path(out_exact, "A38.csv"))
+```
+
+
+### `A42`
+
+年度によって対応が異なる。`joined.csv`には入れない。
+
+```{r A42}
+d %>%
+  filter(id == "A42") %>% 
+  group_by(sub_id = cumsum(code == "A42_001")) %>% 
+  mutate(
+    columns = n()
+  ) %>% 
+  ungroup() %>% 
+  transmute(
+    name,
+    code,
+    columns,
+    codelist_id = case_when(
+      name == "種別" ~ "A42_historical_district_type"
+    )
+  ) %>% 
+  readr::write_csv(here::here("data", "A42.csv"))
 ```
 
 ### `C23`
