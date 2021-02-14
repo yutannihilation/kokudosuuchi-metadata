@@ -18,6 +18,7 @@ d_col_info <- readr::read_csv(
 # function ----------------------------------------------------------------
 
 `%||%` <- rlang::`%||%`
+all_of <- dplyr::all_of
 
 read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
   if (!isTRUE(file.exists(f))) {
@@ -237,14 +238,14 @@ match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_chec
     if (anyNA(label)) {
       failed_codes <- paste(unique(code[is.na(label)]), collapse = ", ")
       msg <- glue::glue("Failed to translate these codes in {target}: {failed_codes}")
-      rlang::warn(msg)
+      rlang::abort(msg)
     }
     
     # overwrite the target column with human-readable labels
     d[[pos]] <- label
     # append the original codes right after the original position
     nm <- rlang::sym(glue::glue("{target}_code"))
-    d <- dplyr::mutate(d, "{{ nm }}" := code, .after = pos)
+    d <- dplyr::mutate(d, "{{ nm }}" := code, .after = all_of(pos))
   }
 
   d
