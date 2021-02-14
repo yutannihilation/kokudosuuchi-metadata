@@ -242,10 +242,12 @@ translate_one_column <- function(d, pos, codelist_id) {
   dplyr::mutate(d, "{{ nm }}" := code_orig, .after = all_of(pos))
 }
 
-match_by_position <- function(d, id, variant = NULL, translate_codelist = TRUE) {
-  dc <- d_col_info[d_col_info$id == id, ]
+match_by_position <- function(d, id, dc = NULL, variant = NULL, translate_codelist = TRUE, skip_check = FALSE) {
+  dc <- dc %||% d_col_info[d_col_info$id == id, ]
   
   readable_names <- dc$name
+  codelist_id <- dc$codelist_id
+  
   old_names <- colnames(d)
 
   # exlude columns that don't need to be translated
@@ -253,22 +255,27 @@ match_by_position <- function(d, id, variant = NULL, translate_codelist = TRUE) 
   
   ncol <- length(old_names)
   
-  if (length(readable_names) != ncol) {
+  if (!isTRUE(skip_check) && length(readable_names) != ncol) {
     msg <- glue::glue(
       "The numbers of columns don't match. ",
       "expected: ", nrow(dc), ", actual: ", ncol
     )
     rlang::abort(msg)
     
-    readable_names <- readable_names[seq_len(ncol)]
+    readable_names <- readable_names[1:ncol]
+    codelist_id <- codelist_id[1:ncol]
   }
   
   colnames(d)[seq_along(readable_names)] <- readable_names
   
-  # IDs that needs no translation
-  if (id %in% c("G02")) {
-    attr(d, "translated") <- TRUE
+  pos_codelist_id <- which(!is.na(codelist_id))
+  for (i in seq_along(pos_codelist_id)) {
+    pos <- pos_codelist_id[i]
+    # Note: `+ i` is needed because the columns are shifted
+    d <- translate_one_column(d, pos + i - 1L, codelist_id[pos])
   }
+  
+  attr(d, "translated") <- TRUE
   
   d
 }
@@ -408,7 +415,7 @@ match_L01 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   
   old_names <- colnames(d)
   
-  colnames(d)[seq_along(dc$name)] <- dc$name
+  d <- match_by_position(d, id, dc = dc, translate_codelist = translate_codelist, skip_check = TRUE)
   
   # confirm the last positionally matched column is 選定年次ビット
   nenji_bits <- stringr::str_detect(d[["選定年次ビット"]], "^[01]+$")
@@ -425,7 +432,9 @@ match_L01 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   col_price <- paste0("調査価格_", seq(1983, nendo))
   col_move  <- paste0("属性移動_", seq(1984, nendo))
   
-  idx_col_price <- length(dc$name) + seq_along(col_price)
+  # compensation for inserted rows
+  inserted_rows <- sum(!is.na(dc$codelist_id))
+  idx_col_price <- length(dc$name) + inserted_rows + seq_along(col_price)
   idx_col_move  <- max(idx_col_price) + seq_along(col_move)
   
   if (max(idx_col_move) != ncol(d) - 1L) {
