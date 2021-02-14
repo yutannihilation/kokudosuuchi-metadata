@@ -245,22 +245,35 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
       # will subset the data by position, not by name
       code <- as.character(as.integer(code))
     }
-    codelist_translation <- setNames(tbl$label, tbl$code)
+    
+    # codelist_translation <- setNames(tbl$label, tbl$code)
     
     # Some column (e.g. A03_007) contains comma-separated list of codes
     if (any(stringr::str_detect(code, ","), na.rm = TRUE)) {
       label <- lapply(stringr::str_split(code, ","), function(x) {
         x <- x[!is.na(x) & x != ""]
-        unname(codelist_translation[x])
+        
+        matched_code <- match(x, tbl$code)
+        mismatched_code <- unique(code[is.na(matched_code) & !is.na(code)])
+        if (length(mismatched_code) > 0) {
+          mismatched_code <- paste(mismatched_code, collapse = ", ")
+          msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
+          rlang::abort(msg)
+        }
+        
+        tbl$label[matched_code]
       })
     } else {
-      label <- codelist_translation[code]
-    }
-    
-    if (anyNA(label)) {
-      failed_codes <- paste(unique(code[is.na(label)]), collapse = ", ")
-      msg <- glue::glue("Failed to translate these codes in {target}: {failed_codes}")
-      rlang::abort(msg)
+      matched_code <- match(code, tbl$code)
+      
+      mismatched_code <- unique(code[is.na(matched_code) & !is.na(code)])
+      if (length(mismatched_code) > 0) {
+        mismatched_code <- paste(mismatched_code, collapse = ", ")
+        msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
+        rlang::abort(msg)
+      }
+      
+      label <- tbl$label[matched_code]
     }
     
     # overwrite the target column with human-readable labels

@@ -130,7 +130,6 @@ d <- d %>%
       
       code == "W09_002" ~ "AdminAreaCd",
       
-      id == "A18s-a" & code == "A18_002" ~ "AdminAreaCd",
       id == "A18s-a" & code == "A18_008" ~ "SpecificAirPortSpecifiedSituationCd",
       id == "A19s"   & code == "A19_002" ~ "AdminAreaCd",
       id == "A19s"   & code == "A19_009" ~ "RitoCd",
@@ -186,7 +185,7 @@ d_codelist <- d_codelist %>%
 ```{r codelist_join}
 d_split <- d %>% 
   mutate(
-    needs_regex = is.na(codelist_id_manual) & !id %in% c("A03", "A10", "A11", "A12", "A13", "A20", "A21", "C02", "C09", "W05", "W07")
+    needs_regex = is.na(codelist_id_manual) & !id %in% c("A03", "A10", "A11", "A12", "A13", "A18s-a", "A20", "A21", "C02", "C09", "W05", "W07")
   )
 
 d_joined_manual <- d_split %>% 
