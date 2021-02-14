@@ -188,13 +188,13 @@ tibble::enframe(errors) %>%
 | P23-12\_17\_GML.zip                     | NA                                                               |
 | P24-12\_GML.zip                         | NA                                                               |
 | P26-13\_34.zip                          | NA                                                               |
-| P27-13\_38.zip                          | Error: Failed to translate these codes in 公共施設小分類: 99999  |
-| P28-13\_41.zip                          | Error: Failed to translate these codes in 公共施設小分類: 99999  |
-| P29-13\_47.zip                          | Error: Failed to translate these codes in 公共施設小分類: 99999  |
-| P30-13\_47.zip                          | Error: Failed to translate these codes in 公共施設小分類: 99999  |
-| P31-13\_46.zip                          | Error: Failed to translate these codes in 種別: 3                |
+| P27-13\_38.zip                          | NA                                                               |
+| P28-13\_41.zip                          | NA                                                               |
+| P29-13\_47.zip                          | NA                                                               |
+| P30-13\_47.zip                          | NA                                                               |
+| P31-13\_46.zip                          | NA                                                               |
 | P32-14\_45\_GML.zip                     | NA                                                               |
-| P33-14\_44\_GML.zip                     | Error: Failed to translate these codes in 公民館の種別: -1       |
+| P33-14\_44\_GML.zip                     | NA                                                               |
 | P34-14\_42\_GML.zip                     | NA                                                               |
 | P35-18\_GML.zip                         | NA                                                               |
 | S05-a-10\_KINKI\_GML.zip                | NA                                                               |

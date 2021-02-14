@@ -173,6 +173,75 @@ assert_all_translated <- function(new_names, old_names, id) {
   }
 }
 
+translate_one_column <- function(d, pos, codelist_id) {
+  if (length(pos) != 1) {
+    rlang::abort(paste("Invalid pos:", paste(pos, collapse = ", ")))
+  }
+  
+  code_orig <- code <- d[[pos]]
+  target <- colnames(d)[pos]
+  
+  csv_file <- here::here("data", "codelist", paste0(codelist_id, ".csv"))
+  tbl <- readr::read_csv(csv_file, col_types = "cc")
+  
+  # if the data is integer, do matching in integer so that e.g. "01" matches 1
+  if (is.numeric(code) ||
+      # Note: all(NA, na.rm = TRUE) returns TRUE, so we need to eliminate the cases when all codes are NA.
+      (any(!is.na(code)) && all(!stringr::str_detect(code, "\\D"), na.rm = TRUE))) {
+    # TODO: detect the conversion failures
+    tbl$code <- as.character(as.integer(tbl$code))
+    
+    # code is also needs to be character, otherwise codelist_translation[code]
+    # will subset the data by position, not by name
+    code <- as.character(as.integer(code))
+  }
+  
+  # codelist_translation <- setNames(tbl$label, tbl$code)
+  
+  # Some column (e.g. A03_007) contains comma-separated list of codes
+  if (any(stringr::str_detect(code, ","), na.rm = TRUE)) {
+    label <- lapply(stringr::str_split(code, ","), function(x) {
+      x <- x[!is.na(x) & x != ""]
+      
+      matched_code <- match(x, tbl$code)
+      mismatched_code <- unique(x[is.na(matched_code) & !is.na(x)])
+      if (length(mismatched_code) > 0) {
+        mismatched_code <- paste(mismatched_code, collapse = ", ")
+        msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
+        # TODO: AdminAreaCd has many missing codes, because they actually disappeared
+        if (identical(codelist_id, "AdminAreaCd")) {
+          rlang::warn(msg)
+        } else {
+          rlang::abort(msg)
+        }
+      }
+      
+      tbl$label[matched_code]
+    })
+  } else {
+    matched_code <- match(code, tbl$code)
+    
+    mismatched_code <- unique(code_orig[is.na(matched_code) & !is.na(code_orig)])
+    if (length(mismatched_code) > 0) {
+      mismatched_code <- paste(mismatched_code, collapse = ", ")
+      msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
+      if (identical(codelist_id, "AdminAreaCd")) {
+        rlang::warn(msg)
+      } else {
+        rlang::abort(msg)
+      }
+    }
+    
+    label <- tbl$label[matched_code]
+  }
+  
+  # overwrite the target column with human-readable labels
+  d[[pos]] <- label
+  # append the original codes right after the original position
+  nm <- rlang::sym(glue::glue("{target}_code"))
+  dplyr::mutate(d, "{{ nm }}" := code_orig, .after = all_of(pos))
+}
+
 match_by_position <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
@@ -237,68 +306,8 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     
     # current position of the column
     pos <- which(colnames(d) == target)
-    code <- d[[pos]]
-    code_orig <- code
-    
-    csv_file <- here::here("data", "codelist", paste0(codelist_id, ".csv"))
-    tbl <- readr::read_csv(csv_file, col_types = "cc")
-    
-    # if the data is integer, do matching in integer so that e.g. "01" matches 1
-    if (is.numeric(code) ||
-        # Note: all(NA, na.rm = TRUE) returns TRUE, so we need to eliminate the cases when all codes are NA.
-        (any(!is.na(code)) && all(!stringr::str_detect(code, "\\D"), na.rm = TRUE))) {
-      # TODO: detect the conversion failures
-      tbl$code <- as.character(as.integer(tbl$code))
-      
-      # code is also needs to be character, otherwise codelist_translation[code]
-      # will subset the data by position, not by name
-      code <- as.character(as.integer(code))
-    }
-    
-    # codelist_translation <- setNames(tbl$label, tbl$code)
-    
-    # Some column (e.g. A03_007) contains comma-separated list of codes
-    if (any(stringr::str_detect(code, ","), na.rm = TRUE)) {
-      label <- lapply(stringr::str_split(code, ","), function(x) {
-        x <- x[!is.na(x) & x != ""]
-        
-        matched_code <- match(x, tbl$code)
-        mismatched_code <- unique(x[is.na(matched_code) & !is.na(x)])
-        if (length(mismatched_code) > 0) {
-          mismatched_code <- paste(mismatched_code, collapse = ", ")
-          msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
-          # TODO: AdminAreaCd has many missing codes, because they actually disappeared
-          if (identical(codelist_id, "AdminAreaCd")) {
-            rlang::warn(msg)
-          } else {
-            rlang::abort(msg)
-          }
-        }
-        
-        tbl$label[matched_code]
-      })
-    } else {
-      matched_code <- match(code, tbl$code)
-      
-      mismatched_code <- unique(code_orig[is.na(matched_code) & !is.na(code_orig)])
-      if (length(mismatched_code) > 0) {
-        mismatched_code <- paste(mismatched_code, collapse = ", ")
-        msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
-        if (identical(codelist_id, "AdminAreaCd")) {
-          rlang::warn(msg)
-        } else {
-          rlang::abort(msg)
-        }
-      }
-      
-      label <- tbl$label[matched_code]
-    }
-    
-    # overwrite the target column with human-readable labels
-    d[[pos]] <- label
-    # append the original codes right after the original position
-    nm <- rlang::sym(glue::glue("{target}_code"))
-    d <- dplyr::mutate(d, "{{ nm }}" := code_orig, .after = all_of(pos))
+
+    d <- translate_one_column(d, pos, codelist_id)
   }
 
   attr(d, "translated") <- TRUE
