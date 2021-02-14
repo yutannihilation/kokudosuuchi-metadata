@@ -131,14 +131,10 @@ d <- d %>%
       code == "W09_002" ~ "AdminAreaCd",
       
       id == "A18s-a" & code == "A18_008" ~ "SpecificAirPortSpecifiedSituationCd",
-      id == "A19s"   & code == "A19_002" ~ "AdminAreaCd",
       id == "A19s"   & code == "A19_009" ~ "RitoCd",
       id == "A19s"   & code == "A19_010" ~ "SpecificAirPortSpecifiedSituationCd",
-      id == "A20s"   & code == "A20_002" ~ "AdminAreaCd",
       id == "A20s"   & code == "A20_008" ~ "SpecificAirPortSpecifiedSituationCd",
-      id == "A21s"   & code == "A21_002" ~ "AdminAreaCd",
       id == "A21s"   & code == "A21_007" ~ "SpecificAirPortSpecifiedSituationCd",
-      id == "A22s"   & code == "A22_002" ~ "AdminAreaCd",
       id == "A22s"   & code == "A22_007" ~ "HeavySnowTypeCode",
       id == "A22s"   & code == "A22_008" ~ "SpecificAirPortSpecifiedSituationCd",
 

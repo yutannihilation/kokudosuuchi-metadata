@@ -359,15 +359,16 @@ tibble::tribble(
 ### `A18_008`
 
 <https://nlftp.mlit.go.jp/ksj/gmlold/codelist/SpecificAirPortSpecifiedSituationCd.html>
-にある。 どうやら“999”はNAを表すらしい。
+にある。 どうやら“9”（A19s）や“999”（A18s-a）は`NA`を表すらしい。
 
 ``` r
 tibble(
-  code = c("1", "2", "3", "999"),
+  code = c("1", "2", "3", "9", "999"),
   label = c(
     "「公共用飛行場周辺における航空機騒音による障害の防止等に関する法律」に基づく特定飛行場で、かつ周辺整備空港に指定されている場合",
     "周辺整備空港に指定されていない特定飛行場",
     "特定飛行場以外",
+    NA,
     NA
   )
 ) %>% 
