@@ -131,7 +131,14 @@ translate_columns <- function(l, id = NULL, variant = NULL, translate_codelist =
     rlang::abort("Not implemented")
   }
   
-  lapply(l, matching_fun, id = id, variant = variant, translate_codelist = translate_codelist)
+  l <- lapply(l, matching_fun, id = id, variant = variant, translate_codelist = translate_codelist)
+  
+  # debug
+  if (!isTRUE(attr(l[[1]], "translated"))) {
+    rlang::abort("Not translated")
+  }
+  
+  l
 }
 
 
@@ -263,6 +270,8 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     d <- dplyr::mutate(d, "{{ nm }}" := code, .after = all_of(pos))
   }
 
+  attr(d, "translated") <- TRUE
+  
   d
 }
 
@@ -277,6 +286,9 @@ match_A03 <- function(d, id, variant, translate_codelist = TRUE) {
   }
   
   d[[idx_SectionTypeCd]] <- translate_SectionTypeCd(d[[idx_SectionTypeCd]], variant)
+  
+  attr(d, "translated") <- TRUE
+  
   d
 }
 
