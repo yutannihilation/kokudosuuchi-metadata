@@ -74,8 +74,6 @@ d <- d %>%
       code == "A15_003" ~ "authority_type",
       code == "A15_004" ~ "protection_area_type",
       
-      code == "A20_002" ~ "AdminAreaCd",
-      
       code == "A26_005" ~ "SedimentDisastersProneAreaCd",
       
       code == "C02_001" ~ "ClassHarbor1Cd",
