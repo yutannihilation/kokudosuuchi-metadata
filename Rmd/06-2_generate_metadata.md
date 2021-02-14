@@ -703,6 +703,22 @@ bind_rows(
   readr::write_csv(file.path(out_exact, "N05.csv"))
 ```
 
+### `P07`
+
+``` r
+id <- "P07"
+
+d_tmp <- d %>% 
+  filter(id == {{ id }})
+
+# どうも順番が逆らしい
+d_tmp$code <- paste(id, sprintf("%03d", 2:1), sep = "_")
+
+d_tmp %>% 
+  arrange(code) %>% 
+  readr::write_csv(file.path(out_exact, paste0(id, ".csv")))
+```
+
 ### `P11`
 
 Excelに範囲で入っているコードを手動展開

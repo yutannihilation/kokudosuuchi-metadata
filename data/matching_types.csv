@@ -61,6 +61,7 @@ N10,exact
 N11,exact
 P03,exact
 P04,exact
+P07,exact
 P09,exact
 P11,exact
 P12,exact
@@ -97,4 +98,3 @@ G02,positional
 L01,positional
 L02,positional
 P05,positional
-P07,positional

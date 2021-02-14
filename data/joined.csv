@@ -3139,8 +3139,8 @@ P05,NA,行政区域コード,コードリスト「行政コード」,AdminAreaCd
 P05,NA,施設分類,コードリスト「施設分類コード」,PubOfficeCd
 P05,NA,名称,文字列型（CharacterString）,NA
 P05,NA,所在地,文字列型（CharacterString）,NA
-P07,NA,所在地,文字列型（CharacterString）,NA
-P07,NA,店舗分類コード,コードリスト「燃料店舗分類コード」,FuelStoreCd
+P07,P07_001,店舗分類コード,コードリスト「燃料店舗分類コード」,FuelStoreCd
+P07,P07_002,所在地,文字列型（CharacterString）,NA
 P09,P09_001,3次メッシュコード,NA,NA
 P09,P09_002,施設数（ホテル）,NA,NA
 P09,P09_003,施設数（旅館）,NA,NA

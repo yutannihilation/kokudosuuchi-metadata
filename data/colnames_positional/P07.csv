@@ -1,3 +1,0 @@
-name,code,description,type,codelist
-所在地,NA,燃料給油所の所在地。,文字列型（CharacterString）,FALSE
-店舗分類コード,NA,燃料給油所の店舗分類を表すコード,コードリスト「燃料店舗分類コード」,TRUE
