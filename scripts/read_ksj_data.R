@@ -186,28 +186,65 @@ match_by_position <- function(d, id, translate_codelist = TRUE) {
 match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_check = FALSE) {
   dc <- dc %||% d_col_info[d_col_info$id == id, ]
   
-  readable_names <- setNames(dc$name, dc$code)
   old_names <- colnames(d)
-  idx <- match(old_names, dc$code)
-  colnames(d)[which(!is.na(idx))] <- dc$name[idx[!is.na(idx)]]
+  matched <- match(old_names, dc$code)
+  
+  pos_in_data <- which(!is.na(matched))
+  pos_new <- matched[!is.na(matched)]
+  
+  colnames(d)[pos_in_data] <- dc$name[pos_new]
 
   if (!skip_check) {
     assert_all_translated(colnames(d), old_names, id)
   }
+  
+  if (!isTRUE(translate_codelist)) {
+    return(d)
+  }
+  
+  # Shrink the index to only those with non-NA codelist_id
+  idx_codelist_exists <- which(!is.na(dc$codelist_id[pos_new]))
+  pos_in_data <- pos_in_data[idx_codelist_exists]
+  pos_new <- pos_new[idx_codelist_exists]
 
-  # As new names will be inserted, the index will move, so preserve names
-  colnames_tmp <- colnames(d)
-  for (i in seq_along(idx)) {
-    codelist_id <- dc$codelist_id[idx[i]]
-    if (is.na(codelist_id))
-      next
+  # As new names will be inserted, the index will shift, so preserve names at this point
+  colnames_codelist <- colnames(d)[pos_in_data]
+  
+  for (i in seq_along(colnames_codelist)) {
+    target <- colnames_codelist[i]
+    codelist_id <- dc$codelist_id[pos_new[i]]
     
-    tbl <- readr::read_csv(here::here("data", "codelist", paste0(codelist_id, ".csv")))
+    # current position of the column
+    pos <- which(colnames(d) == target)
+    code <- d[[pos]]
+    
+    csv_file <- here::here("data", "codelist", paste0(codelist_id, ".csv"))
+    tbl <- readr::read_csv(csv_file, col_types = "cc")
+    
+    # if the data is integer, do matching in integer so that e.g. "01" matches 1
+    if (is.numeric(code) || all(!stringr::str_detect(code, "\\D"), na.rm = TRUE)) {
+      # TODO: detect the conversion failures
+      tbl$code <- as.character(as.integer(tbl$code))
+      
+      # code is also needs to be character, otherwise codelist_translation[code]
+      # will subset the data by position, not by name
+      code <- as.character(as.integer(code))
+    }
     codelist_translation <- setNames(tbl$label, tbl$code)
-    colname <- colnames_tmp[i]
-    orig_code <- d[[colname]]
-    d[[i]] <- codelist_translation[orig_code]
-    d[[paste0(colname, "_orig")]] <- orig_code
+    
+    label <- codelist_translation[code]
+    
+    if (anyNA(label)) {
+      failed_codes <- paste(unique(code[is.na(label)]), collapse = ", ")
+      msg <- glue::glue("Failed to translate these codes in {target}: {failed_codes}")
+      rlang::warn(msg)
+    }
+    
+    # overwrite the target column with human-readable labels
+    d[[pos]] <- label
+    # append the original codes right after the original position
+    nm <- rlang::sym(glue::glue("{target}_code"))
+    d <- dplyr::mutate(d, "{{ nm }}" := code, .after = pos)
   }
 
   d
@@ -366,7 +403,7 @@ match_N04 <- function(d, id, translate_codelist = TRUE) {
       name = readr::col_character(),
       code = readr::col_character(),
       columns = readr::col_integer(),
-      codelist_ide = readr::col_character()
+      codelist_id = readr::col_character()
     )
   )
   
