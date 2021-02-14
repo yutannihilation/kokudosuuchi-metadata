@@ -232,6 +232,7 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     # current position of the column
     pos <- which(colnames(d) == target)
     code <- d[[pos]]
+    code_orig <- code
     
     csv_file <- here::here("data", "codelist", paste0(codelist_id, ".csv"))
     tbl <- readr::read_csv(csv_file, col_types = "cc")
@@ -256,7 +257,7 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
         x <- x[!is.na(x) & x != ""]
         
         matched_code <- match(x, tbl$code)
-        mismatched_code <- unique(code[is.na(matched_code) & !is.na(code)])
+        mismatched_code <- unique(x[is.na(matched_code) & !is.na(x)])
         if (length(mismatched_code) > 0) {
           mismatched_code <- paste(mismatched_code, collapse = ", ")
           msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
@@ -268,7 +269,7 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     } else {
       matched_code <- match(code, tbl$code)
       
-      mismatched_code <- unique(code[is.na(matched_code) & !is.na(code)])
+      mismatched_code <- unique(code_orig[is.na(matched_code) & !is.na(code_orig)])
       if (length(mismatched_code) > 0) {
         mismatched_code <- paste(mismatched_code, collapse = ", ")
         msg <- glue::glue("Failed to translate these codes in {target}: {mismatched_code}")
@@ -282,7 +283,7 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     d[[pos]] <- label
     # append the original codes right after the original position
     nm <- rlang::sym(glue::glue("{target}_code"))
-    d <- dplyr::mutate(d, "{{ nm }}" := code, .after = all_of(pos))
+    d <- dplyr::mutate(d, "{{ nm }}" := code_orig, .after = all_of(pos))
   }
 
   attr(d, "translated") <- TRUE
