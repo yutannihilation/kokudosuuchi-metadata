@@ -131,8 +131,10 @@ d_many_tables <- d %>%
 names(d_many_tables)
 ```
 
-    ## [1] "MaritimeOrgCd"       "PubFacAdminCd"       "PubFacMiclassCd_wf" 
-    ## [4] "WelfareFacMiclassCd"
+    ##  [1] "A18s-a_property_table" "A19s_property_table"   "A20s_property_table"  
+    ##  [4] "A21s_property_table"   "A22s_property_table"   "MaritimeOrgCd"        
+    ##  [7] "PubFacAdminCd"         "PubFacMiclassCd_wf"    "WelfareFacMiclassCd"  
+    ## [10] "shape_property_table"
 
 ``` r
 d <- d %>% 
@@ -148,6 +150,7 @@ d <- d %>%
 -   `shinrinkanriCd` は、データ中にコードもラベルも含まれている
 -   `ClimateCd`は、列の説明なので特に対応する必要なし
 -   `AreaStationCd`は、データ中にコードもラベルも含まれている
+-   `rinshunosaibunCd`は手動でレベルを追加する
 
 ``` r
 excl <- 
@@ -226,7 +229,7 @@ l %>%
     ## [5] "hoanrinCd"       "midorinokairoCd"
     ## 
     ## $`5`
-    ## [1] "AdminAreaCd_R105"
+    ## [1] "000730858"        "AdminAreaCd_R105"
     ## 
     ## $`7`
     ## [1] "ClimateCd"
@@ -328,7 +331,7 @@ l$`3` %>%
     
     f <- here::here("data", "codelist", glue::glue("{codelist_name}.csv"))
     
-    d %>% 
+    d <- d %>% 
       select(
         code  = {{ idx_code }},
         label = {{ idx_label }}
@@ -336,7 +339,17 @@ l$`3` %>%
       mutate(
         code = if(is.character(code)) code else sprintf("%.0f", code),
         across(everything(), ~ str_remove_all(.x, "\\s"))
-      ) %>% 
+      )
+    
+    # "　"がレベルに存在するので一応入れておく
+    if (identical(codelist_name, "rinshunosaibunCd")) {
+      d <- bind_rows(
+        d,
+        tibble(code = "　", label = NA_character_)
+      )
+    }
+    
+    d %>% 
       readr::write_csv(f)
   }) 
 ```

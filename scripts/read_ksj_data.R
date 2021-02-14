@@ -237,7 +237,9 @@ match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist =
     tbl <- readr::read_csv(csv_file, col_types = "cc")
     
     # if the data is integer, do matching in integer so that e.g. "01" matches 1
-    if (is.numeric(code) || all(!stringr::str_detect(code, "\\D"), na.rm = TRUE)) {
+    if (is.numeric(code) ||
+        # Note: all(NA, na.rm = TRUE) returns TRUE, so we need to eliminate the cases when all codes are NA.
+        (any(!is.na(code)) && all(!stringr::str_detect(code, "\\D"), na.rm = TRUE))) {
       # TODO: detect the conversion failures
       tbl$code <- as.character(as.integer(tbl$code))
       
