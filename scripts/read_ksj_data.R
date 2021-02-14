@@ -195,6 +195,12 @@ match_by_position <- function(d, id, variant = NULL, translate_codelist = TRUE) 
   }
   
   colnames(d)[seq_along(readable_names)] <- readable_names
+  
+  # IDs that needs no translation
+  if (id %in% c("G02")) {
+    attr(d, "translated") <- TRUE
+  }
+  
   d
 }
 
