@@ -55,7 +55,13 @@ read_zip_with_cache <- function(f, encoding = "CP932", cache_dir = "./cache") {
                     options = glue::glue("ENCODING={encoding}")
   )
   
-  attr(res, "id") <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?[0-9]?(-[a-z])?(-[cu])?")
+  id_short <- stringr::str_extract(id, "^[A-Z][0-9]{2}[a-z]?[0-9]?(-[a-z])?(-[cu])?")
+  attr(res, "id") <- id_short
+  
+  if (identical(id_short, "A03")) {
+    attr(res, "variant") <- tolower(stringr::str_extract(id, "SYUTO|CHUBU|KINKI"))
+  }
+  
   res
 }
 
@@ -103,8 +109,9 @@ rename_to_utf8_recursively <- function(path, max_depth = 10L) {
 }
 
 
-translate_columns <- function(l, id = NULL, translate_codelist = TRUE) {
+translate_columns <- function(l, id = NULL, variant = NULL, translate_codelist = TRUE) {
   id <- id %||% attr(l, "id")
+  variant <- variant %||% attr(l, "variant")
 
   # A19s-aは島嶼単位、A19sは指定地域単位  
   if (identical(id, "A19s-a")) {
@@ -124,7 +131,7 @@ translate_columns <- function(l, id = NULL, translate_codelist = TRUE) {
     rlang::abort("Not implemented")
   }
   
-  lapply(l, matching_fun, id = id, translate_codelist = translate_codelist)
+  lapply(l, matching_fun, id = id, variant = variant, translate_codelist = translate_codelist)
 }
 
 
@@ -159,7 +166,7 @@ assert_all_translated <- function(new_names, old_names, id) {
   }
 }
 
-match_by_position <- function(d, id, translate_codelist = TRUE) {
+match_by_position <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   readable_names <- dc$name
@@ -184,7 +191,7 @@ match_by_position <- function(d, id, translate_codelist = TRUE) {
   d
 }
 
-match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_check = FALSE) {
+match_by_name <- function(d, id, variant = NULL, dc = NULL, translate_codelist = TRUE, skip_check = FALSE) {
   dc <- dc %||% d_col_info[d_col_info$id == id, ]
   
   old_names <- colnames(d)
@@ -233,7 +240,15 @@ match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_chec
     }
     codelist_translation <- setNames(tbl$label, tbl$code)
     
-    label <- codelist_translation[code]
+    # Some column (e.g. A03_007) contains comma-separated list of codes
+    if (any(stringr::str_detect(code, ","), na.rm = TRUE)) {
+      label <- lapply(stringr::str_split(code, ","), function(x) {
+        x <- x[!is.na(x) & x != ""]
+        unname(codelist_translation[x])
+      })
+    } else {
+      label <- codelist_translation[code]
+    }
     
     if (anyNA(label)) {
       failed_codes <- paste(unique(code[is.na(label)]), collapse = ", ")
@@ -251,8 +266,29 @@ match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_chec
   d
 }
 
+match_A03 <- function(d, id, variant, translate_codelist = TRUE) {
+  idx_SectionTypeCd <- which(colnames(d) == "A03_006")
+  idx_SectionCd <- which(colnames(d) == "A03_007")
+  
+  d <- match_by_name(d, id, translate_codelist = translate_codelist)
+  
+  if (!isTRUE(translate_codelist)) {
+    return(d)
+  }
+  
+  d[[idx_SectionTypeCd]] <- translate_SectionTypeCd(d[[idx_SectionTypeCd]], variant)
+  d
+}
+
+translate_SectionTypeCd <- function(code, variant) {
+  csv_file <- here::here("data", "codelist", glue::glue("SectionTypeCd_{variant}.csv"))
+  tbl <- readr::read_csv(csv_file, col_types = "cc")
+  codelist_translation <- setNames(tbl$label, tbl$code)
+  codelist_translation[code]
+}
+
 # A22-m has two types of colnames; by exact match and by pattern
-`match_A22-m` <- function(d, id, translate_codelist = TRUE) {
+`match_A22-m` <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   old_names <- colnames(d)
@@ -290,7 +326,7 @@ match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_chec
   d
 }
 
-`match_A37` <- function(d, id, translate_codelist = TRUE) {
+`match_A37` <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   old_names <- colnames(d)
@@ -318,13 +354,13 @@ match_by_name <- function(d, id, dc = NULL, translate_codelist = TRUE, skip_chec
 }
 
 
-match_C02 <- function(d, id, translate_codelist = TRUE) {
+match_C02 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   # C02_となるべきところがC12_となっているコードが紛れている？
   colnames(d) <- stringr::str_replace(colnames(d), "^C12_", "C02_")
   match_by_name(d, id)
 }
 
-match_C09 <- function(d, id, translate_codelist = TRUE) {
+match_C09 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   old_names <- colnames(d)
@@ -342,7 +378,7 @@ match_C09 <- function(d, id, translate_codelist = TRUE) {
 }
 
 # L01は年度によってカラムが異なる。基本的には最新版に前年までのデータも含まれるはずなので最新版だけ対応でよさそう...？
-match_L01 <- function(d, id, translate_codelist = TRUE) {
+match_L01 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   dc <- d_col_info[d_col_info$id == id, ]
   
   old_names <- colnames(d)
@@ -390,11 +426,11 @@ match_L01 <- function(d, id, translate_codelist = TRUE) {
 
 match_L02 <- match_L01
 
-`match_L03-a` <- function(d, id, translate_codelist = TRUE) d
-`match_L03-b` <- function(d, id, translate_codelist = TRUE) d
-`match_L03-b-u` <- function(d, id, translate_codelist = TRUE) d
+`match_L03-a` <- function(d, id, variant = NULL, translate_codelist = TRUE) d
+`match_L03-b` <- function(d, id, variant = NULL, translate_codelist = TRUE) d
+`match_L03-b-u` <- function(d, id, variant = NULL, translate_codelist = TRUE) d
 
-match_N04 <- function(d, id, translate_codelist = TRUE) {
+match_N04 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   # geometry は抜く
   ncol <- ncol(d) - 1L
   
@@ -423,7 +459,7 @@ match_N04 <- function(d, id, translate_codelist = TRUE) {
 match_A42     <- match_N04
 
 # exact matchに加えて、ある範囲以上のカラムには「管轄範囲1」、「管轄範囲2」...というルールで名前がついていく
-match_P17 <- function(d, id, translate_codelist = TRUE) {
+match_P17 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   old_names <- colnames(d)
   d <- match_by_name(d, id, skip_check = TRUE)
   
@@ -449,7 +485,7 @@ match_P17 <- function(d, id, translate_codelist = TRUE) {
 
 match_P18 <- match_P17
 
-match_P21 <- function(d, id, translate_codelist = TRUE) {
+match_P21 <- function(d, id, variant = NULL, translate_codelist = TRUE) {
   colnames <- colnames(d)
   # wrong colname?
   idx <- stringr::str_detect(colnames, "^P21[A-Z]_00$")

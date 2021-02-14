@@ -185,7 +185,7 @@ d_codelist <- d_codelist %>%
 ``` r
 d_split <- d %>% 
   mutate(
-    needs_regex = is.na(codelist_id_manual) & !id %in% c("A10", "A11", "A12", "A13", "A20", "A21", "C02", "C09", "W05", "W07")
+    needs_regex = is.na(codelist_id_manual) & !id %in% c("A03", "A10", "A11", "A12", "A13", "A20", "A21", "C02", "C09", "W05", "W07")
   )
 
 d_joined_manual <- d_split %>% 
