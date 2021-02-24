@@ -1,0 +1,55 @@
+Extract ZIP file URLs
+================
+
+``` r
+library(rvest)
+library(dplyr, warn.conflicts = FALSE)
+
+datalist_files <- list.files(
+  here::here("data-raw", "datalist"),
+  pattern = ".*\\.html",
+  full.names = TRUE,
+)
+
+names(datalist_files) <- stringr::str_replace(basename(datalist_files), "(?:KsjTmplt-)(.*?)(?:-v.*)?(?:\\.html)", "\\1")
+```
+
+``` r
+l <- purrr::map(datalist_files, function(x) {
+  x <- read_html(x)
+  
+  tbl <- x %>% 
+    html_elements("table.mb30.responsive-table")
+  
+  stopifnot(length(tbl) == 1)
+  
+  tbl <- tbl[[1]]
+  
+  onclick <- tbl %>% 
+    html_elements("tr td a") %>% 
+    html_attr("onclick")
+  
+  url <- stringr::str_split(onclick, ",", simplify = TRUE)[, 3]
+  url <- stringr::str_remove_all(url, "\\s|'")
+
+  url <- dplyr::case_when(
+    # 絶対 URL
+    startsWith(url, "/") ~ paste0("https://nlftp.mlit.go.jp", url),
+    # 相対 URL
+    startsWith(url, "../") ~ paste0("https://nlftp.mlit.go.jp/ksj/gml/", stringr::str_sub(url, 4))
+  )
+  
+  stopifnot(!anyNA(url))
+
+  result <- html_table(tbl, header = TRUE, convert = FALSE)
+  
+  result$url <- url
+  result
+})
+```
+
+``` r
+bind_rows(l, .id = "id") %>% 
+  select(!"ダウンロード") %>% 
+  readr::write_csv(here::here("data", "zipfiles.csv"))
+```
